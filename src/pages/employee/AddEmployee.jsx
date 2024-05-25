@@ -118,7 +118,7 @@ const AddEmployee = () => {
       },
       experience: [
         {
-          id: 1,
+          // id: 1,
           organisationName: "",
           startDate: "",
           endDate: "",
@@ -129,7 +129,7 @@ const AddEmployee = () => {
     skillInfo: {
       skills: [
         {
-          id: 6,
+          // id: 6,
           notes: "",
           skillType: 0,
           skillName: 0,
@@ -139,36 +139,25 @@ const AddEmployee = () => {
       ],
       hobbiesRecord: [
         {
-          id: 1,
+          // id: 1,
           hobbiesType: 9,
           hobbiesName: 0,
         },
       ],
     },
     bankDetails: {
-      currentJobDetail: {
-        id: 6,
-        hiringDate: "",
-        joiningDate: "",
-        modeOfWork: "",
-        probationPeriodMonth: 6,
-        userRoleLookupId: 2,
-        CTC: "",
-        designationLookupId: 5,
-      },
-      experience: [
-        {
-          id: 1,
-          organisationName: "",
-          startDate: "",
-          endDate: "",
-          designationLookupId: 15,
-        },
-      ],
+      id: 1,
+      bankName: "",
+      branchName: "",
+      ifscCode: "",
+      micrCode: "",
+      accountNumber: "",
+      isActive: true,
     },
   });
 
   const handleNext = () => {
+    handleSubmit();
     setWizardIndex(wizardIndex + 1);
   };
 
@@ -205,7 +194,11 @@ const AddEmployee = () => {
     <div>
       <div className="d-flex flex-direction-row justify-content-center">
         {wizardData.map((item, index) => (
-          <label onClick={() => handleWizardChange(index)} className="m-3">
+          <label
+            onClick={() => handleWizardChange(index)}
+            className="m-3 fw-bold h5"
+            style={{ color: index === wizardIndex ? "#00ce3f" : "black" }}
+          >
             {item.title}
           </label>
         ))}
@@ -220,7 +213,6 @@ const AddEmployee = () => {
             <Button
               className="bg-success text-white"
               onClick={() => handlePrevious()}
-              // disabled={wizardIndex===0}
               style={{ display: wizardIndex === 0 && "none" }}
             >
               Back

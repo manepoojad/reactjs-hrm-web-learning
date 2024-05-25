@@ -11,21 +11,20 @@ const EmployeePersonalDetails = (props) => {
   );
   const titleLookupList = titleLookup?.lookups;
 
-  const genderLookup=lookupData?.find(
-    (lookup)=>lookup.lookupType==="gender"
-  )
-  const genderLookupList=genderLookup?.lookups
+  const genderLookup = lookupData?.find(
+    (lookup) => lookup.lookupType === "gender"
+  );
+  const genderLookupList = genderLookup?.lookups;
 
-  const bloodGroupLookup=lookupData?.find(
-    (lookup)=>lookup.lookupType==="bloodGroup"
-  )
-  const bloodGroupLookupList=bloodGroupLookup?.lookups
+  const bloodGroupLookup = lookupData?.find(
+    (lookup) => lookup.lookupType === "bloodGroup"
+  );
+  const bloodGroupLookupList = bloodGroupLookup?.lookups;
 
-  const marriedStatusLookup=lookupData?.find(
-    (lookup)=>lookup?.lookupType==="marriedStatus"
-  )
-  const marriedStatusLookupList=marriedStatusLookup?.lookups
-
+  const marriedStatusLookup = lookupData?.find(
+    (lookup) => lookup?.lookupType === "marriedStatus"
+  );
+  const marriedStatusLookupList = marriedStatusLookup?.lookups;
 
   useEffect(() => {
     getAllLookupList();
@@ -37,8 +36,6 @@ const EmployeePersonalDetails = (props) => {
       ...personalDetails,
       [name]: value,
     };
-
-
 
     handleWizardInputChange("personalDetails", newPersonalDetails);
   };
@@ -62,30 +59,23 @@ const EmployeePersonalDetails = (props) => {
     }
   };
 
-  // const handleAddEmployeePersonalDetails = async () => {
-  //   try {
-  //     const response = await fetch(API_ROUTES_PATH.EMPLOYEE_PERSONAL_DETAILS, {
-  //       method: "POST",
-  //       body: JSON.stringify(signInData),
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
-  //     if (!response.ok) {
-  //       throw new Error("Response not ok");
-  //     }
-  //     const responseData = await response.json();
-  //     Cookies.set("token", responseData.token, { expires: 7 });
-
-  //     setSignInData({
-  //       email: "",
-  //       password: "",
-  //     });
-  //     navigate("/");
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+  const handleAddEmployeePersonalDetails = async () => {
+    try {
+      const response = await fetch(API_ROUTES_PATH.EMPLOYEE_PERSONAL_DETAILS, {
+        method: "POST",
+        body: JSON.stringify(formData?.personalDetails),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Response not ok");
+      }
+      const responseData = await response.json();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className="row g-3 m-0 p-0">
@@ -252,7 +242,9 @@ const EmployeePersonalDetails = (props) => {
               );
             })}
         </select>
-        <div className="invalid-feedback">Please select a valid Blood Group.</div>
+        <div className="invalid-feedback">
+          Please select a valid Blood Group.
+        </div>
       </div>
 
       <div className="col-md-5">
@@ -279,7 +271,9 @@ const EmployeePersonalDetails = (props) => {
               );
             })}
         </select>
-        <div className="invalid-feedback">Please select a valid Married Status.</div>
+        <div className="invalid-feedback">
+          Please select a valid Married Status.
+        </div>
       </div>
 
       <div className="col-md-5">
