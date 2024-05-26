@@ -33,9 +33,7 @@ const EmployeeList = () => {
   console.log(employeeList);
 
   const addEmployee = () => {
-    navigate("/create");
-
-    
+    navigate("/employee/create");
   };
   return (
     <>
@@ -73,7 +71,9 @@ const EmployeeList = () => {
                     <button
                       className="btn btn-outline-success btn-sm mx-2"
                       title="Edit Employee Details"
-                      // onClick={() => editEmployee(emp.id)}
+                      onClick={() => {
+                        navigate(`/employee/${employee.id}`);
+                      }}
                       style={{ border: "none" }}
                     >
                       <i className="bi bi-pen"></i>
