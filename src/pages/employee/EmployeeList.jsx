@@ -34,6 +34,8 @@ const EmployeeList = () => {
 
   const addEmployee = () => {
     navigate("/create");
+
+    
   };
   return (
     <>

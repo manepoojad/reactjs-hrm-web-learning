@@ -105,6 +105,18 @@ const SkillInfo = (props) => {
 
   const handleChangeHobbies = (e) => {
     const { name, value } = e.target;
+    const newHobbiesRecord=formData?.skillInfo?.hobbiesRecord.map((item,index)=>{
+      const newHobbies={
+        ...item,
+        [name]:value
+      }
+      return newHobbies
+    })
+    const newHobbiesRecordDetails={
+      ...formData?.skillInfo,
+      hobbiesRecord:newHobbiesRecord
+    }
+    handleWizardInputChange("skillInfo",newHobbiesRecordDetails)
   };
 
   return (
@@ -142,7 +154,7 @@ const SkillInfo = (props) => {
                   {skillTypeLookupList?.[0] &&
                     skillTypeLookupList.map((item, index) => {
                       return (
-                        <option key={index} value={item.label}>
+                        <option key={index} value={item.id}>
                           {item.label}
                         </option>
                       );
@@ -168,7 +180,7 @@ const SkillInfo = (props) => {
                     ? skillNameLookupList1?.[0] &&
                       skillNameLookupList1.map((item, index) => {
                         return (
-                          <option key={index} value={item.value}>
+                          <option key={index} value={item.id}>
                             {item.label}
                           </option>
                         );
@@ -176,7 +188,7 @@ const SkillInfo = (props) => {
                     : skillNameLookupList?.[0] &&
                       skillNameLookupList.map((item, index) => {
                         return (
-                          <option key={index} value={item.value}>
+                          <option key={index} value={item.id}>
                             {item.label}
                           </option>
                         );
@@ -202,7 +214,7 @@ const SkillInfo = (props) => {
                   {skillLevelLookupList?.[0] &&
                     skillLevelLookupList.map((item, index) => {
                       return (
-                        <option key={index} value={item.label}>
+                        <option key={index} value={item.id}>
                           {item.label}
                         </option>
                       );
@@ -258,7 +270,7 @@ const SkillInfo = (props) => {
       <div className="col-md-5" style={{ marginRight: 650 }}>
         <label className="form-label personal-label">Hobbies</label>
         <select
-          name="skillType"
+          name="hobbiesName"
           className="form-select"
           // value={skillInfoItem?.skillType || ""}
           aria-label=".form-select-lg example"
@@ -270,7 +282,7 @@ const SkillInfo = (props) => {
           {hobbiesLookupList?.[0] &&
             hobbiesLookupList.map((item, index) => {
               return (
-                <option key={index} value={item.label}>
+                <option key={index} value={item.id}>
                   {item.label}
                 </option>
               );

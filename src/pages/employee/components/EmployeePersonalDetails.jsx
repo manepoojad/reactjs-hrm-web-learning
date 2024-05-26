@@ -59,24 +59,6 @@ const EmployeePersonalDetails = (props) => {
     }
   };
 
-  const handleAddEmployeePersonalDetails = async () => {
-    try {
-      const response = await fetch(API_ROUTES_PATH.EMPLOYEE_PERSONAL_DETAILS, {
-        method: "POST",
-        body: JSON.stringify(formData?.personalDetails),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Response not ok");
-      }
-      const responseData = await response.json();
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   return (
     <div className="row g-3 m-0 p-0">
       {/* <input
@@ -87,14 +69,14 @@ const EmployeePersonalDetails = (props) => {
         onChange={handleInputChange}
       /> */}
       <div className="col-md-2">
-        <label htmlFor="title" className="form-label personal-label">
+        <label className="form-label personal-label">
           Title<span style={{ color: "red" }}>*</span>
         </label>
         <select
           name="title"
           className="form-select"
           aria-label=".form-select-lg example"
-          value={personalDetails?.title || ""}
+          value={personalDetails?.title}
           onChange={handleInputChange}
           required
         >
@@ -104,7 +86,7 @@ const EmployeePersonalDetails = (props) => {
           {titleLookupList?.[0] &&
             titleLookupList.map((item, index) => {
               return (
-                <option key={index} value={item.label}>
+                <option key={index} value={item.id}>
                   {item.label}
                 </option>
               );
@@ -233,8 +215,8 @@ const EmployeePersonalDetails = (props) => {
           <option defaultValue disabled value="">
             Blood Group
           </option>
-          {genderLookupList?.[0] &&
-            genderLookupList.map((item, index) => {
+          {bloodGroupLookupList?.[0] &&
+            bloodGroupLookupList.map((item, index) => {
               return (
                 <option key={index} value={item.label}>
                   {item.label}

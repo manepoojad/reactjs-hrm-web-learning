@@ -71,9 +71,7 @@ const ContactInfo = (props) => {
 
   const handleInputChange = (e, addressType) => {
     const { name, value } = e.target;
-    debugger;
     let newAddresses = address.map((addressItem) => {
-      debugger;
       if (addressItem.addressType === addressType || sameAsAbove) {
         return {
           ...addressItem,
@@ -548,6 +546,7 @@ const ContactInfo = (props) => {
             value={currentAddress?.district || ""}
             onChange={(e) => handleInputChange(e, currentAddress?.addressType)}
             required
+            disabled={sameAsAbove}
           />
           <div className="invalid-feedback">Please Enter District</div>
         </div>
@@ -564,6 +563,7 @@ const ContactInfo = (props) => {
             value={currentAddress?.state || ""}
             onChange={(e) => handleInputChange(e, currentAddress?.addressType)}
             required
+            disabled={sameAsAbove}
           />
           <div className="invalid-feedback">Please Enter State</div>
         </div>
@@ -579,6 +579,7 @@ const ContactInfo = (props) => {
             placeholder="e.g. 411058"
             value={currentAddress?.zipCode || ""}
             onChange={(e) => handleInputChange(e, currentAddress?.addressType)}
+            disabled={sameAsAbove}
             required
           />
           <div className="invalid-feedback">Please Enter ZIP Code</div>
@@ -596,6 +597,7 @@ const ContactInfo = (props) => {
             value={currentAddress?.country || ""}
             onChange={(e) => handleInputChange(e, currentAddress?.addressType)}
             required
+            disabled={sameAsAbove}
           />
           <div className="invalid-feedback">Please Enter Country</div>
         </div>

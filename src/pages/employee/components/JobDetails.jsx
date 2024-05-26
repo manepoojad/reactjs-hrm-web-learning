@@ -178,7 +178,7 @@ const JobDetails = (props) => {
         <select
           name="designationLookupId"
           className="form-select"
-          value={currentJobDetails?.designationLookupId || ""}
+          value={currentJobDetails?.designationLookupId}
           aria-label=".form-select-lg example"
           required
           onChange={(e) => handleInputChange(e)}
@@ -189,7 +189,7 @@ const JobDetails = (props) => {
           {designationLookupList?.[0] &&
             designationLookupList.map((item, index) => {
               return (
-                <option key={index} value={item.label}>
+                <option key={index} value={item.id}>
                   {item.label}
                 </option>
               );
@@ -307,7 +307,7 @@ const JobDetails = (props) => {
                 {designationLookupList?.[0] &&
                   designationLookupList.map((item, index) => {
                     return (
-                      <option key={index} value={item.label}>
+                      <option key={index} value={item.id}>
                         {item.label}
                       </option>
                     );

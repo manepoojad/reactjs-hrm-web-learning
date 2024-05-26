@@ -1,5 +1,7 @@
+import Cookies from "js-cookie";
 import React, { useState } from "react";
 import { Button } from "react-bootstrap";
+import { API_ROUTES_PATH } from "../../helper/Constants";
 import BankDetailsAndDocuments from "./components/BankDetailsAndDocuments";
 import ContactInfo from "./components/ContactInfo";
 import EmployeePersonalDetails from "./components/EmployeePersonalDetails";
@@ -36,12 +38,11 @@ const wizardData = [
 
 const AddEmployee = () => {
   const [wizardIndex, setWizardIndex] = useState(0);
-  const [sameAsAbove, setSameAsAbove] = useState(false);
 
   // Initialize form data for each wizardIndex
   const [employeeData, setEmployeeData] = useState({
+    employeeId: null,
     personalDetails: {
-      label: "",
       title: "",
       firstName: "",
       middleName: "",
@@ -156,9 +157,45 @@ const AddEmployee = () => {
     },
   });
 
-  const handleNext = () => {
-    handleSubmit();
-    setWizardIndex(wizardIndex + 1);
+  const handleNext = async () => {
+    try {
+      if (wizardIndex === 0) {
+        if (employeeData?.employeeId === null) {
+          const personalDetailsResponse =
+            await handleAddEmployeePersonalDetails();
+          console.log(personalDetailsResponse);
+          const employeeId =
+            personalDetailsResponse?.employeeDetail?.employeeId;
+          setEmployeeData({
+            ...employeeData,
+            employeeId: employeeId,
+          });
+        } else {
+          const personalDetailsResponse =
+            await handleUpdateEmployeePersonalDetails();
+          console.log(personalDetailsResponse);
+        }
+      } else if (wizardIndex === 1) {
+        const contactInfoResponse = await handleUpdateAddEmployeeContactInfo();
+        console.log(contactInfoResponse);
+      } else if (wizardIndex === 2) {
+        const jobDetailsResponse = await handleUpdateAddEmployeeJobDetails();
+        console.log(jobDetailsResponse);
+      } else if (wizardIndex === 3) {
+        const skillInfoResponse = await handleUpdateAddEmployeeSkillInfo();
+        console.log(skillInfoResponse);
+      } else if (wizardIndex === 4) {
+        const bankDetailsResponse = await handleUpdateAddEmployeeBankDetails();
+        console.log(bankDetailsResponse);
+        return
+      }
+      
+      if (wizardIndex !== 4) {
+        setWizardIndex(wizardIndex + 1);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handlePrevious = () => {
@@ -188,6 +225,121 @@ const AddEmployee = () => {
     setWizardIndex(1);
   };
 
+  const handleAddEmployeePersonalDetails = async () => {
+    const response = await fetch(API_ROUTES_PATH?.EMPLOYEE_PERSONAL_DETAILS, {
+      method: "POST",
+      body: JSON.stringify(employeeData?.personalDetails),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Response not ok");
+    }
+    const responseData = await response.json();
+    return responseData;
+  };
+
+  const handleUpdateEmployeePersonalDetails = async () => {
+    const token = Cookies.get("token");
+    const response = await fetch(
+      `http://localhost:8888/api/employee/${employeeData?.employeeId}/personal`,
+      {
+        method: "PUT",
+        body: JSON.stringify(employeeData?.personalDetails),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Response not ok");
+    }
+    const responseData = await response.json();
+    return responseData;
+  };
+
+  const handleUpdateAddEmployeeContactInfo = async () => {
+    const token = Cookies.get("token");
+    const response = await fetch(
+      `http://localhost:8888/api/employee/${employeeData?.employeeId}/contact`,
+      {
+        method: "PUT",
+        body: JSON.stringify(employeeData?.contactInfo),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Response not ok");
+    }
+    const responseData = await response.json();
+    return responseData;
+  };
+
+  const handleUpdateAddEmployeeJobDetails = async () => {
+    const token = Cookies.get("token");
+    const response = await fetch(
+      `http://localhost:8888/api/employee/${employeeData?.employeeId}/job`,
+      {
+        method: "PUT",
+        body: JSON.stringify(employeeData?.jobDetails),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Response not ok");
+    }
+    const responseData = await response.json();
+    return responseData;
+  };
+
+  const handleUpdateAddEmployeeSkillInfo = async () => {
+    const token = Cookies.get("token");
+    const response = await fetch(
+      `http://localhost:8888/api/employee/${employeeData?.employeeId}/skill`,
+      {
+        method: "PUT",
+        body: JSON.stringify(employeeData?.skillInfo),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Response not ok");
+    }
+    const responseData = await response.json();
+    return responseData;
+  };
+
+  const handleUpdateAddEmployeeBankDetails = async () => {
+    const token = Cookies.get("token");
+    const response = await fetch(
+      `http://localhost:8888/api/employee/${employeeData?.employeeId}/bank`,
+      {
+        method: "PUT",
+        body: JSON.stringify(employeeData?.bankDetails),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Response not ok");
+    }
+    const responseData = await response.json();
+    return responseData;
+  };
+
   const WizardComponent = wizardData?.[wizardIndex]?.component;
   console.log(employeeData);
   return (
@@ -195,7 +347,7 @@ const AddEmployee = () => {
       <div className="d-flex flex-direction-row justify-content-center">
         {wizardData.map((item, index) => (
           <label
-            onClick={() => handleWizardChange(index)}
+            // onClick={() => handleWizardChange(index)}
             className="m-3 fw-bold h5"
             style={{ color: index === wizardIndex ? "#00ce3f" : "black" }}
           >
