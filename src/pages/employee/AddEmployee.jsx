@@ -163,7 +163,6 @@ const AddEmployee = () => {
         if (employeeData?.employeeId === null) {
           const personalDetailsResponse =
             await handleAddEmployeePersonalDetails();
-          console.log(personalDetailsResponse);
           const employeeId =
             personalDetailsResponse?.employeeDetail?.employeeId;
           setEmployeeData({
@@ -173,20 +172,15 @@ const AddEmployee = () => {
         } else {
           const personalDetailsResponse =
             await handleUpdateEmployeePersonalDetails();
-          console.log(personalDetailsResponse);
         }
       } else if (wizardIndex === 1) {
         const contactInfoResponse = await handleUpdateAddEmployeeContactInfo();
-        console.log(contactInfoResponse);
       } else if (wizardIndex === 2) {
         const jobDetailsResponse = await handleUpdateAddEmployeeJobDetails();
-        console.log(jobDetailsResponse);
       } else if (wizardIndex === 3) {
         const skillInfoResponse = await handleUpdateAddEmployeeSkillInfo();
-        console.log(skillInfoResponse);
       } else if (wizardIndex === 4) {
         const bankDetailsResponse = await handleUpdateAddEmployeeBankDetails();
-        console.log(bankDetailsResponse);
         return
       }
       
@@ -194,7 +188,6 @@ const AddEmployee = () => {
         setWizardIndex(wizardIndex + 1);
       }
     } catch (error) {
-      console.log(error);
     }
   };
 
@@ -341,13 +334,12 @@ const AddEmployee = () => {
   };
 
   const WizardComponent = wizardData?.[wizardIndex]?.component;
-  console.log(employeeData);
   return (
     <div>
       <div className="d-flex flex-direction-row justify-content-center">
         {wizardData.map((item, index) => (
           <label
-            // onClick={() => handleWizardChange(index)}
+            onClick={() => handleWizardChange(index)}
             className="m-3 fw-bold h5"
             style={{ color: index === wizardIndex ? "#00ce3f" : "black" }}
           >

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { API_ROUTES_PATH } from "../../../helper/Constants";
 
-const EmployeePersonalDetails = (props) => {
+const EditEmployeePersonalDetails = (props) => {
   const [lookupData, setLookupData] = useState([]);
   const { formData = {}, handleWizardInputChange = () => {} } = props;
   const personalDetails = formData?.personalDetails || {};
@@ -32,12 +32,12 @@ const EmployeePersonalDetails = (props) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    const newPersonalDetails = {
+    const newPersonalDetail = {
       ...personalDetails,
       [name]: value,
     };
 
-    handleWizardInputChange("personalDetails", newPersonalDetails);
+    handleWizardInputChange("personalDetails", newPersonalDetail);
   };
 
   const getAllLookupList = async () => {
@@ -57,6 +57,9 @@ const EmployeePersonalDetails = (props) => {
     } catch (error) {
     }
   };
+
+  const isoDateString = personalDetails?.dob;
+const formattedDate = isoDateString?.split("T")[0]
 
   return (
     <div className="row g-3 m-0 p-0">
@@ -175,7 +178,7 @@ const EmployeePersonalDetails = (props) => {
           {genderLookupList?.[0] &&
             genderLookupList.map((item, index) => {
               return (
-                <option key={index} value={item.label}>
+                <option key={index} value={item.id}>
                   {item.label}
                 </option>
               );
@@ -192,7 +195,7 @@ const EmployeePersonalDetails = (props) => {
           type="date"
           name="dob"
           className="form-control"
-          value={personalDetails?.dob || ""}
+          value={formattedDate || ""}
           onChange={handleInputChange}
           required
         />
@@ -217,7 +220,7 @@ const EmployeePersonalDetails = (props) => {
           {bloodGroupLookupList?.[0] &&
             bloodGroupLookupList.map((item, index) => {
               return (
-                <option key={index} value={item.label}>
+                <option key={index} value={item.id}>
                   {item.label}
                 </option>
               );
@@ -246,7 +249,7 @@ const EmployeePersonalDetails = (props) => {
           {marriedStatusLookupList?.[0] &&
             marriedStatusLookupList.map((item, index) => {
               return (
-                <option key={index} value={item.label}>
+                <option key={index} value={item.id}>
                   {item.label}
                 </option>
               );
@@ -292,4 +295,4 @@ const EmployeePersonalDetails = (props) => {
   );
 };
 
-export default EmployeePersonalDetails;
+export default EditEmployeePersonalDetails;

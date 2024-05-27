@@ -3,20 +3,20 @@ import React, { useState } from "react";
 const ContactInfo = (props) => {
   const { formData = {}, handleWizardInputChange = () => {} } = props;
 
-  const contactInfo = formData?.contactInfo || {};
+  const contactInfo = formData?.employeeDetail?.contacts || {};
 
-  const personalEmailObject = contactInfo?.contacts?.find(
+  const personalEmailObject = contactInfo?.find(
     (contactItem) => contactItem?.contactType === "personalEmail"
   );
 
-  const personalContactObject = contactInfo?.contacts?.find(
+  const personalContactObject = contactInfo?.find(
     (contactItem) => contactItem?.contactType === "personalPhone"
   );
 
-  const personalEmergencyContactObject1 = contactInfo?.contacts?.[2];
-  const personalEmergencyContactObject2 = contactInfo?.contacts?.[3];
+  const personalEmergencyContactObject1 = contactInfo?.[0];
+  const personalEmergencyContactObject2 = contactInfo?.[1];
 
-  const address = formData?.contactInfo?.addresses;
+  const address = formData?.employeeDetail?.addresses;
 
   const permanentAddress = address?.find(
     (address) => address?.addressType === "permanant"
@@ -29,8 +29,8 @@ const ContactInfo = (props) => {
 
   const handleInputContactChange = (e, contactIndex) => {
     const { name, value } = e.target;
-    const contacts = contactInfo.contacts;
-    const newContacts = contacts.map((item, index) => {
+    const contactsDetail = formData?.employeeDetail?.contacts;
+    const newContacts = contactsDetail.map((item, index) => {
       if (item.contactType === name && index === contactIndex) {
         const newItem = {
           ...item,
@@ -41,10 +41,10 @@ const ContactInfo = (props) => {
       return item;
     });
     const newContactInfo = {
-      ...contactInfo,
+      ...formData?.employeeDetail,
       contacts: newContacts,
     };
-    handleWizardInputChange("contactInfo", newContactInfo);
+    handleWizardInputChange("employeeDetail", newContactInfo);
   };
 
   // const handleInputChange = (e, addressType) => {
@@ -81,11 +81,11 @@ const ContactInfo = (props) => {
       return addressItem;
     });
     const newContactInfo = {
-      ...contactInfo,
+      ...formData?.employeeDetail,
       addresses: newAddresses,
     };
 
-    handleWizardInputChange("contactInfo", newContactInfo);
+    handleWizardInputChange("employeeDetail", newContactInfo);
   };
 
   // const handleInputAddressesChange = (e, addressType) => {
@@ -131,7 +131,7 @@ const ContactInfo = (props) => {
     setSameAsAbove(isChecked);
     if (isChecked) {
       const renderSameAsAddress = {
-        ...contactInfo,
+        ...formData?.employeeDetail,
         addresses: [
           {
             ...permanentAddress,
@@ -142,7 +142,7 @@ const ContactInfo = (props) => {
           },
         ],
       };
-      handleWizardInputChange("contactInfo", renderSameAsAddress);
+      handleWizardInputChange("employeeDetail", renderSameAsAddress);
     }
   };
 

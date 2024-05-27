@@ -18,7 +18,6 @@ const Login = () => {
       [name]: value,
     });
   };
-  console.log(signInData);
 
   const handleClickSignIn = async () => {
     try {

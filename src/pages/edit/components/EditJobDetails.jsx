@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { API_ROUTES_PATH } from "../../../helper/Constants";
 
-const JobDetails = (props) => {
+const EditJobDetails = (props) => {
   const [lookupData, setLookupData] = useState([]);
   const { formData = {}, handleWizardInputChange = () => {} } = props;
 
@@ -329,4 +329,4 @@ const JobDetails = (props) => {
   );
 };
 
-export default JobDetails;
+export default EditJobDetails;

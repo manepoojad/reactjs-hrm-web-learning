@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { API_ROUTES_PATH } from "../../helper/Constants";
 
 const EmployeeList = () => {
+  
   const navigate = useNavigate();
   const [employeeList, setEmployeeList] = useState([]);
 
@@ -27,10 +28,8 @@ const EmployeeList = () => {
       const responseData = await response.json();
       setEmployeeList(responseData);
     } catch (error) {
-      console.log(error);
     }
   };
-  console.log(employeeList);
 
   const addEmployee = () => {
     navigate("/employee/create");

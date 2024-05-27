@@ -4,7 +4,6 @@ const BankDetailsAndDocuments = (props) => {
   const { formData = {}, handleWizardInputChange = () => {} } = props;
 
   const bankDetail = formData?.bankDetails;
-  console.log(bankDetail);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

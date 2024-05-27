@@ -52,14 +52,12 @@ const SkillInfo = (props) => {
       const lookupData = responseData.lookupData;
       setLookupData(lookupData);
     } catch (error) {
-      console.log(error);
     }
   };
 
   const handleInputChange = (e, index) => {
     const { name, value } = e.target;
     const newSkillInfo = skillInfoDetails.map((skillItem, skillIndex) => {
-      console.log(skillItem);
       if (skillIndex === index) {
         const newSkillItem = {
           ...skillItem,
@@ -123,7 +121,6 @@ const SkillInfo = (props) => {
     <>
       {formData.skillInfo.skills &&
         formData.skillInfo.skills.map((skillInfoItem, index) => {
-          console.log(skillInfoItem);
           return (
             <div className="row g-3 m-0 p-0 justify-content-center">
               <div className="d-flex">
