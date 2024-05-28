@@ -60,6 +60,10 @@ const EditEmployee = () => {
 
     contacts: [
       {
+        contactType: "officialEmail",
+        value: "",
+      },
+      {
         contactType: "personalEmail",
         value: "",
       },
@@ -175,31 +179,72 @@ const EditEmployee = () => {
       }
       const responseData = await response.json();
 
-      const newEditEmployeeData = {
-        userRoleLookupId: responseData?.employeeDetail?.user?.userRoleLookupId,
-        employeeId: responseData?.employeeDetail?.employeeId,
-        personalDetails: responseData?.employeeDetail?.personalDetial,
-        contacts: responseData?.employeeDetail?.contacts,
-        addresses: responseData?.employeeDetail?.addresses,
-        jobDetails: responseData?.employeeDetail?.jobDetail,
-        experience: responseData?.employeeDetail?.experiences,
-        skills: responseData?.employeeDetail?.skills,
-        hobbiesRecord: responseData?.employeeDetail?.hobbiesRecords,
-        bankDetails: responseData?.employeeDetail?.bankdetails,
-      };
-
-      setEditEmployeeData(newEditEmployeeData);
+      handleDataMapping(responseData);
     } catch (error) {}
   };
+
   console.log("editEmployeeData", editEmployeeData);
+
+  const handleDataMapping = (responseData) => {
+    /**
+     * @description
+     *
+     */
+    const contactTypeList = [
+      "officialEmail",
+      "personalEmail",
+      "personalPhone",
+      "emergencyPhone",
+      "emergencyPhone",
+    ];
+    const contactMapped = [];
+
+    responseData?.employeeDetail?.contacts?.forEach((contactItem) => {
+      const contactTypeListItemIndex = contactTypeList.findIndex(
+        (contactType) => contactType == contactItem.contactType
+      );
+
+      if (contactTypeListItemIndex !== -1) {
+        contactTypeList.splice(contactTypeListItemIndex, 1);
+      }
+
+      contactMapped.push(contactItem);
+    });
+
+    contactTypeList.forEach((contactType) => {
+      const newContactItem = {
+        contactType: contactType,
+        value: "",
+        tempId: Math.random(),
+      };
+      contactMapped.push(newContactItem);
+    });
+
+    const newEditEmployeeData = {
+      userRoleLookupId: responseData?.employeeDetail?.user?.userRoleLookupId,
+      employeeId: responseData?.employeeDetail?.employeeId,
+      personalDetails: responseData?.employeeDetail?.personalDetial,
+      contacts: contactMapped,
+      addresses: responseData?.employeeDetail?.addresses,
+      jobDetails: responseData?.employeeDetail?.jobDetail,
+      experience: responseData?.employeeDetail?.experiences,
+      skills: responseData?.employeeDetail?.skills,
+      hobbiesRecord: responseData?.employeeDetail?.hobbiesRecords,
+      bankDetails: responseData?.employeeDetail?.bankdetails,
+    };
+
+    setEditEmployeeData(newEditEmployeeData);
+  };
 
   const handleNext = async () => {
     try {
       if (wizardIndex === 0) {
         const personalDetailsResponse =
           await handleUpdateEmployeePersonalDetails();
+        handleDataMapping(personalDetailsResponse);
       } else if (wizardIndex === 1) {
         const contactInfoResponse = await handleUpdateAddEmployeeContactInfo();
+        handleDataMapping(contactInfoResponse);
       } else if (wizardIndex === 2) {
         const jobDetailsResponse = await handleUpdateAddEmployeeJobDetails();
       } else if (wizardIndex === 3) {
@@ -231,7 +276,7 @@ const EditEmployee = () => {
   };
 
   const handleSubmit = (e) => {
-    console.log(e)
+    console.log(e);
     setEditEmployeeData({
       personalDetails: {},
       contactInfo: {},
@@ -264,11 +309,16 @@ const EditEmployee = () => {
 
   const handleUpdateAddEmployeeContactInfo = async () => {
     const token = Cookies.get("token");
+
+    const payload = {
+      contacts: editEmployeeData.contacts,
+      addresses: editEmployeeData.addresses,
+    };
     const response = await fetch(
       `http://localhost:8888/api/employee/${editEmployeeData?.employeeId}/contact`,
       {
         method: "PUT",
-        body: JSON.stringify(editEmployeeData?.contactInfo),
+        body: JSON.stringify(payload),
         headers: {
           "Content-Type": "application/json",
           Authorization: `${token}`,

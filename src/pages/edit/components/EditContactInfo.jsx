@@ -31,24 +31,24 @@ const EditContactInfo = (props) => {
   );
   const [sameAsAbove, setSameAsAbove] = useState(false);
 
-  const handleInputContactChange = (e, contactId) => {
+  const handleInputContactChange = (e, contactId, tempId) => {
     const { name, value } = e.target;
 
-    if (contactId) {
-      const newContacts = contacts?.map((item) => {
-        if (item.contactType === name && item?.id === contactId) {
-          const newItem = {
-            ...item,
-            value: value,
-          };
-          return newItem;
-        }
-        return item;
-      });
+    const newContacts = contacts?.map((item) => {
+      if (
+        (item.contactType === name && item?.id === contactId) ||
+        item?.tempId === tempId
+      ) {
+        const newItem = {
+          ...item,
+          value: value,
+        };
+        return newItem;
+      }
+      return item;
+    });
 
-      handleWizardInputChange("contacts", newContacts);
-    } else {
-    }
+    handleWizardInputChange("contacts", newContacts);
   };
 
   const handleInputChange = (e, addressType) => {
@@ -99,7 +99,11 @@ const EditContactInfo = (props) => {
             placeholder="e.g. pooja@gmail.com"
             value={personalEmailObject?.value || ""}
             onChange={(e) =>
-              handleInputContactChange(e, personalEmailObject?.id)
+              handleInputContactChange(
+                e,
+                personalEmailObject?.id,
+                personalEmailObject?.tempId
+              )
             }
             required
           />
@@ -119,7 +123,11 @@ const EditContactInfo = (props) => {
             placeholder="e.g. 8080942232"
             value={personalContactObject?.value || ""}
             onChange={(e) =>
-              handleInputContactChange(e, personalContactObject?.id || "")
+              handleInputContactChange(
+                e,
+                personalContactObject?.id,
+                personalContactObject?.tempId
+              )
             }
             required
           />
@@ -137,7 +145,11 @@ const EditContactInfo = (props) => {
             placeholder="e.g. 8698438642"
             value={personalEmergencyContactObject1?.value || ""}
             onChange={(e) =>
-              handleInputContactChange(e, personalEmergencyContactObject1?.id)
+              handleInputContactChange(
+                e,
+                personalEmergencyContactObject1?.id,
+                personalEmergencyContactObject1?.tempId
+              )
             }
             required
           />
@@ -157,7 +169,11 @@ const EditContactInfo = (props) => {
             placeholder="e.g. 8698438642"
             value={personalEmergencyContactObject2?.value || ""}
             onChange={(e) =>
-              handleInputContactChange(e, personalEmergencyContactObject2?.id)
+              handleInputContactChange(
+                e,
+                personalEmergencyContactObject2?.id,
+                personalEmergencyContactObject2?.tempId
+              )
             }
             required
           />
