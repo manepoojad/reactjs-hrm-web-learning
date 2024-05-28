@@ -1,22 +1,26 @@
 import React, { useState } from "react";
 
-const ContactInfo = (props) => {
+const EditContactInfo = (props) => {
   const { formData = {}, handleWizardInputChange = () => {} } = props;
 
-  const contactInfo = formData?.employeeDetail?.contacts || {};
+  const contacts = formData?.contacts || [];
 
-  const personalEmailObject = contactInfo?.find(
+  const personalEmailObject = contacts?.find(
     (contactItem) => contactItem?.contactType === "personalEmail"
   );
 
-  const personalContactObject = contactInfo?.find(
+  const personalContactObject = contacts?.find(
     (contactItem) => contactItem?.contactType === "personalPhone"
   );
 
-  const personalEmergencyContactObject1 = contactInfo?.[0];
-  const personalEmergencyContactObject2 = contactInfo?.[1];
+  const emergencyContact = contacts?.filter(
+    (contactItem) => contactItem?.contactType === "emergencyPhone"
+  );
 
-  const address = formData?.employeeDetail?.addresses;
+  const personalEmergencyContactObject1 = emergencyContact?.[0];
+  const personalEmergencyContactObject2 = emergencyContact?.[1];
+
+  const address = formData?.addresses;
 
   const permanentAddress = address?.find(
     (address) => address?.addressType === "permanant"
@@ -27,50 +31,29 @@ const ContactInfo = (props) => {
   );
   const [sameAsAbove, setSameAsAbove] = useState(false);
 
-  const handleInputContactChange = (e, contactIndex) => {
+  const handleInputContactChange = (e, contactId) => {
     const { name, value } = e.target;
-    const contactsDetail = formData?.employeeDetail?.contacts;
-    const newContacts = contactsDetail.map((item, index) => {
-      if (item.contactType === name && index === contactIndex) {
-        const newItem = {
-          ...item,
-          value: value,
-        };
-        return newItem;
-      }
-      return item;
-    });
-    const newContactInfo = {
-      ...formData?.employeeDetail,
-      contacts: newContacts,
-    };
-    handleWizardInputChange("employeeDetail", newContactInfo);
+
+    if (contactId) {
+      const newContacts = contacts?.map((item) => {
+        if (item.contactType === name && item?.id === contactId) {
+          const newItem = {
+            ...item,
+            value: value,
+          };
+          return newItem;
+        }
+        return item;
+      });
+
+      handleWizardInputChange("contacts", newContacts);
+    } else {
+    }
   };
-
-  // const handleInputChange = (e, addressType) => {
-  //   const { name, value } = e.target;
-  //   const newAddresses = address?.map((addressItem) => {
-  //     if (addressItem?.addressType === addressType) {
-  //       return {
-  //         ...addressItem,
-  //         [name]: value,
-  //       };
-  //     }
-  //     return addressItem;
-
-  //   });
-
-  //   const newContactInfo = {
-  //     ...contactInfo,
-  //     addresses: newAddresses,
-  //   };
-
-  //   handleWizardInputChange("contactInfo", newContactInfo);
-  // };
 
   const handleInputChange = (e, addressType) => {
     const { name, value } = e.target;
-    let newAddresses = address.map((addressItem) => {
+    let newAddresses = address?.map((addressItem) => {
       if (addressItem.addressType === addressType || sameAsAbove) {
         return {
           ...addressItem,
@@ -80,69 +63,25 @@ const ContactInfo = (props) => {
 
       return addressItem;
     });
-    const newContactInfo = {
-      ...formData?.employeeDetail,
-      addresses: newAddresses,
-    };
 
-    handleWizardInputChange("employeeDetail", newContactInfo);
+    handleWizardInputChange("addresses", newAddresses);
   };
 
-  // const handleInputAddressesChange = (e, addressType) => {
-  //   const { name, value } = e.target;
-  //   const newAddresses = address?.map((addressItem, index) => {
-  //     if (addressItem?.addressType === "permanant") {
-  //       const newPermanentAddress = {
-  //         ...addressItem,
-  //         [name]: value,
-  //       };
-  //       return newPermanentAddress;
-  //     }
-  //     return addressItem;
-  //   });
-
-  //   const newContactInfo = {
-  //     ...ContactInfo,
-  //     addresses: newAddresses,
-  //   };
-  //   handleWizardInputChange("contactInfo", newContactInfo);
-  // };
-
-  // const handleInputCurrentAddressChange = (e, addressType) => {
-  //   const { name, value } = e.target;
-  //   const newAddress = address?.map((addressItem, index) => {
-  //     if (addressItem?.addressType === "current") {
-  //       const newAddressItem = {
-  //         ...addressItem,
-  //         [name]: value,
-  //       };
-  //       return newAddressItem;
-  //     }
-  //     return addressItem;
-  //   });
-  //   const newAddresses = {
-  //     ...contactInfo,
-  //     addresses: newAddress,
-  //   };
-  //   handleWizardInputChange("contactInfo", newAddresses);
-  // };
   const handleSameAsAboveChange = (e) => {
     const isChecked = e.target.checked;
     setSameAsAbove(isChecked);
     if (isChecked) {
-      const renderSameAsAddress = {
-        ...formData?.employeeDetail,
-        addresses: [
-          {
-            ...permanentAddress,
-          },
-          {
-            ...permanentAddress,
-            addressType: "current",
-          },
-        ],
-      };
-      handleWizardInputChange("employeeDetail", renderSameAsAddress);
+      const renderSameAsAddress = [
+        {
+          ...permanentAddress,
+          addressType: "current",
+        },
+        {
+          ...permanentAddress,
+        },
+      ];
+
+      handleWizardInputChange("addresses", renderSameAsAddress);
     }
   };
 
@@ -159,7 +98,9 @@ const ContactInfo = (props) => {
             className="form-control"
             placeholder="e.g. pooja@gmail.com"
             value={personalEmailObject?.value || ""}
-            onChange={(e) => handleInputContactChange(e, 0)}
+            onChange={(e) =>
+              handleInputContactChange(e, personalEmailObject?.id)
+            }
             required
           />
           <div className="invalid-feedback">
@@ -177,7 +118,9 @@ const ContactInfo = (props) => {
             className="form-control"
             placeholder="e.g. 8080942232"
             value={personalContactObject?.value || ""}
-            onChange={(e) => handleInputContactChange(e, 1)}
+            onChange={(e) =>
+              handleInputContactChange(e, personalContactObject?.id || "")
+            }
             required
           />
           <div className="invalid-feedback">Please Enter Personal Contact.</div>
@@ -193,7 +136,9 @@ const ContactInfo = (props) => {
             className="form-control"
             placeholder="e.g. 8698438642"
             value={personalEmergencyContactObject1?.value || ""}
-            onChange={(e) => handleInputContactChange(e, 2)}
+            onChange={(e) =>
+              handleInputContactChange(e, personalEmergencyContactObject1?.id)
+            }
             required
           />
           <div className="invalid-feedback">
@@ -211,7 +156,9 @@ const ContactInfo = (props) => {
             className="form-control"
             placeholder="e.g. 8698438642"
             value={personalEmergencyContactObject2?.value || ""}
-            onChange={(e) => handleInputContactChange(e, 3)}
+            onChange={(e) =>
+              handleInputContactChange(e, personalEmergencyContactObject2?.id)
+            }
             required
           />
           <div className="invalid-feedback">
@@ -605,4 +552,4 @@ const ContactInfo = (props) => {
   );
 };
 
-export default ContactInfo;
+export default EditContactInfo;

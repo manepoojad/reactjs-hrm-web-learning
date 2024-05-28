@@ -34,6 +34,9 @@ const EmployeeList = () => {
   const addEmployee = () => {
     navigate("/employee/create");
   };
+  const handleDeleteEmployee=(id)=>{
+   console.log(id)
+  }
   return (
     <>
       <div className="d-flex justify-content-end">
@@ -80,6 +83,7 @@ const EmployeeList = () => {
                     <button
                       className="btn btn-outline-danger btn-sm mx-2 "
                       title="Remove Employee"
+                      onClick={()=>handleDeleteEmployee(employee.id)}
                       style={{ border: "none" }}
                     >
                       <i className="bi bi-trash"></i>

@@ -1,6 +1,7 @@
 import Cookies from "js-cookie";
 import React, { useState } from "react";
 import { Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { API_ROUTES_PATH } from "../../helper/Constants";
 import BankDetailsAndDocuments from "./components/BankDetailsAndDocuments";
 import ContactInfo from "./components/ContactInfo";
@@ -37,6 +38,7 @@ const wizardData = [
 ];
 
 const AddEmployee = () => {
+  const navigate = useNavigate();
   const [wizardIndex, setWizardIndex] = useState(0);
 
   // Initialize form data for each wizardIndex
@@ -181,14 +183,14 @@ const AddEmployee = () => {
         const skillInfoResponse = await handleUpdateAddEmployeeSkillInfo();
       } else if (wizardIndex === 4) {
         const bankDetailsResponse = await handleUpdateAddEmployeeBankDetails();
-        return
+        navigate("/employeeList");
+        return;
       }
-      
+
       if (wizardIndex !== 4) {
         setWizardIndex(wizardIndex + 1);
       }
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   const handlePrevious = () => {

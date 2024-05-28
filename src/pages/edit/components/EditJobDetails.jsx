@@ -24,11 +24,10 @@ const EditJobDetails = (props) => {
       const responseData = await response.json();
       const lookupData = responseData.lookupData;
       setLookupData(lookupData);
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
-  const currentJobDetails = formData?.jobDetails?.currentJobDetail;
+  const currentJobDetails = formData?.jobDetails;
 
   const workModeLookup = lookupData?.find(
     (lookup) => lookup.lookupType === "modeOfWork"
@@ -51,14 +50,14 @@ const EditJobDetails = (props) => {
       ...currentJobDetails,
       [name]: value,
     };
-    const newCurrentJobDetails = {
-      ...formData?.jobDetails,
-      currentJobDetail: newItem,
-    };
-    handleWizardInputChange("jobDetails", newCurrentJobDetails);
+    // const newCurrentJobDetails = {
+    //   ...formData,
+    //   jobDetails: newItem,
+    // };
+    handleWizardInputChange("jobDetails", newItem);
   };
 
-  const experience = formData?.jobDetails?.experience;
+  const experience = formData?.experience;
 
   const handleExperienceInputChange = (e, index) => {
     const { name, value } = e.target;
@@ -72,12 +71,28 @@ const EditJobDetails = (props) => {
       }
       return experienceItem;
     });
-    const newJobDetails = {
-      ...formData?.jobDetails,
-      experience: newExperience,
-    };
-    handleWizardInputChange("jobDetails", newJobDetails);
+    // const newJobDetails = {
+    //   ...formData?.jobDetails,
+    //   experience: newExperience,
+    // };
+    handleWizardInputChange("experience", newExperience);
   };
+
+  // const handleAddMore = () => {
+  //   const newExperience = {
+  //     organisationName: "",
+  //     startDate: "",
+  //     endDate: "",
+  //     designationLookupId: "",
+  //   };
+  //   const newJobDetails = {
+  //     ...formData?.jobDetails,
+  //     experience: [formData.jobDetails.experience]
+  //       ? [...formData.jobDetails.experience, newExperience]
+  //       : [newExperience],
+  //   };
+  //   handleWizardInputChange("jobDetails", newJobDetails);
+  // };
 
   const handleAddMore = () => {
     const newExperience = {
@@ -86,24 +101,23 @@ const EditJobDetails = (props) => {
       endDate: "",
       designationLookupId: "",
     };
-    const newJobDetails = {
-      ...formData?.jobDetails,
-      experience: [formData.jobDetails.experience]
-        ? [...formData.jobDetails.experience, newExperience]
-        : [newExperience],
-    };
-    handleWizardInputChange("jobDetails", newJobDetails);
+
+    experience.push(newExperience);
+
+    handleWizardInputChange("experience", experience);
   };
 
   const handleRemove = (index) => {
-    const newExperience = [...formData.jobDetails.experience];
+    const newExperience = [...formData?.experience];
     newExperience.splice(index, 1);
-    const newJobDetails = {
-      ...formData.jobDetails,
-      experience: newExperience,
-    };
-    handleWizardInputChange("jobDetails", newJobDetails);
+    handleWizardInputChange("experience", newExperience);
   };
+
+  const isoDateString = currentJobDetails?.hiringDate;
+  const formattedDate = isoDateString?.split("T")[0];
+
+  const isoDateString1 = currentJobDetails?.joiningDate;
+  const formattedDate1 = isoDateString1?.split("T")[0];
 
   return (
     <div className="row g-3 m-0 p-0 justify-content-center">
@@ -116,7 +130,7 @@ const EditJobDetails = (props) => {
         <input
           type="date"
           name="hiringDate"
-          value={currentJobDetails?.hiringDate || ""}
+          value={formattedDate || ""}
           className="form-control"
           placeholder="e.g. 24/07/23"
           onChange={(e) => handleInputChange(e)}
@@ -128,7 +142,7 @@ const EditJobDetails = (props) => {
         <input
           type="date"
           name="joiningDate"
-          value={currentJobDetails?.joiningDate || ""}
+          value={formattedDate1 || ""}
           className="form-control"
           placeholder="e.g. 24/07/23"
           onChange={(e) => handleInputChange(e)}
@@ -151,7 +165,7 @@ const EditJobDetails = (props) => {
           {workModeLookupList?.[0] &&
             workModeLookupList.map((item, index) => {
               return (
-                <option key={index} value={item.label}>
+                <option key={index} value={item.id}>
                   {item.label}
                 </option>
               );
@@ -202,7 +216,7 @@ const EditJobDetails = (props) => {
         <select
           name="userRoleLookupId"
           className="form-select"
-          value={currentJobDetails?.userRoleLookupId || ""}
+          value={formData?.userRoleLookupId || ""}
           aria-label=".form-select-lg example"
           required
           onChange={(e) => handleInputChange(e)}
@@ -213,7 +227,7 @@ const EditJobDetails = (props) => {
           {employeeRoleLookupList?.[0] &&
             employeeRoleLookupList.map((item, index) => {
               return (
-                <option key={index} value={item.label}>
+                <option key={index} value={item.id}>
                   {item.label}
                 </option>
               );
@@ -237,8 +251,8 @@ const EditJobDetails = (props) => {
         Experience Details
       </div>
 
-      {formData.jobDetails.experience &&
-        formData.jobDetails.experience.map((experienceDetailItem, index) => (
+      {formData?.experience &&
+        formData?.experience.map((experienceDetailItem, index) => (
           <div className="row g-3 m-0 p-0 justify-content-center">
             <div className="d-flex justify-content-between col-md-10">
               <div className="col-md-10 text-black fw-bold mt-3 text-center">

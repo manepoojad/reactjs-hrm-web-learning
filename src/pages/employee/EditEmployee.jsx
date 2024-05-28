@@ -2,12 +2,11 @@ import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { API_ROUTES_PATH } from "../../helper/Constants";
+import EditBankDetailsAndDocuments from "../edit/components/EditBankDetailsAndDocuments";
 import EditContactInfo from "../edit/components/EditContactInfo";
 import EditEmployeePersonalDetails from "../edit/components/EditEmployeePersonalDetails";
 import EditJobDetails from "../edit/components/EditJobDetails";
-import BankDetailsAndDocuments from "./components/BankDetailsAndDocuments";
-import SkillInfo from "./components/SkillInfo";
+import EditSkillInfo from "../edit/components/EditSkillInfo";
 
 const wizardData = [
   {
@@ -28,12 +27,12 @@ const wizardData = [
   {
     key: 3,
     title: "Skills",
-    component: SkillInfo,
+    component: EditSkillInfo,
   },
   {
     key: 4,
     title: "Bank Details & Documents",
-    component: BankDetailsAndDocuments,
+    component: EditBankDetailsAndDocuments,
   },
 ];
 
@@ -44,6 +43,7 @@ const EditEmployee = () => {
   // Initialize form data for each wizardIndex
   const [editEmployeeData, setEditEmployeeData] = useState({
     employeeId: params.id,
+    userRoleLookupId: null,
     personalDetails: {
       title: "",
       firstName: "",
@@ -57,6 +57,7 @@ const EditEmployee = () => {
       pan: "",
       aadhar: "",
     },
+
     contacts: [
       {
         contactType: "personalEmail",
@@ -141,23 +142,23 @@ const EditEmployee = () => {
         hobbiesName: 0,
       },
     ],
-    bankDetails: {
-      id: 1,
-      bankName: "",
-      branchName: "",
-      ifscCode: "",
-      micrCode: "",
-      accountNumber: "",
-      isActive: true,
-    },
+    bankDetails: [
+      {
+        id: 1,
+        bankName: "",
+        branchName: "",
+        ifscCode: "",
+        micrCode: "",
+        accountNumber: "",
+        isActive: true,
+      },
+    ],
   });
 
   useEffect(() => {
     getSpecificEmployeeDetails();
   }, []);
 
-
-  
   const getSpecificEmployeeDetails = async () => {
     try {
       const response = await fetch(
@@ -173,30 +174,30 @@ const EditEmployee = () => {
         throw new Error("Response not ok. ");
       }
       const responseData = await response.json();
-      
 
       const newEditEmployeeData = {
+        userRoleLookupId: responseData?.employeeDetail?.user?.userRoleLookupId,
+        employeeId: responseData?.employeeDetail?.employeeId,
         personalDetails: responseData?.employeeDetail?.personalDetial,
-        contacts: responseData?.employeeDetail?.contacts
-        
-      }
-
+        contacts: responseData?.employeeDetail?.contacts,
+        addresses: responseData?.employeeDetail?.addresses,
+        jobDetails: responseData?.employeeDetail?.jobDetail,
+        experience: responseData?.employeeDetail?.experiences,
+        skills: responseData?.employeeDetail?.skills,
+        hobbiesRecord: responseData?.employeeDetail?.hobbiesRecords,
+        bankDetails: responseData?.employeeDetail?.bankdetails,
+      };
 
       setEditEmployeeData(newEditEmployeeData);
-    } catch (error) {
-    }
+    } catch (error) {}
   };
+  console.log("editEmployeeData", editEmployeeData);
 
   const handleNext = async () => {
     try {
       if (wizardIndex === 0) {
-        if (editEmployeeData?.employeeId === params.id) {
-          const personalDetailsResponse =
-            await handleAddEmployeePersonalDetails();
-        } else {
-          const personalDetailsResponse =
-            await handleUpdateEmployeePersonalDetails();
-        }
+        const personalDetailsResponse =
+          await handleUpdateEmployeePersonalDetails();
       } else if (wizardIndex === 1) {
         const contactInfoResponse = await handleUpdateAddEmployeeContactInfo();
       } else if (wizardIndex === 2) {
@@ -208,11 +209,10 @@ const EditEmployee = () => {
         return;
       }
 
-      if (wizardIndex !== 4) {
+      if (wizardData.length - 1 > wizardIndex) {
         setWizardIndex(wizardIndex + 1);
       }
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   const handlePrevious = () => {
@@ -230,7 +230,8 @@ const EditEmployee = () => {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    console.log(e)
     setEditEmployeeData({
       personalDetails: {},
       contactInfo: {},
@@ -241,26 +242,10 @@ const EditEmployee = () => {
     setWizardIndex(1);
   };
 
-
-  const handleAddEmployeePersonalDetails = async () => {
-    const response = await fetch(API_ROUTES_PATH?.EMPLOYEE_PERSONAL_DETAILS, {
-      method: "POST",
-      body: JSON.stringify(editEmployeeData?.personalDetails),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!response.ok) {
-      throw new Error("Response not ok");
-    }
-    const responseData = await response.json();
-    return responseData;
-  };
-
   const handleUpdateEmployeePersonalDetails = async () => {
     const token = Cookies.get("token");
     const response = await fetch(
-      `http://localhost:8888/api/employee/${params?.id}/personal`,
+      `http://localhost:8888/api/employee/${editEmployeeData?.employeeId}/personal`,
       {
         method: "PUT",
         body: JSON.stringify(editEmployeeData?.personalDetails),
@@ -280,7 +265,7 @@ const EditEmployee = () => {
   const handleUpdateAddEmployeeContactInfo = async () => {
     const token = Cookies.get("token");
     const response = await fetch(
-      `http://localhost:8888/api/employee/${params?.id}/contact`,
+      `http://localhost:8888/api/employee/${editEmployeeData?.employeeId}/contact`,
       {
         method: "PUT",
         body: JSON.stringify(editEmployeeData?.contactInfo),
@@ -300,7 +285,7 @@ const EditEmployee = () => {
   const handleUpdateAddEmployeeJobDetails = async () => {
     const token = Cookies.get("token");
     const response = await fetch(
-      `http://localhost:8888/api/employee/${params?.id}/job`,
+      `http://localhost:8888/api/employee/${editEmployeeData?.employeeId}/job`,
       {
         method: "PUT",
         body: JSON.stringify(editEmployeeData?.jobDetails),
@@ -323,7 +308,7 @@ const EditEmployee = () => {
       `http://localhost:8888/api/employee/${editEmployeeData?.employeeId}/skill`,
       {
         method: "PUT",
-        body: JSON.stringify(editEmployeeData?.skillInfo),
+        body: JSON.stringify(editEmployeeData?.skills),
         headers: {
           "Content-Type": "application/json",
           Authorization: `${token}`,
@@ -363,6 +348,7 @@ const EditEmployee = () => {
       <div className="d-flex flex-direction-row justify-content-center">
         {wizardData.map((item, index) => (
           <label
+            key={index}
             onClick={() => handleWizardChange(index)}
             className="m-3 fw-bold h5"
             role="button"
@@ -387,14 +373,28 @@ const EditEmployee = () => {
               Back
             </Button>
           </div>
-          <div>
-            <Button
-              className="bg-success text-white"
-              onClick={() => handleNext()}
-            >
-              Save & Next
-            </Button>
-          </div>
+
+          {wizardIndex === wizardData.length - 1 ? (
+            <div>
+              <Button
+                type="button"
+                className="bg-success text-white"
+                onClick={(e) => handleSubmit(e)}
+              >
+                Save
+              </Button>
+            </div>
+          ) : (
+            <div>
+              <Button
+                type="button"
+                className="bg-success text-white"
+                onClick={() => handleNext()}
+              >
+                Save & Next
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>
