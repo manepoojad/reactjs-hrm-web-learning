@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import EditBankDetailsAndDocuments from "../edit/components/EditBankDetailsAndDocuments";
 import EditContactInfo from "../edit/components/EditContactInfo";
 import EditEmployeePersonalDetails from "../edit/components/EditEmployeePersonalDetails";
@@ -38,7 +38,9 @@ const wizardData = [
 
 const EditEmployee = () => {
   const params = useParams();
+  const navigate = useNavigate();
   const [wizardIndex, setWizardIndex] = useState(0);
+  const [isEditableFields, setIsEditableFields] = useState(false);
 
   // Initialize form data for each wizardIndex
   const [editEmployeeData, setEditEmployeeData] = useState({
@@ -183,8 +185,6 @@ const EditEmployee = () => {
     } catch (error) {}
   };
 
-  console.log("editEmployeeData", editEmployeeData);
-
   const handleDataMapping = (responseData) => {
     /**
      * @description
@@ -247,10 +247,13 @@ const EditEmployee = () => {
         handleDataMapping(contactInfoResponse);
       } else if (wizardIndex === 2) {
         const jobDetailsResponse = await handleUpdateAddEmployeeJobDetails();
+        handleDataMapping(jobDetailsResponse);
       } else if (wizardIndex === 3) {
         const skillInfoResponse = await handleUpdateAddEmployeeSkillInfo();
+        handleDataMapping(skillInfoResponse);
       } else if (wizardIndex === 4) {
         const bankDetailsResponse = await handleUpdateAddEmployeeBankDetails();
+        navigate("/employeeList");
         return;
       }
 
@@ -334,11 +337,15 @@ const EditEmployee = () => {
 
   const handleUpdateAddEmployeeJobDetails = async () => {
     const token = Cookies.get("token");
+    const payload = {
+      currentJobDetail: editEmployeeData?.jobDetails,
+      experience: editEmployeeData?.experience,
+    };
     const response = await fetch(
       `http://localhost:8888/api/employee/${editEmployeeData?.employeeId}/job`,
       {
         method: "PUT",
-        body: JSON.stringify(editEmployeeData?.jobDetails),
+        body: JSON.stringify(payload),
         headers: {
           "Content-Type": "application/json",
           Authorization: `${token}`,
@@ -354,11 +361,15 @@ const EditEmployee = () => {
 
   const handleUpdateAddEmployeeSkillInfo = async () => {
     const token = Cookies.get("token");
+    const payload = {
+      skills: editEmployeeData?.skills,
+      hobbiesRecord: editEmployeeData?.hobbiesRecord,
+    };
     const response = await fetch(
       `http://localhost:8888/api/employee/${editEmployeeData?.employeeId}/skill`,
       {
         method: "PUT",
-        body: JSON.stringify(editEmployeeData?.skills),
+        body: JSON.stringify(payload),
         headers: {
           "Content-Type": "application/json",
           Authorization: `${token}`,
@@ -378,7 +389,7 @@ const EditEmployee = () => {
       `http://localhost:8888/api/employee/${editEmployeeData?.employeeId}/bank`,
       {
         method: "PUT",
-        body: JSON.stringify(editEmployeeData?.bankDetails),
+        body: JSON.stringify(editEmployeeData?.bankDetails?.[0]),
         headers: {
           "Content-Type": "application/json",
           Authorization: `${token}`,
@@ -408,10 +419,23 @@ const EditEmployee = () => {
           </label>
         ))}
       </div>
+      <div className="col-md-1">
+        <button
+          className="btn btn-outline-success btn-md mx-2"
+          title="Edit Employee Details"
+          onClick={() => {
+            setIsEditableFields(!isEditableFields);
+          }}
+          style={{ border: "none" }}
+        >
+          <i className="bi bi-pen"></i>
+        </button>
+      </div>
       <div>
         <WizardComponent
           formData={editEmployeeData}
           handleWizardInputChange={handleWizardInputChange}
+          isEditableFields={isEditableFields}
         />
         <div className="d-flex justify-content-between" style={{ margin: 8 }}>
           <div>
@@ -424,26 +448,58 @@ const EditEmployee = () => {
             </Button>
           </div>
 
-          {wizardIndex === wizardData.length - 1 ? (
-            <div>
-              <Button
-                type="button"
-                className="bg-success text-white"
-                onClick={(e) => handleSubmit(e)}
-              >
-                Save
-              </Button>
-            </div>
+          {wizardIndex < wizardData.length -1 ? (
+            <>
+              {/* all tab except last */}
+              {isEditableFields ? (
+                <div>
+                  <Button
+                    type="button"
+                    className="bg-success text-white"
+                    onClick={() => handleNext()}
+                  >
+                    Save & Next
+                  </Button>
+                </div>
+              ) : (
+                <div>
+                  <Button
+                    type="button"
+                    className="bg-success text-white"
+                    onClick={() => setWizardIndex(wizardIndex + 1)}
+                  >
+                    Next
+                  </Button>
+                </div>
+              )}
+            </>
           ) : (
-            <div>
-              <Button
-                type="button"
-                className="bg-success text-white"
-                onClick={() => handleNext()}
-              >
-                Save & Next
-              </Button>
-            </div>
+            <>
+              {/* last tab */}
+              {isEditableFields ? (
+                <div>
+                  <Button
+                    type="button"
+                    className="bg-success text-white"
+                    onClick={() => handleNext()}
+                  >
+                    Save
+                  </Button>
+                </div>
+              ) : (
+                <div>
+                  <Button
+                    type="button"
+                    className="bg-success text-white"
+                    onClick={() => {
+                      navigate("/employeeList");
+                    }}
+                  >
+                    Go to List
+                  </Button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

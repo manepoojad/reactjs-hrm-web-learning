@@ -173,7 +173,7 @@ const SkillInfo = (props) => {
                   <option defaultValue disabled value="">
                     Skill Name
                   </option>
-                  {skillInfoItem?.skillType === "Technical Skill"
+                  {skillInfoItem?.skillType === "8"
                     ? skillNameLookupList1?.[0] &&
                       skillNameLookupList1.map((item, index) => {
                         return (
@@ -249,22 +249,25 @@ const SkillInfo = (props) => {
                   onChange={(e) => handleInputChange(e, index)}
                 />
               </div>
-
-              <div className="text-start col-md-10 m-5">
-                <Button
-                  className="bg-success text-white"
-                  onClick={() => handleAddMore()}
-                >
-                  Add More
-                </Button>
-              </div>
             </div>
           );
         })}
 
-      <div className="border-bottom border-bottom-1 col-md-10"></div>
+      <div className="text-start col-md-5 m-5">
+        <Button
+          className="bg-success text-white"
+          onClick={() => handleAddMore()}
+        >
+          Add More
+        </Button>
+      </div>
 
-      <div className="col-md-5" style={{ marginRight: 650 }}>
+      <div
+        style={{ marginLeft: 130 }}
+        className="border-bottom border-bottom-1 col-md-10"
+      ></div>
+
+      <div className="col-md-5" style={{ marginLeft: 130 }}>
         <label className="form-label personal-label">Hobbies</label>
         <select
           name="hobbiesName"

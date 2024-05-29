@@ -18,7 +18,7 @@ const BankDetailsAndDocuments = (props) => {
   return (
     <div className="row g-3 m-0 p-0 justify-content-center">
       <div className="col-md-5">
-        <label className="form-label personal-label">Bank Name</label>
+        <label className="form-label personal-label">Bank Name<span style={{ color: "red" }}>*</span></label>
         <input
           type="text"
           name="bankName"
@@ -30,7 +30,7 @@ const BankDetailsAndDocuments = (props) => {
       </div>
 
       <div className="col-md-5">
-        <label className="form-label personal-label">Branch Name</label>
+        <label className="form-label personal-label">Branch Name<span style={{ color: "red" }}>*</span></label>
         <input
           type="text"
           name="branchName"
@@ -42,7 +42,7 @@ const BankDetailsAndDocuments = (props) => {
       </div>
 
       <div className="col-md-5">
-        <label className="form-label personal-label">IFSC Code</label>
+        <label className="form-label personal-label">IFSC Code<span style={{ color: "red" }}>*</span></label>
         <input
           type="text"
           name="ifscCode"
@@ -54,7 +54,7 @@ const BankDetailsAndDocuments = (props) => {
       </div>
 
       <div className="col-md-5">
-        <label className="form-label personal-label">MICR Code</label>
+        <label className="form-label personal-label">MICR Code<span style={{ color: "red" }}>*</span></label>
         <input
           type="text"
           name="micrCode"
@@ -66,7 +66,7 @@ const BankDetailsAndDocuments = (props) => {
       </div>
 
       <div className="col-md-5" style={{ marginRight: 640 }}>
-        <label className="form-label personal-label">Account Number</label>
+        <label className="form-label personal-label">Account Number<span style={{ color: "red" }}>*</span></label>
         <input
           type="text"
           name="accountNumber"

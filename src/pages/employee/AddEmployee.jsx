@@ -114,10 +114,10 @@ const AddEmployee = () => {
         hiringDate: "",
         joiningDate: "",
         modeOfWork: "",
-        probationPeriodMonth: 6,
-        userRoleLookupId: 2,
+        probationPeriodMonth: 0,
+        userRoleLookupId: 0,
         CTC: "",
-        designationLookupId: 5,
+        designationLookupId: 0,
       },
       experience: [
         {
@@ -125,7 +125,7 @@ const AddEmployee = () => {
           organisationName: "",
           startDate: "",
           endDate: "",
-          designationLookupId: 15,
+          designationLookupId: 0,
         },
       ],
     },
@@ -143,13 +143,13 @@ const AddEmployee = () => {
       hobbiesRecord: [
         {
           // id: 1,
-          hobbiesType: 9,
+          hobbiesType: 0,
           hobbiesName: 0,
         },
       ],
     },
     bankDetails: {
-      id: 1,
+      // id: 1,
       bankName: "",
       branchName: "",
       ifscCode: "",
@@ -257,11 +257,15 @@ const AddEmployee = () => {
 
   const handleUpdateAddEmployeeContactInfo = async () => {
     const token = Cookies.get("token");
+    const payload = {
+      contacts: employeeData?.contactInfo?.contacts,
+      addresses: employeeData?.contactInfo?.addresses,
+    };
     const response = await fetch(
       `http://localhost:8888/api/employee/${employeeData?.employeeId}/contact`,
       {
         method: "PUT",
-        body: JSON.stringify(employeeData?.contactInfo),
+        body: JSON.stringify(payload),
         headers: {
           "Content-Type": "application/json",
           Authorization: `${token}`,
@@ -277,11 +281,15 @@ const AddEmployee = () => {
 
   const handleUpdateAddEmployeeJobDetails = async () => {
     const token = Cookies.get("token");
+    const payload = {
+      currentJobDetail: employeeData?.jobDetails?.currentJobDetail,
+      experience: employeeData?.jobDetails?.experience,
+    };
     const response = await fetch(
       `http://localhost:8888/api/employee/${employeeData?.employeeId}/job`,
       {
         method: "PUT",
-        body: JSON.stringify(employeeData?.jobDetails),
+        body: JSON.stringify(payload),
         headers: {
           "Content-Type": "application/json",
           Authorization: `${token}`,
@@ -297,11 +305,15 @@ const AddEmployee = () => {
 
   const handleUpdateAddEmployeeSkillInfo = async () => {
     const token = Cookies.get("token");
+    const payload = {
+      skills: employeeData?.skillInfo?.skills,
+      hobbiesRecord: employeeData?.skillInfo?.hobbiesRecord,
+    };
     const response = await fetch(
       `http://localhost:8888/api/employee/${employeeData?.employeeId}/skill`,
       {
         method: "PUT",
-        body: JSON.stringify(employeeData?.skillInfo),
+        body: JSON.stringify(payload),
         headers: {
           "Content-Type": "application/json",
           Authorization: `${token}`,
@@ -341,7 +353,9 @@ const AddEmployee = () => {
       <div className="d-flex flex-direction-row justify-content-center">
         {wizardData.map((item, index) => (
           <label
+            key={index}
             onClick={() => handleWizardChange(index)}
+            role="button"
             className="m-3 fw-bold h5"
             style={{ color: index === wizardIndex ? "#00ce3f" : "black" }}
           >
@@ -364,14 +378,27 @@ const AddEmployee = () => {
               Back
             </Button>
           </div>
-          <div>
-            <Button
-              className="bg-success text-white"
-              onClick={() => handleNext()}
-            >
-              Save & Next
-            </Button>
-          </div>
+          {wizardIndex === wizardData.length - 1 ? (
+            <div>
+              <Button
+                type="button"
+                className="bg-success text-white"
+                onClick={() => handleNext()}
+              >
+                Submit
+              </Button>
+            </div>
+          ) : (
+            <div>
+              <Button
+                type="button"
+                className="bg-success text-white"
+                onClick={() => handleNext()}
+              >
+                Save & Next
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>

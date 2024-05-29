@@ -72,13 +72,13 @@ const EmployeeList = () => {
                   <td>
                     <button
                       className="btn btn-outline-success btn-sm mx-2"
-                      title="Edit Employee Details"
+                      // title="Edit Employee Details"
                       onClick={() => {
                         navigate(`/employee/${employee.id}`);
                       }}
                       style={{ border: "none" }}
                     >
-                      <i className="bi bi-pen"></i>
+                      <i class="bi bi-eye-fill"></i>
                     </button>
                     <button
                       className="btn btn-outline-danger btn-sm mx-2 "

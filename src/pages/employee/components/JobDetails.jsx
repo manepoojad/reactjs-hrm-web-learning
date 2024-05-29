@@ -151,7 +151,7 @@ const JobDetails = (props) => {
           {workModeLookupList?.[0] &&
             workModeLookupList.map((item, index) => {
               return (
-                <option key={index} value={item.label}>
+                <option key={index} value={item.id}>
                   {item.label}
                 </option>
               );
@@ -213,7 +213,7 @@ const JobDetails = (props) => {
           {employeeRoleLookupList?.[0] &&
             employeeRoleLookupList.map((item, index) => {
               return (
-                <option key={index} value={item.label}>
+                <option key={index} value={item.id}>
                   {item.label}
                 </option>
               );

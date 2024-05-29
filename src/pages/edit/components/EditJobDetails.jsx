@@ -119,6 +119,8 @@ const EditJobDetails = (props) => {
   const isoDateString1 = currentJobDetails?.joiningDate;
   const formattedDate1 = isoDateString1?.split("T")[0];
 
+  
+
   return (
     <div className="row g-3 m-0 p-0 justify-content-center">
       <div className="text-start text-black fw-bold col-md-10">
@@ -253,6 +255,7 @@ const EditJobDetails = (props) => {
 
       {formData?.experience &&
         formData?.experience.map((experienceDetailItem, index) => (
+          
           <div className="row g-3 m-0 p-0 justify-content-center">
             <div className="d-flex justify-content-between col-md-10">
               <div className="col-md-10 text-black fw-bold mt-3 text-center">
@@ -285,11 +288,12 @@ const EditJobDetails = (props) => {
 
             <div className="col-md-5">
               <label className="form-label personal-label">Start Date</label>
+              
               <input
                 type="date"
                 name="startDate"
                 className="form-control"
-                value={experienceDetailItem?.startDate || ""}
+                value={experienceDetailItem?.startDate.split("T")[0] || ""}
                 onChange={(e) => handleExperienceInputChange(e, index)}
               />
             </div>
@@ -300,7 +304,7 @@ const EditJobDetails = (props) => {
                 type="date"
                 name="endDate"
                 className="form-control"
-                value={experienceDetailItem?.endDate || ""}
+                value={experienceDetailItem?.endDate.split("T")[0] || ""}
                 onChange={(e) => handleExperienceInputChange(e, index)}
               />
             </div>
