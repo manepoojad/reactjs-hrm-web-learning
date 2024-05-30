@@ -24,8 +24,7 @@ const JobDetails = (props) => {
       const responseData = await response.json();
       const lookupData = responseData.lookupData;
       setLookupData(lookupData);
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   const currentJobDetails = formData?.jobDetails?.currentJobDetail;
@@ -177,7 +176,7 @@ const JobDetails = (props) => {
         <select
           name="designationLookupId"
           className="form-select"
-          value={currentJobDetails?.designationLookupId}
+          value={currentJobDetails?.designationLookupId || ""}
           aria-label=".form-select-lg example"
           required
           onChange={(e) => handleInputChange(e)}

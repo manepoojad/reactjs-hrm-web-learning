@@ -4,7 +4,11 @@ import { API_ROUTES_PATH } from "../../../helper/Constants";
 
 const EditJobDetails = (props) => {
   const [lookupData, setLookupData] = useState([]);
-  const { formData = {}, handleWizardInputChange = () => {} } = props;
+  const {
+    formData = {},
+    handleWizardInputChange = () => {},
+    isEditableFields = false,
+  } = props;
 
   useEffect(() => {
     getAllLookupList();
@@ -71,28 +75,9 @@ const EditJobDetails = (props) => {
       }
       return experienceItem;
     });
-    // const newJobDetails = {
-    //   ...formData?.jobDetails,
-    //   experience: newExperience,
-    // };
+
     handleWizardInputChange("experience", newExperience);
   };
-
-  // const handleAddMore = () => {
-  //   const newExperience = {
-  //     organisationName: "",
-  //     startDate: "",
-  //     endDate: "",
-  //     designationLookupId: "",
-  //   };
-  //   const newJobDetails = {
-  //     ...formData?.jobDetails,
-  //     experience: [formData.jobDetails.experience]
-  //       ? [...formData.jobDetails.experience, newExperience]
-  //       : [newExperience],
-  //   };
-  //   handleWizardInputChange("jobDetails", newJobDetails);
-  // };
 
   const handleAddMore = () => {
     const newExperience = {
@@ -119,8 +104,6 @@ const EditJobDetails = (props) => {
   const isoDateString1 = currentJobDetails?.joiningDate;
   const formattedDate1 = isoDateString1?.split("T")[0];
 
-  
-
   return (
     <div className="row g-3 m-0 p-0 justify-content-center">
       <div className="text-start text-black fw-bold col-md-10">
@@ -128,7 +111,9 @@ const EditJobDetails = (props) => {
       </div>
       <div className="border-bottom border-bottom-1 col-md-10"></div>
       <div className="col-md-5">
-        <label className="form-label personal-label">Hiring Date</label>
+        <label className="form-label personal-label">
+          Hiring Date<span style={{ color: "red" }}>*</span>
+        </label>
         <input
           type="date"
           name="hiringDate"
@@ -136,11 +121,14 @@ const EditJobDetails = (props) => {
           className="form-control"
           placeholder="e.g. 24/07/23"
           onChange={(e) => handleInputChange(e)}
+          disabled={!isEditableFields}
         />
       </div>
 
       <div className="col-md-5">
-        <label className="form-label personal-label">Joining Date</label>
+        <label className="form-label personal-label">
+          Joining Date<span style={{ color: "red" }}>*</span>
+        </label>
         <input
           type="date"
           name="joiningDate"
@@ -148,11 +136,14 @@ const EditJobDetails = (props) => {
           className="form-control"
           placeholder="e.g. 24/07/23"
           onChange={(e) => handleInputChange(e)}
+          disabled={!isEditableFields}
         />
       </div>
 
       <div className="col-md-5">
-        <label className="form-label personal-label">Work Mode</label>
+        <label className="form-label personal-label">
+          Work Mode<span style={{ color: "red" }}>*</span>
+        </label>
         <select
           name="modeOfWork"
           className="form-select"
@@ -160,6 +151,7 @@ const EditJobDetails = (props) => {
           required
           value={currentJobDetails?.modeOfWork || ""}
           onChange={(e) => handleInputChange(e)}
+          disabled={!isEditableFields}
         >
           <option defaultValue disabled value="">
             Work Mode
@@ -177,7 +169,9 @@ const EditJobDetails = (props) => {
       </div>
 
       <div className="col-md-5">
-        <label className="form-label personal-label">Probation Period</label>
+        <label className="form-label personal-label">
+          Probation Period<span style={{ color: "red" }}>*</span>
+        </label>
         <input
           type="text"
           name="probationPeriodMonth"
@@ -185,18 +179,22 @@ const EditJobDetails = (props) => {
           value={currentJobDetails?.probationPeriodMonth || ""}
           placeholder="e.g. 1-6 Months"
           onChange={(e) => handleInputChange(e)}
+          disabled={!isEditableFields}
         />
       </div>
 
       <div className="col-md-5">
-        <label className="form-label personal-label">Designation</label>
+        <label className="form-label personal-label">
+          Designation<span style={{ color: "red" }}>*</span>
+        </label>
         <select
           name="designationLookupId"
           className="form-select"
-          value={currentJobDetails?.designationLookupId}
+          value={currentJobDetails?.designationLookupId || ""}
           aria-label=".form-select-lg example"
           required
           onChange={(e) => handleInputChange(e)}
+          disabled={!isEditableFields}
         >
           <option defaultValue disabled value="">
             Designation
@@ -214,7 +212,9 @@ const EditJobDetails = (props) => {
       </div>
 
       <div className="col-md-5">
-        <label className="form-label personal-label">Employee Role</label>
+        <label className="form-label personal-label">
+          Employee Role<span style={{ color: "red" }}>*</span>
+        </label>
         <select
           name="userRoleLookupId"
           className="form-select"
@@ -222,6 +222,7 @@ const EditJobDetails = (props) => {
           aria-label=".form-select-lg example"
           required
           onChange={(e) => handleInputChange(e)}
+          disabled={!isEditableFields}
         >
           <option defaultValue disabled value="">
             Employee Role
@@ -239,13 +240,16 @@ const EditJobDetails = (props) => {
       </div>
 
       <div className="col-md-5" style={{ marginRight: 650 }}>
-        <label className="form-label personal-label">CTC</label>
+        <label className="form-label personal-label">
+          CTC<span style={{ color: "red" }}>*</span>
+        </label>
         <input
           type="text"
           name="CTC"
           value={currentJobDetails?.CTC || ""}
           className="form-control"
           onChange={(e) => handleInputChange(e)}
+          disabled={!isEditableFields}
         />
       </div>
 
@@ -255,7 +259,6 @@ const EditJobDetails = (props) => {
 
       {formData?.experience &&
         formData?.experience.map((experienceDetailItem, index) => (
-          
           <div className="row g-3 m-0 p-0 justify-content-center">
             <div className="d-flex justify-content-between col-md-10">
               <div className="col-md-10 text-black fw-bold mt-3 text-center">
@@ -265,6 +268,7 @@ const EditJobDetails = (props) => {
                 <Button
                   className="bg-success text-white m-2"
                   onClick={() => handleRemove(index)}
+                  disabled={!isEditableFields}
                 >
                   Remove
                 </Button>
@@ -283,18 +287,20 @@ const EditJobDetails = (props) => {
                 value={experienceDetailItem?.organisationName || ""}
                 placeholder="e.g. xyz pvt Ltd"
                 onChange={(e) => handleExperienceInputChange(e, index)}
+                disabled={!isEditableFields}
               />
             </div>
 
             <div className="col-md-5">
               <label className="form-label personal-label">Start Date</label>
-              
+
               <input
                 type="date"
                 name="startDate"
                 className="form-control"
                 value={experienceDetailItem?.startDate.split("T")[0] || ""}
                 onChange={(e) => handleExperienceInputChange(e, index)}
+                disabled={!isEditableFields}
               />
             </div>
 
@@ -306,6 +312,7 @@ const EditJobDetails = (props) => {
                 className="form-control"
                 value={experienceDetailItem?.endDate.split("T")[0] || ""}
                 onChange={(e) => handleExperienceInputChange(e, index)}
+                disabled={!isEditableFields}
               />
             </div>
 
@@ -317,6 +324,7 @@ const EditJobDetails = (props) => {
                 value={experienceDetailItem?.designationLookupId || ""}
                 aria-label=".form-select-lg example"
                 onChange={(e) => handleExperienceInputChange(e, index)}
+                disabled={!isEditableFields}
               >
                 <option defaultValue disabled value="">
                   Designation

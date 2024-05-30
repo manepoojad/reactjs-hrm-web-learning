@@ -143,7 +143,7 @@ const AddEmployee = () => {
       hobbiesRecord: [
         {
           // id: 1,
-          hobbiesType: 0,
+          hobbiesType: 9,
           hobbiesName: 0,
         },
       ],

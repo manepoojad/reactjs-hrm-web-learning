@@ -128,7 +128,7 @@ const EditEmployee = () => {
         organisationName: "",
         startDate: "",
         endDate: "",
-        designationLookupId: null,
+        designationLookupId: 0,
       },
     ],
     skills: [
@@ -144,7 +144,7 @@ const EditEmployee = () => {
     hobbiesRecord: [
       {
         // id: 1,
-        hobbiesType: null,
+        hobbiesType: 9,
         hobbiesName: 0,
       },
     ],
@@ -380,6 +380,7 @@ const EditEmployee = () => {
       throw new Error("Response not ok");
     }
     const responseData = await response.json();
+    console.log(responseData)
     return responseData;
   };
 
@@ -448,7 +449,7 @@ const EditEmployee = () => {
             </Button>
           </div>
 
-          {wizardIndex < wizardData.length -1 ? (
+          {wizardIndex < wizardData.length - 1 ? (
             <>
               {/* all tab except last */}
               {isEditableFields ? (

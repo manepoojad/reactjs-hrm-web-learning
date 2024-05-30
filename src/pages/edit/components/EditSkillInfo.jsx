@@ -4,14 +4,19 @@ import { API_ROUTES_PATH } from "../../../helper/Constants";
 
 const SkillInfo = (props) => {
   const [lookupData, setLookupData] = useState([]);
-  const { formData = {}, handleWizardInputChange = () => {} } = props;
+
+  const {
+    formData = {},
+    handleWizardInputChange = () => {},
+    isEditableFields = false,
+  } = props;
 
   const skillTypeLookup = lookupData?.find(
     (lookup) => lookup.lookupType === "skillType"
   );
   const skillTypeLookupList = skillTypeLookup?.lookups;
 
-  const skillInfoDetails = formData?.skills?.[0];
+  const hobbies = formData?.hobbiesRecord?.[0];
 
   const skillNameLookup = lookupData?.find(
     (lookup) => lookup.lookupType === "nonTechnicalSkill"
@@ -101,20 +106,33 @@ const SkillInfo = (props) => {
     handleWizardInputChange("skills", newSkillInfo);
   };
 
+  // const handleChangeHobbies = (e) => {
+  //   const { name, value } = e.target;
+  //   const newHobbiesRecord = formData?.hobbiesRecord.map((item, index) => {
+  //     const newHobbies = {
+  //       ...item,
+  //       [name]: value,
+  //     };
+  //     return newHobbies;
+  //   });
+
+  //   handleWizardInputChange("hobbiesRecord", newHobbiesRecord);
+  // };
+
   const handleChangeHobbies = (e) => {
-    const { name, value } = e.target;
-    const newHobbiesRecord = formData?.hobbiesRecord.map((item, index) => {
-      const newHobbies = {
-        ...item,
-        [name]: value,
-      };
-      return newHobbies;
-    });
-    // const newHobbiesRecordDetails={
-    //   ...formData?.skillInfo,
-    //   hobbiesRecord:newHobbiesRecord
-    // }
-    handleWizardInputChange("hobbiesRecord", newHobbiesRecord);
+    const { value } = e.target;
+
+    const hobbiesRecord = formData?.hobbiesRecord[0];
+
+    if (hobbiesRecord) {
+      // If hobbiesRecord exists, update its hobbiesName directly
+      const updatedHobbiesRecord = { ...hobbiesRecord, hobbiesName: value };
+      handleWizardInputChange("hobbiesRecord", [updatedHobbiesRecord]);
+    } else {
+      // If hobbiesRecord doesn't exist, create a new object with hobbiesType: 9 and hobbiesName: value
+      const newHobbiesRecord = { hobbiesType: "9", hobbiesName: value };
+      handleWizardInputChange("hobbiesRecord", [newHobbiesRecord]);
+    }
   };
 
   return (
@@ -129,6 +147,7 @@ const SkillInfo = (props) => {
                   <Button
                     className="bg-success text-white m-2"
                     onClick={() => handleRemove(index)}
+                    disabled={!isEditableFields}
                   >
                     Remove
                   </Button>
@@ -144,6 +163,7 @@ const SkillInfo = (props) => {
                   value={skillInfoItem?.skillType || ""}
                   aria-label=".form-select-lg example"
                   onChange={(e) => handleInputChange(e, index)}
+                  disabled={!isEditableFields}
                 >
                   <option defaultValue disabled value="">
                     Skill Type
@@ -161,6 +181,7 @@ const SkillInfo = (props) => {
                   Please select Skill Type.
                 </div>
               </div>
+
               <div className="col-md-5">
                 <label className="form-label personal-label">Skill Name</label>
                 <select
@@ -169,6 +190,7 @@ const SkillInfo = (props) => {
                   value={skillInfoItem?.skillName || ""}
                   aria-label=".form-select-lg example"
                   onChange={(e) => handleInputChange(e, index)}
+                  disabled={!isEditableFields}
                 >
                   <option defaultValue disabled value="">
                     Skill Name
@@ -204,6 +226,7 @@ const SkillInfo = (props) => {
                   value={skillInfoItem?.skillLevel || ""}
                   aria-label=".form-select-lg example"
                   onChange={(e) => handleInputChange(e, index)}
+                  disabled={!isEditableFields}
                 >
                   <option defaultValue disabled value="">
                     Skill Level
@@ -233,6 +256,7 @@ const SkillInfo = (props) => {
                   className="form-control"
                   placeholder="e.g. 1-12"
                   onChange={(e) => handleInputChange(e, index)}
+                  disabled={!isEditableFields}
                 />
               </div>
 
@@ -247,6 +271,7 @@ const SkillInfo = (props) => {
                   value={skillInfoItem?.notes || ""}
                   placeholder="e.g. About Skill..."
                   onChange={(e) => handleInputChange(e, index)}
+                  disabled={!isEditableFields}
                 />
               </div>
             </div>
@@ -272,9 +297,10 @@ const SkillInfo = (props) => {
         <select
           name="hobbiesName"
           className="form-select"
-          // value={skillInfoItem?.skillType || ""}
+          value={hobbies?.hobbiesName || ""}
           aria-label=".form-select-lg example"
           onChange={(e) => handleChangeHobbies(e)}
+          disabled={!isEditableFields}
         >
           <option defaultValue disabled value="">
             Hobbies

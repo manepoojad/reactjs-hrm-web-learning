@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 
 const EditContactInfo = (props) => {
-  const { formData = {}, handleWizardInputChange = () => {} } = props;
+  const {
+    formData = {},
+    handleWizardInputChange = () => {},
+    isEditableFields = false,
+  } = props;
 
   const contacts = formData?.contacts || [];
 
@@ -106,6 +110,7 @@ const EditContactInfo = (props) => {
               )
             }
             required
+            disabled={!isEditableFields}
           />
           <div className="invalid-feedback">
             Please Enter Personal Email ID.
@@ -130,6 +135,7 @@ const EditContactInfo = (props) => {
               )
             }
             required
+            disabled={!isEditableFields}
           />
           <div className="invalid-feedback">Please Enter Personal Contact.</div>
         </div>
@@ -152,6 +158,7 @@ const EditContactInfo = (props) => {
               )
             }
             required
+            disabled={!isEditableFields}
           />
           <div className="invalid-feedback">
             Please Enter Emergency Contact One.
@@ -176,6 +183,7 @@ const EditContactInfo = (props) => {
               )
             }
             required
+            disabled={!isEditableFields}
           />
           <div className="invalid-feedback">
             Please Enter Emergency Contact Two.
@@ -203,6 +211,7 @@ const EditContactInfo = (props) => {
               handleInputChange(e, permanentAddress?.addressType)
             }
             required
+            disabled={!isEditableFields}
           />
           <div className="invalid-feedback">Please Enter House No.</div>
         </div>
@@ -221,6 +230,7 @@ const EditContactInfo = (props) => {
               handleInputChange(e, permanentAddress?.addressType)
             }
             required
+            disabled={!isEditableFields}
           />
           <div className="invalid-feedback">Please Enter Area</div>
         </div>
@@ -239,6 +249,7 @@ const EditContactInfo = (props) => {
               handleInputChange(e, permanentAddress?.addressType)
             }
             required
+            disabled={!isEditableFields}
           />
           <div className="invalid-feedback">Please Enter Landmark</div>
         </div>
@@ -257,6 +268,7 @@ const EditContactInfo = (props) => {
               handleInputChange(e, permanentAddress?.addressType)
             }
             required
+            disabled={!isEditableFields}
           />
           <div className="invalid-feedback">Please Enter Street</div>
         </div>
@@ -275,6 +287,7 @@ const EditContactInfo = (props) => {
               handleInputChange(e, permanentAddress?.addressType)
             }
             required
+            disabled={!isEditableFields}
           />
           <div className="invalid-feedback">Please Enter Village/City</div>
         </div>
@@ -293,6 +306,7 @@ const EditContactInfo = (props) => {
               handleInputChange(e, permanentAddress?.addressType)
             }
             required
+            disabled={!isEditableFields}
           />
           <div className="invalid-feedback">Please Enter Taluka</div>
         </div>
@@ -311,6 +325,7 @@ const EditContactInfo = (props) => {
               handleInputChange(e, permanentAddress?.addressType)
             }
             required
+            disabled={!isEditableFields}
           />
           <div className="invalid-feedback">Please Enter District</div>
         </div>
@@ -329,6 +344,7 @@ const EditContactInfo = (props) => {
               handleInputChange(e, permanentAddress?.addressType)
             }
             required
+            disabled={!isEditableFields}
           />
           <div className="invalid-feedback">Please Enter State</div>
         </div>
@@ -347,6 +363,7 @@ const EditContactInfo = (props) => {
               handleInputChange(e, permanentAddress?.addressType)
             }
             required
+            disabled={!isEditableFields}
           />
           <div className="invalid-feedback">Please Enter ZIP Code</div>
         </div>
@@ -365,6 +382,7 @@ const EditContactInfo = (props) => {
               handleInputChange(e, permanentAddress?.addressType)
             }
             required
+            disabled={!isEditableFields}
           />
           <div className="invalid-feedback">Please Enter Country</div>
         </div>
@@ -380,6 +398,8 @@ const EditContactInfo = (props) => {
             type="checkbox"
             checked={sameAsAbove}
             onChange={(e) => handleSameAsAboveChange(e)}
+            disabled={!isEditableFields && sameAsAbove}
+
             // name="country"
             // className="form-control"
             // value={permanentAddress?.country || ""}
@@ -406,7 +426,7 @@ const EditContactInfo = (props) => {
             value={currentAddress?.houseNo || ""}
             onChange={(e) => handleInputChange(e, currentAddress?.addressType)}
             required
-            disabled={sameAsAbove}
+            disabled={sameAsAbove || !isEditableFields}
           />
           <div className="invalid-feedback">Please Enter House No.</div>
         </div>
@@ -423,7 +443,7 @@ const EditContactInfo = (props) => {
             value={currentAddress?.area || ""}
             onChange={(e) => handleInputChange(e, currentAddress?.addressType)}
             required
-            disabled={sameAsAbove}
+            disabled={sameAsAbove || !isEditableFields}
           />
           <div className="invalid-feedback">Please Enter Area</div>
         </div>
@@ -440,7 +460,7 @@ const EditContactInfo = (props) => {
             value={currentAddress?.landmark || ""}
             onChange={(e) => handleInputChange(e, currentAddress?.addressType)}
             required
-            disabled={sameAsAbove}
+            disabled={sameAsAbove || !isEditableFields}
           />
           <div className="invalid-feedback">Please Enter Landmark</div>
         </div>
@@ -457,7 +477,7 @@ const EditContactInfo = (props) => {
             value={currentAddress?.street || ""}
             onChange={(e) => handleInputChange(e, currentAddress?.addressType)}
             required
-            disabled={sameAsAbove}
+            disabled={sameAsAbove || !isEditableFields}
           />
           <div className="invalid-feedback">Please Enter Street</div>
         </div>
@@ -474,7 +494,7 @@ const EditContactInfo = (props) => {
             value={currentAddress?.villageCity || ""}
             onChange={(e) => handleInputChange(e, currentAddress?.addressType)}
             required
-            disabled={sameAsAbove}
+            disabled={sameAsAbove || !isEditableFields}
           />
           <div className="invalid-feedback">Please Enter Village/City</div>
         </div>
@@ -491,7 +511,7 @@ const EditContactInfo = (props) => {
             value={currentAddress?.taluka || ""}
             onChange={(e) => handleInputChange(e, currentAddress?.addressType)}
             required
-            disabled={sameAsAbove}
+            disabled={sameAsAbove || !isEditableFields}
           />
           <div className="invalid-feedback">Please Enter Taluka</div>
         </div>
@@ -508,7 +528,7 @@ const EditContactInfo = (props) => {
             value={currentAddress?.district || ""}
             onChange={(e) => handleInputChange(e, currentAddress?.addressType)}
             required
-            disabled={sameAsAbove}
+            disabled={sameAsAbove || !isEditableFields}
           />
           <div className="invalid-feedback">Please Enter District</div>
         </div>
@@ -525,7 +545,7 @@ const EditContactInfo = (props) => {
             value={currentAddress?.state || ""}
             onChange={(e) => handleInputChange(e, currentAddress?.addressType)}
             required
-            disabled={sameAsAbove}
+            disabled={sameAsAbove || !isEditableFields}
           />
           <div className="invalid-feedback">Please Enter State</div>
         </div>
@@ -541,7 +561,7 @@ const EditContactInfo = (props) => {
             placeholder="e.g. 411058"
             value={currentAddress?.zipCode || ""}
             onChange={(e) => handleInputChange(e, currentAddress?.addressType)}
-            disabled={sameAsAbove}
+            disabled={sameAsAbove || !isEditableFields}
             required
           />
           <div className="invalid-feedback">Please Enter ZIP Code</div>
@@ -559,7 +579,7 @@ const EditContactInfo = (props) => {
             value={currentAddress?.country || ""}
             onChange={(e) => handleInputChange(e, currentAddress?.addressType)}
             required
-            disabled={sameAsAbove}
+            disabled={sameAsAbove || !isEditableFields}
           />
           <div className="invalid-feedback">Please Enter Country</div>
         </div>

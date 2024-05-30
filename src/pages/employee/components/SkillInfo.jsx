@@ -29,6 +29,8 @@ const SkillInfo = (props) => {
   );
   const skillLevelLookupList = skillLevelLookup?.lookups;
 
+  const hobbies = formData?.skillInfo?.hobbiesRecord?.[0];
+
   const hobbiesLookup = lookupData?.find(
     (lookup) => lookup.lookupType === "hobbies"
   );
@@ -123,7 +125,7 @@ const SkillInfo = (props) => {
     <div>
       {formData?.skillInfo?.skills &&
         formData?.skillInfo?.skills.map((skillInfoItem, index) => {
-          console.log(skillInfoItem)
+          console.log(skillInfoItem);
           return (
             <>
               <div className="row g-3 m-0 p-0 justify-content-center">
@@ -284,7 +286,7 @@ const SkillInfo = (props) => {
         <select
           name="hobbiesName"
           className="form-select"
-          // value={skillInfoItem?.skillType || ""}
+          value={hobbies?.hobbiesName || ""}
           aria-label=".form-select-lg example"
           onChange={(e) => handleChangeHobbies(e)}
         >
