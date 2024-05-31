@@ -297,6 +297,10 @@ const EditEmployee = () => {
       ...editEmployeeData,
       [wizardComponentKey]: value,
     }));
+
+    if (wizardComponentKey === "personalDetails") {
+      handlePersonalDetailValidation(value);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -311,7 +315,9 @@ const EditEmployee = () => {
     setWizardIndex(1);
   };
 
-  const handlePersonalDetailValidation = () => {
+  const handlePersonalDetailValidation = (
+    personalDetails = editEmployeeData.personalDetails
+  ) => {
     let isValid = true;
     const newEmployeeDataValidationError = {
       ...employeeDataValidationError,
@@ -330,22 +336,20 @@ const EditEmployee = () => {
       },
     };
 
-    const personalDetails = editEmployeeData.personalDetails;
-
     //  firstName validation
     const firstName = personalDetails?.firstName;
     if (firstName.length === 0) {
       newEmployeeDataValidationError.personalDetails.firstName =
         "Please enter First Name.";
       isValid = false;
-    } else if (firstName.length <= 3) {
+    } else if (firstName.length < 3) {
       newEmployeeDataValidationError.personalDetails.firstName =
         "First Name should be at least 3 character.";
       isValid = false;
     }
 
-    if(!isValid) {
-      setIsShowError(true)
+    if (!isValid) {
+      setIsShowError(true);
     }
     setEmployeeDataValidationError(newEmployeeDataValidationError);
     return isValid;
