@@ -40,6 +40,7 @@ const wizardData = [
 const AddEmployee = () => {
   const navigate = useNavigate();
   const [wizardIndex, setWizardIndex] = useState(0);
+  const [isError, setIsError] = useState(false);
 
   // Initialize form data for each wizardIndex
   const [employeeData, setEmployeeData] = useState({
@@ -163,14 +164,19 @@ const AddEmployee = () => {
     try {
       if (wizardIndex === 0) {
         if (employeeData?.employeeId === null) {
-          const personalDetailsResponse =
-            await handleAddEmployeePersonalDetails();
-          const employeeId =
-            personalDetailsResponse?.employeeDetail?.employeeId;
-          setEmployeeData({
-            ...employeeData,
-            employeeId: employeeId,
-          });
+          if (!employeeData?.personalDetails?.firstName) {
+            setIsError(true);
+          } else {
+            setIsError(false);
+            const personalDetailsResponse =
+              await handleAddEmployeePersonalDetails();
+            const employeeId =
+              personalDetailsResponse?.employeeDetail?.employeeId;
+            setEmployeeData({
+              ...employeeData,
+              employeeId: employeeId,
+            });
+          }
         } else {
           const personalDetailsResponse =
             await handleUpdateEmployeePersonalDetails();
@@ -367,6 +373,7 @@ const AddEmployee = () => {
         <WizardComponent
           formData={employeeData}
           handleWizardInputChange={handleWizardInputChange}
+          isError={isError}
         />
         <div className="d-flex justify-content-between" style={{ margin: 8 }}>
           <div>

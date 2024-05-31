@@ -122,12 +122,11 @@ const SkillInfo = (props) => {
   };
 
   return (
-    <div>
+    <>
       {formData?.skillInfo?.skills &&
         formData?.skillInfo?.skills.map((skillInfoItem, index) => {
-          console.log(skillInfoItem);
           return (
-            <>
+            <div key={index}>
               <div className="row g-3 m-0 p-0 justify-content-center">
                 <div className="d-flex">
                   <div className="col-md-10">Skill - {index + 1}</div>
@@ -263,7 +262,7 @@ const SkillInfo = (props) => {
                   />
                 </div>
               </div>
-            </>
+            </div>
           );
         })}
 
@@ -304,7 +303,7 @@ const SkillInfo = (props) => {
         </select>
         <div className="invalid-feedback">Please select Hobbies.</div>
       </div>
-    </div>
+    </>
   );
 };
 

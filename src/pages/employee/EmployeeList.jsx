@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { API_ROUTES_PATH } from "../../helper/Constants";
 
 const EmployeeList = () => {
-  
   const navigate = useNavigate();
   const [employeeList, setEmployeeList] = useState([]);
 
@@ -27,16 +26,15 @@ const EmployeeList = () => {
       }
       const responseData = await response.json();
       setEmployeeList(responseData);
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   const addEmployee = () => {
     navigate("/employee/create");
   };
-  const handleDeleteEmployee=(id)=>{
-   console.log(id)
-  }
+  const handleDeleteEmployee = (id) => {
+    console.log(id);
+  };
   return (
     <>
       <div className="d-flex justify-content-end">
@@ -78,12 +76,12 @@ const EmployeeList = () => {
                       }}
                       style={{ border: "none" }}
                     >
-                      <i class="bi bi-eye-fill"></i>
+                      <i className="bi bi-eye-fill"></i>
                     </button>
                     <button
                       className="btn btn-outline-danger btn-sm mx-2 "
                       title="Remove Employee"
-                      onClick={()=>handleDeleteEmployee(employee.id)}
+                      onClick={() => handleDeleteEmployee(employee.id)}
                       style={{ border: "none" }}
                     >
                       <i className="bi bi-trash"></i>

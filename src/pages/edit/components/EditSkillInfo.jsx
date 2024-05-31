@@ -140,7 +140,7 @@ const SkillInfo = (props) => {
       {formData?.skills &&
         formData?.skills.map((skillInfoItem, index) => {
           return (
-            <div className="row g-3 m-0 p-0 justify-content-center">
+            <div key={index} className="row g-3 m-0 p-0 justify-content-center">
               <div className="d-flex">
                 <div className="col-md-10">Skill - {index + 1}</div>
                 <div className="me-10">

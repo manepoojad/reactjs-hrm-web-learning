@@ -238,7 +238,7 @@ const JobDetails = (props) => {
 
       {formData.jobDetails.experience &&
         formData.jobDetails.experience.map((experienceDetailItem, index) => (
-          <div className="row g-3 m-0 p-0 justify-content-center">
+          <div key={index} className="row g-3 m-0 p-0 justify-content-center">
             <div className="d-flex justify-content-between col-md-10">
               <div className="col-md-10 text-black fw-bold mt-3 text-center">
                 Past Experience Details - {index + 1}

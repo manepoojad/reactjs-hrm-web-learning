@@ -3,7 +3,11 @@ import { API_ROUTES_PATH } from "../../../helper/Constants";
 
 const EmployeePersonalDetails = (props) => {
   const [lookupData, setLookupData] = useState([]);
-  const { formData = {}, handleWizardInputChange = () => {} } = props;
+  const {
+    formData = {},
+    handleWizardInputChange = () => {},
+    isError = false,
+  } = props;
   const personalDetails = formData?.personalDetails || {};
 
   const titleLookup = lookupData?.find(
@@ -54,8 +58,7 @@ const EmployeePersonalDetails = (props) => {
       const responseData = await response.json();
       const lookupData = responseData.lookupData;
       setLookupData(lookupData);
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   return (
@@ -107,7 +110,9 @@ const EmployeePersonalDetails = (props) => {
           onChange={handleInputChange}
           required
         />
-        <div className="invalid-feedback">Please Enter First Name.</div>
+        {!isError && (
+          <div className="invalid-feedback">Please Enter First Name.</div>
+        )}
       </div>
 
       <div className="col-md-5">

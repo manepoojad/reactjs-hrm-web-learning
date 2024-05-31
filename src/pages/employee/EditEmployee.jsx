@@ -41,6 +41,7 @@ const EditEmployee = () => {
   const navigate = useNavigate();
   const [wizardIndex, setWizardIndex] = useState(0);
   const [isEditableFields, setIsEditableFields] = useState(false);
+  const [isShowError, setIsShowError] = useState(false);
 
   // Initialize form data for each wizardIndex
   const [editEmployeeData, setEditEmployeeData] = useState({
@@ -161,6 +162,23 @@ const EditEmployee = () => {
     ],
   });
 
+  const [employeeDataValidationError, setEmployeeDataValidationError] =
+    useState({
+      personalDetails: {
+        title: "",
+        firstName: "",
+        middleName: "",
+        lastName: "",
+        maidenName: "",
+        gender: "",
+        dob: "",
+        bloodGroup: "",
+        marriedStatus: "",
+        pan: "",
+        aadhar: "",
+      },
+    });
+
   useEffect(() => {
     getSpecificEmployeeDetails();
   }, []);
@@ -239,9 +257,12 @@ const EditEmployee = () => {
   const handleNext = async () => {
     try {
       if (wizardIndex === 0) {
-        const personalDetailsResponse =
-          await handleUpdateEmployeePersonalDetails();
-        handleDataMapping(personalDetailsResponse);
+        const isValidPersonalDetail = handlePersonalDetailValidation();
+        if (isValidPersonalDetail) {
+          const personalDetailsResponse =
+            await handleUpdateEmployeePersonalDetails();
+          handleDataMapping(personalDetailsResponse);
+        }
       } else if (wizardIndex === 1) {
         const contactInfoResponse = await handleUpdateAddEmployeeContactInfo();
         handleDataMapping(contactInfoResponse);
@@ -257,9 +278,9 @@ const EditEmployee = () => {
         return;
       }
 
-      if (wizardData.length - 1 > wizardIndex) {
-        setWizardIndex(wizardIndex + 1);
-      }
+      // if (wizardData.length - 1 > wizardIndex) {
+      //   setWizardIndex(wizardIndex + 1);
+      // }
     } catch (error) {}
   };
 
@@ -288,6 +309,46 @@ const EditEmployee = () => {
       bankDetails: {},
     });
     setWizardIndex(1);
+  };
+
+  const handlePersonalDetailValidation = () => {
+    let isValid = true;
+    const newEmployeeDataValidationError = {
+      ...employeeDataValidationError,
+      personalDetails: {
+        title: "",
+        firstName: "",
+        middleName: "",
+        lastName: "",
+        maidenName: "",
+        gender: "",
+        dob: "",
+        bloodGroup: "",
+        marriedStatus: "",
+        pan: "",
+        aadhar: "",
+      },
+    };
+
+    const personalDetails = editEmployeeData.personalDetails;
+
+    //  firstName validation
+    const firstName = personalDetails?.firstName;
+    if (firstName.length === 0) {
+      newEmployeeDataValidationError.personalDetails.firstName =
+        "Please enter First Name.";
+      isValid = false;
+    } else if (firstName.length <= 3) {
+      newEmployeeDataValidationError.personalDetails.firstName =
+        "First Name should be at least 3 character.";
+      isValid = false;
+    }
+
+    if(!isValid) {
+      setIsShowError(true)
+    }
+    setEmployeeDataValidationError(newEmployeeDataValidationError);
+    return isValid;
   };
 
   const handleUpdateEmployeePersonalDetails = async () => {
@@ -380,7 +441,7 @@ const EditEmployee = () => {
       throw new Error("Response not ok");
     }
     const responseData = await response.json();
-    console.log(responseData)
+    console.log(responseData);
     return responseData;
   };
 
@@ -435,8 +496,10 @@ const EditEmployee = () => {
       <div>
         <WizardComponent
           formData={editEmployeeData}
+          formValidationError={employeeDataValidationError}
           handleWizardInputChange={handleWizardInputChange}
           isEditableFields={isEditableFields}
+          isShowError={isShowError}
         />
         <div className="d-flex justify-content-between" style={{ margin: 8 }}>
           <div>
