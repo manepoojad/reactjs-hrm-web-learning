@@ -5,13 +5,13 @@ const EditEmployeePersonalDetails = (props) => {
   const [lookupData, setLookupData] = useState([]);
   const {
     formData = {},
-    formValidationError={},
+    formValidationError = {},
     handleWizardInputChange = () => {},
     isEditableFields = false,
     isShowError = false,
   } = props;
   const personalDetails = formData?.personalDetails || {};
-  const personalDetailsError = formValidationError?.personalDetails || {}
+  const personalDetailsError = formValidationError?.personalDetails || {};
 
   const titleLookup = lookupData?.find(
     (lookup) => lookup.lookupType === "title"
@@ -76,7 +76,9 @@ const EditEmployeePersonalDetails = (props) => {
           </label>
           <select
             name="title"
-            className="form-select"
+            className={`form-control ${
+              isShowError && personalDetailsError?.title ? "is-invalid" : ""
+            }`}
             aria-label=".form-select-lg example"
             value={personalDetails?.title}
             onChange={handleInputChange}
@@ -95,7 +97,11 @@ const EditEmployeePersonalDetails = (props) => {
                 );
               })}
           </select>
-          <div className="invalid-feedback">Please select a valid Title.</div>
+          {isShowError && personalDetailsError?.title && (
+            <div className="invalid-feedback">
+              {personalDetailsError?.title}
+            </div>
+          )}
         </div>
 
         <div className="col-md-5">
@@ -114,8 +120,10 @@ const EditEmployeePersonalDetails = (props) => {
             required
             disabled={!isEditableFields}
           />
-          {isShowError && personalDetailsError?.firstName  && (
-            <div className="invalid-feedback">{personalDetailsError?.firstName}</div>
+          {isShowError && personalDetailsError?.firstName && (
+            <div className="invalid-feedback">
+              {personalDetailsError?.firstName}
+            </div>
           )}
         </div>
 
@@ -128,15 +136,19 @@ const EditEmployeePersonalDetails = (props) => {
             name="middleName"
             className={
               "form-control" +
-              (isShowError && !personalDetails?.middleName ? " is-invalid" : "")
+              (isShowError && personalDetailsError?.middleName
+                ? " is-invalid"
+                : "")
             }
             placeholder="e.g. Devidas"
             value={personalDetails?.middleName || ""}
             onChange={handleInputChange}
             disabled={!isEditableFields}
           />
-          {isShowError && !personalDetails?.middleName && (
-            <div className="invalid-feedback">Please Enter Middle Name.</div>
+          {isShowError && personalDetailsError?.middleName && (
+            <div className="invalid-feedback">
+              {personalDetailsError?.middleName}
+            </div>
           )}
         </div>
 
@@ -149,7 +161,9 @@ const EditEmployeePersonalDetails = (props) => {
             name="lastName"
             className={
               "form-control" +
-              (isShowError && !personalDetails?.lastName ? " is-invalid" : "")
+              (isShowError && personalDetailsError?.lastName
+                ? " is-invalid"
+                : "")
             }
             placeholder="e.g. Mane"
             value={personalDetails?.lastName || ""}
@@ -157,8 +171,10 @@ const EditEmployeePersonalDetails = (props) => {
             required
             disabled={!isEditableFields}
           />
-          {isShowError && !personalDetails?.lastName && (
-            <div className="invalid-feedback">Please Enter Last Name.</div>
+          {isShowError && personalDetailsError?.lastName && (
+            <div className="invalid-feedback">
+              {personalDetailsError?.lastName}
+            </div>
           )}
         </div>
 
@@ -171,7 +187,9 @@ const EditEmployeePersonalDetails = (props) => {
             name="maidenName"
             className={
               "form-control" +
-              (isShowError && !personalDetails?.maidenName ? " is-invalid" : "")
+              (isShowError && personalDetailsError?.maidenName
+                ? " is-invalid"
+                : "")
             }
             placeholder="e.g. Mane"
             value={personalDetails?.maidenName || ""}
@@ -179,8 +197,10 @@ const EditEmployeePersonalDetails = (props) => {
             required
             disabled={!isEditableFields}
           />
-          {isShowError && !personalDetails?.maidenName && (
-            <div className="invalid-feedback">Please Enter Maiden Name.</div>
+          {isShowError && personalDetailsError?.maidenName && (
+            <div className="invalid-feedback">
+              {personalDetailsError?.maidenName}
+            </div>
           )}
         </div>
 
@@ -192,7 +212,7 @@ const EditEmployeePersonalDetails = (props) => {
             name="gender"
             className={
               "form-control" +
-              (isShowError && !personalDetails?.gender ? " is-invalid" : "")
+              (isShowError && personalDetailsError?.gender ? " is-invalid" : "")
             }
             aria-label=".form-select-lg example"
             value={personalDetails?.gender || ""}
@@ -212,9 +232,9 @@ const EditEmployeePersonalDetails = (props) => {
                 );
               })}
           </select>
-          {isShowError && !personalDetails?.gender && (
+          {isShowError && personalDetailsError?.gender && (
             <div className="invalid-feedback">
-              Please select a valid Gender.
+              {personalDetailsError?.gender}
             </div>
           )}
         </div>
@@ -226,13 +246,18 @@ const EditEmployeePersonalDetails = (props) => {
           <input
             type="date"
             name="dob"
-            className="form-control"
+            className={
+              "form-control" +
+              (isShowError && personalDetailsError?.dob ? " is-invalid" : "")
+            }
             value={formattedDate || ""}
             onChange={handleInputChange}
             required
             disabled={!isEditableFields}
           />
-          <div className="invalid-feedback">Please Enter Date of Birth.</div>
+          {isShowError && personalDetailsError?.dob && (
+            <div className="invalid-feedback">{personalDetailsError?.dob}</div>
+          )}
         </div>
 
         <div className="col-md-5">
@@ -241,7 +266,12 @@ const EditEmployeePersonalDetails = (props) => {
           </label>
           <select
             name="bloodGroup"
-            className="form-select"
+            className={
+              "form-control" +
+              (isShowError && personalDetailsError?.bloodGroup
+                ? " is-invalid"
+                : "")
+            }
             aria-label=".form-select-lg example"
             value={personalDetails?.bloodGroup || ""}
             onChange={handleInputChange}
@@ -260,9 +290,9 @@ const EditEmployeePersonalDetails = (props) => {
                 );
               })}
           </select>
-          <div className="invalid-feedback">
-            Please select a valid Blood Group.
-          </div>
+          {isShowError && personalDetailsError?.dob && (
+            <div className="invalid-feedback">{personalDetailsError?.dob}</div>
+          )}
         </div>
 
         <div className="col-md-5">
@@ -271,7 +301,12 @@ const EditEmployeePersonalDetails = (props) => {
           </label>
           <select
             name="marriedStatus"
-            className="form-select"
+            className={
+              "form-control" +
+              (isShowError && personalDetailsError?.marriedStatus
+                ? " is-invalid"
+                : "")
+            }
             aria-label=".form-select-lg example"
             value={personalDetails?.marriedStatus || ""}
             onChange={handleInputChange}
@@ -290,9 +325,11 @@ const EditEmployeePersonalDetails = (props) => {
                 );
               })}
           </select>
-          <div className="invalid-feedback">
-            Please select a valid Married Status.
-          </div>
+          {isShowError && personalDetailsError?.marriedStatus && (
+            <div className="invalid-feedback">
+              {personalDetailsError?.marriedStatus}
+            </div>
+          )}
         </div>
 
         <div className="col-md-5">
@@ -302,14 +339,19 @@ const EditEmployeePersonalDetails = (props) => {
           <input
             type="text"
             name="pan"
-            className="form-control"
+            className={
+              "form-control" +
+              (isShowError && personalDetailsError?.pan ? " is-invalid" : "")
+            }
             placeholder="e.g. ABC123"
             value={personalDetails?.pan || ""}
             onChange={handleInputChange}
             required
             disabled={!isEditableFields}
           />
-          <div className="invalid-feedback">Please Enter PAN No.</div>
+          {isShowError && personalDetailsError?.pan && (
+            <div className="invalid-feedback">{personalDetailsError?.pan}</div>
+          )}
         </div>
 
         <div className="col-md-5">
@@ -319,14 +361,21 @@ const EditEmployeePersonalDetails = (props) => {
           <input
             type="text"
             name="aadhar"
-            className="form-control"
+            className={
+              "form-control" +
+              (isShowError && personalDetailsError?.aadhar ? " is-invalid" : "")
+            }
             placeholder="e.g. 111222333"
             value={personalDetails?.aadhar || ""}
             onChange={handleInputChange}
             required
             disabled={!isEditableFields}
           />
-          <div className="invalid-feedback">Please Enter Adhar No.</div>
+          {isShowError && personalDetailsError?.aadhar && (
+            <div className="invalid-feedback">
+              {personalDetailsError?.aadhar}
+            </div>
+          )}
         </div>
       </div>
     </>

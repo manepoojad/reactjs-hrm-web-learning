@@ -4,10 +4,28 @@ const EditContactInfo = (props) => {
   const {
     formData = {},
     handleWizardInputChange = () => {},
+    formValidationError = {},
+    isShowError = false,
     isEditableFields = false,
   } = props;
 
   const contacts = formData?.contacts || [];
+  const contactsError = formValidationError?.contacts;
+
+  const personalEmailErrorObject = contacts?.find(
+    (contactItem) => contactItem?.contactType === "personalEmail"
+  );
+
+  const personalContactErrorObject = contacts?.find(
+    (contactItem) => contactItem?.contactType === "personalPhone"
+  );
+
+  const emergencyErrorContact = contacts?.filter(
+    (contactItem) => contactItem?.contactType === "emergencyPhone"
+  );
+
+  const personalEmergencyErrorContactObject1 = emergencyErrorContact?.[0];
+  const personalEmergencyErrorContactObject2 = emergencyErrorContact?.[1];
 
   const personalEmailObject = contacts?.find(
     (contactItem) => contactItem?.contactType === "personalEmail"
@@ -99,7 +117,9 @@ const EditContactInfo = (props) => {
           <input
             type="text"
             name="personalEmail"
-            className="form-control"
+            className={`form-control ${
+              isShowError && personalEmailErrorObject?.value ? "is-invalid" : ""
+            }`}
             placeholder="e.g. pooja@gmail.com"
             value={personalEmailObject?.value || ""}
             onChange={(e) =>
@@ -112,9 +132,11 @@ const EditContactInfo = (props) => {
             required
             disabled={!isEditableFields}
           />
-          <div className="invalid-feedback">
-            Please Enter Personal Email ID.
-          </div>
+          {isShowError && personalEmailErrorObject?.value && (
+            <div className="invalid-feedback">
+              {personalEmailErrorObject?.value}
+            </div>
+          )}
         </div>
 
         <div className="col-md-5">

@@ -177,6 +177,28 @@ const EditEmployee = () => {
         pan: "",
         aadhar: "",
       },
+      contacts: [
+        {
+          contactType: "officialEmail",
+          value: "",
+        },
+        {
+          contactType: "personalEmail",
+          value: "",
+        },
+        {
+          contactType: "personalPhone",
+          value: "",
+        },
+        {
+          contactType: "emergencyPhone",
+          value: "",
+        },
+        {
+          contactType: "emergencyPhone",
+          value: "",
+        },
+      ],
     });
 
   useEffect(() => {
@@ -265,8 +287,12 @@ const EditEmployee = () => {
           handleDataMapping(personalDetailsResponse);
         }
       } else if (wizardIndex === 1) {
-        const contactInfoResponse = await handleUpdateAddEmployeeContactInfo();
-        handleDataMapping(contactInfoResponse);
+        isValid = validateContacts();
+        if (isValid) {
+          const contactInfoResponse =
+            await handleUpdateAddEmployeeContactInfo();
+          handleDataMapping(contactInfoResponse);
+        }
       } else if (wizardIndex === 2) {
         const jobDetailsResponse = await handleUpdateAddEmployeeJobDetails();
         handleDataMapping(jobDetailsResponse);
@@ -301,6 +327,10 @@ const EditEmployee = () => {
 
     if (wizardComponentKey === "personalDetails") {
       handlePersonalDetailValidation(value);
+    }
+
+    if (wizardComponentKey === "contacts") {
+      validateContacts(value);
     }
   };
 
@@ -337,7 +367,15 @@ const EditEmployee = () => {
       },
     };
 
-    //  firstName validation
+    // title validation
+    const title = personalDetails?.title;
+    if (!title) {
+      newEmployeeDataValidationError.personalDetails.title =
+        "Please select Title.";
+      isValid = false;
+    }
+
+    // firstName validation
     const firstName = personalDetails?.firstName;
     if (firstName.length === 0) {
       newEmployeeDataValidationError.personalDetails.firstName =
@@ -345,7 +383,99 @@ const EditEmployee = () => {
       isValid = false;
     } else if (firstName.length < 3) {
       newEmployeeDataValidationError.personalDetails.firstName =
-        "First Name should be at least 3 character.";
+        "First Name should be at least 3 characters.";
+      isValid = false;
+    }
+
+    // middleName validation
+    const middleName = personalDetails?.middleName;
+    if (middleName.length === 0) {
+      newEmployeeDataValidationError.personalDetails.middleName =
+        "Please enter Middle Name.";
+      isValid = false;
+    } else if (middleName.length < 3) {
+      newEmployeeDataValidationError.personalDetails.middleName =
+        "Middle Name should be at least 3 characters.";
+      isValid = false;
+    }
+
+    // lastName validation
+    const lastName = personalDetails?.lastName;
+    if (lastName.length === 0) {
+      newEmployeeDataValidationError.personalDetails.lastName =
+        "Please enter Last Name.";
+      isValid = false;
+    } else if (lastName.length < 3) {
+      newEmployeeDataValidationError.personalDetails.lastName =
+        "Last Name should be at least 3 characters.";
+      isValid = false;
+    }
+
+    // maidenName validation
+    const maidenName = personalDetails?.maidenName;
+    if (maidenName.length === 0) {
+      newEmployeeDataValidationError.personalDetails.maidenName =
+        "Please enter Maiden Name.";
+      isValid = false;
+    } else if (maidenName.length < 3) {
+      newEmployeeDataValidationError.personalDetails.maidenName =
+        "Maiden Name should be at least 3 characters.";
+      isValid = false;
+    }
+
+    // gender validation
+    const gender = personalDetails?.gender;
+    if (!gender) {
+      newEmployeeDataValidationError.personalDetails.gender =
+        "Please select Gender.";
+      isValid = false;
+    }
+
+    // dob validation
+    const dob = personalDetails?.dob;
+    if (!dob) {
+      newEmployeeDataValidationError.personalDetails.dob =
+        "Please select Date of Birth.";
+      isValid = false;
+    }
+
+    // bloodGroup validation
+    const bloodGroup = personalDetails?.bloodGroup;
+    if (!bloodGroup) {
+      newEmployeeDataValidationError.personalDetails.bloodGroup =
+        "Please select Blood Group.";
+      isValid = false;
+    }
+
+    // marriedStatus validation
+    const marriedStatus = personalDetails?.marriedStatus;
+    if (!marriedStatus) {
+      newEmployeeDataValidationError.personalDetails.marriedStatus =
+        "Please select Married Status.";
+      isValid = false;
+    }
+
+    // pan validation
+    const pan = personalDetails?.pan;
+    if (pan.length === 0) {
+      newEmployeeDataValidationError.personalDetails.pan =
+        "Please enter PAN number.";
+      isValid = false;
+    } else if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(pan)) {
+      newEmployeeDataValidationError.personalDetails.pan =
+        "Please enter a valid PAN number.";
+      isValid = false;
+    }
+
+    // aadhar validation
+    const aadhar = personalDetails?.aadhar;
+    if (aadhar.length === 0) {
+      newEmployeeDataValidationError.personalDetails.aadhar =
+        "Please enter Aadhar number.";
+      isValid = false;
+    } else if (!/^\d{12}$/.test(aadhar)) {
+      newEmployeeDataValidationError.personalDetails.aadhar =
+        "Please enter a valid Aadhar number.";
       isValid = false;
     }
 
@@ -354,6 +484,81 @@ const EditEmployee = () => {
     }
     setEmployeeDataValidationError(newEmployeeDataValidationError);
     return isValid;
+  };
+
+  const validateContacts = (contacts = editEmployeeData?.contacts) => {
+    let isValid = true;
+    const newEmployeeDataValidationError = {
+      ...employeeDataValidationError,
+      contacts: [
+        {
+          contactType: "officialEmail",
+          value: "",
+        },
+        {
+          contactType: "personalEmail",
+          value: "",
+        },
+        {
+          contactType: "personalPhone",
+          value: "",
+        },
+        {
+          contactType: "emergencyPhone",
+          value: "",
+        },
+        {
+          contactType: "emergencyPhone",
+          value: "",
+        },
+      ],
+    };
+
+    contacts.forEach((contact, index) => {
+      switch (contact.contactType) {
+        case "officialEmail":
+          if (!validateEmail(contact?.value)) {
+            newEmployeeDataValidationError.contacts[index].value =
+              "Please enter a valid Official Email.";
+            isValid = false;
+          }
+          break;
+        case "personalEmail":
+          if (!validateEmail(contact?.value)) {
+            newEmployeeDataValidationError.contacts[index].value =
+              "Please enter a valid Personal Email.";
+            isValid = false;
+          }
+          break;
+        case "personalPhone":
+          if (!validatePhoneNumber(contact?.value)) {
+            newEmployeeDataValidationError.contacts[index].value =
+              "Please enter a valid Personal Phone number.";
+            isValid = false;
+          }
+          break;
+        case "emergencyPhone":
+          if (!validatePhoneNumber(contact?.value)) {
+            newEmployeeDataValidationError.contacts[index].value =
+              "Please enter a valid Emergency Phone number.";
+            isValid = false;
+          }
+          break;
+        default:
+          break;
+      }
+    });
+
+    setEmployeeDataValidationError(newEmployeeDataValidationError);
+    return isValid;
+  };
+
+  const validateEmail = (email) => {
+    return /\S+@\S+\.\S+/.test(email);
+  };
+
+  const validatePhoneNumber = (phoneNumber) => {
+    return /^\d{10}$/.test(phoneNumber);
   };
 
   const handleUpdateEmployeePersonalDetails = async () => {
