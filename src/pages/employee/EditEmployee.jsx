@@ -256,9 +256,10 @@ const EditEmployee = () => {
 
   const handleNext = async () => {
     try {
+      let isValid;
       if (wizardIndex === 0) {
-        const isValidPersonalDetail = handlePersonalDetailValidation();
-        if (isValidPersonalDetail) {
+        isValid = handlePersonalDetailValidation();
+        if (isValid) {
           const personalDetailsResponse =
             await handleUpdateEmployeePersonalDetails();
           handleDataMapping(personalDetailsResponse);
@@ -278,9 +279,9 @@ const EditEmployee = () => {
         return;
       }
 
-      // if (wizardData.length - 1 > wizardIndex) {
-      //   setWizardIndex(wizardIndex + 1);
-      // }
+      if (wizardData.length - 1 > wizardIndex && isValid) {
+        setWizardIndex(wizardIndex + 1);
+      }
     } catch (error) {}
   };
 
