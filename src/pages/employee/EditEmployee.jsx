@@ -199,6 +199,53 @@ const EditEmployee = () => {
           value: "",
         },
       ],
+      addresses: [
+        {
+          addressType: "current",
+          country: "",
+          zipCode: "",
+          state: "",
+          district: "",
+          taluka: "",
+          villageCity: "",
+          street: "",
+          landmark: "",
+          area: "",
+          houseNo: "",
+        },
+        {
+          addressType: "permanant",
+          country: "",
+          zipCode: "",
+          state: "",
+          district: "",
+          taluka: "",
+          villageCity: "",
+          street: "",
+          landmark: "",
+          area: "",
+          houseNo: "",
+        },
+      ],
+      jobDetails: {
+        hiringDate: "",
+        joiningDate: "",
+        modeOfWork: "",
+        probationPeriodMonth: null,
+        userRoleLookupId: null,
+        CTC: "",
+        designationLookupId: null,
+      },
+      bankDetails: [
+        {
+          bankName: "",
+          branchName: "",
+          ifscCode: "",
+          micrCode: "",
+          accountNumber: "",
+          isActive: true,
+        },
+      ],
     });
 
   useEffect(() => {
@@ -287,21 +334,29 @@ const EditEmployee = () => {
           handleDataMapping(personalDetailsResponse);
         }
       } else if (wizardIndex === 1) {
-        isValid = validateContacts();
+        isValid = validateContacts() || validateAddresses();
         if (isValid) {
           const contactInfoResponse =
             await handleUpdateAddEmployeeContactInfo();
           handleDataMapping(contactInfoResponse);
         }
       } else if (wizardIndex === 2) {
-        const jobDetailsResponse = await handleUpdateAddEmployeeJobDetails();
-        handleDataMapping(jobDetailsResponse);
+        isValid = validateJobDetails();
+        if (isValid) {
+          const jobDetailsResponse = await handleUpdateAddEmployeeJobDetails();
+          handleDataMapping(jobDetailsResponse);
+        }
       } else if (wizardIndex === 3) {
         const skillInfoResponse = await handleUpdateAddEmployeeSkillInfo();
         handleDataMapping(skillInfoResponse);
       } else if (wizardIndex === 4) {
-        const bankDetailsResponse = await handleUpdateAddEmployeeBankDetails();
-        navigate("/employeeList");
+        isValid = validateBankDetails();
+        if (isValid) {
+          const bankDetailsResponse =
+            await handleUpdateAddEmployeeBankDetails();
+          handleDataMapping(bankDetailsResponse);
+          navigate("/employeeList");
+        }
         return;
       }
 
@@ -332,10 +387,21 @@ const EditEmployee = () => {
     if (wizardComponentKey === "contacts") {
       validateContacts(value);
     }
+
+    if (wizardComponentKey === "addresses") {
+      validateAddresses(value);
+    }
+
+    if (wizardComponentKey === "jobDetails") {
+      validateJobDetails(value);
+    }
+
+    if (wizardComponentKey === "bankDetails") {
+      validateBankDetails(value);
+    }
   };
 
   const handleSubmit = (e) => {
-    console.log(e);
     setEditEmployeeData({
       personalDetails: {},
       contactInfo: {},
@@ -488,30 +554,17 @@ const EditEmployee = () => {
 
   const validateContacts = (contacts = editEmployeeData?.contacts) => {
     let isValid = true;
+
+    const contactsErrorStructure = contacts.map((contactObject) => {
+      return {
+        id: contactObject.id,
+        contactType: contactObject.contactType,
+        value: "",
+      };
+    });
     const newEmployeeDataValidationError = {
       ...employeeDataValidationError,
-      contacts: [
-        {
-          contactType: "officialEmail",
-          value: "",
-        },
-        {
-          contactType: "personalEmail",
-          value: "",
-        },
-        {
-          contactType: "personalPhone",
-          value: "",
-        },
-        {
-          contactType: "emergencyPhone",
-          value: "",
-        },
-        {
-          contactType: "emergencyPhone",
-          value: "",
-        },
-      ],
+      contacts: [...contactsErrorStructure],
     };
 
     contacts.forEach((contact, index) => {
@@ -549,6 +602,251 @@ const EditEmployee = () => {
       }
     });
 
+    if (!isValid) {
+      setIsShowError(true);
+    }
+
+    setEmployeeDataValidationError(newEmployeeDataValidationError);
+    return isValid;
+  };
+
+  const validateAddresses = (address = editEmployeeData?.addresses) => {
+    let isValid = true;
+    const newEmployeeDataValidationError = {
+      ...employeeDataValidationError,
+      addresses: [
+        {
+          addressType: "current",
+          country: "",
+          zipCode: "",
+          state: "",
+          district: "",
+          taluka: "",
+          villageCity: "",
+          street: "",
+          landmark: "",
+          area: "",
+          houseNo: "",
+        },
+        {
+          addressType: "permanant",
+          country: "",
+          zipCode: "",
+          state: "",
+          district: "",
+          taluka: "",
+          villageCity: "",
+          street: "",
+          landmark: "",
+          area: "",
+          houseNo: "",
+        },
+      ],
+    };
+
+    address.forEach((address, index) => {
+      const addressError = newEmployeeDataValidationError.addresses[index];
+
+      if (!address.houseNo) {
+        addressError.houseNo = "House no. is required.";
+        isValid = false;
+      }
+
+      if (!address.area) {
+        addressError.area = "Area is required.";
+        isValid = false;
+      }
+
+      if (!address.houseNo) {
+        addressError.houseNo = "House no. is required.";
+        isValid = false;
+      }
+
+      if (!address.landmark) {
+        addressError.landmark = "Landmark is required.";
+        isValid = false;
+      }
+
+      if (!address.street) {
+        addressError.street = "Street is required.";
+        isValid = false;
+      }
+
+      if (!address.villageCity) {
+        addressError.villageCity = "Village City is required.";
+        isValid = false;
+      }
+
+      if (!address.taluka) {
+        addressError.taluka = "Taluka is required.";
+        isValid = false;
+      }
+
+      if (!address.district) {
+        addressError.district = "District is required.";
+        isValid = false;
+      }
+
+      if (!address.state) {
+        addressError.state = "State is required.";
+        isValid = false;
+      }
+
+      if (!address.zipCode) {
+        addressError.zipCode = "ZipCode is required.";
+        isValid = false;
+      }
+
+      if (!address.country) {
+        addressError.country = "Country is required.";
+        isValid = false;
+      }
+    });
+
+    if (!isValid) {
+      setIsShowError(true);
+    }
+
+    setEmployeeDataValidationError(newEmployeeDataValidationError);
+    return isValid;
+  };
+
+  const validateJobDetails = (jobDetails = editEmployeeData?.jobDetails) => {
+    let isValid = true;
+    const newEmployeeDataValidationError = {
+      ...employeeDataValidationError,
+      jobDetails: {
+        hiringDate: "",
+        joiningDate: "",
+        modeOfWork: "",
+        probationPeriodMonth: null,
+        userRoleLookupId: null,
+        CTC: "",
+        designationLookupId: null,
+      },
+    };
+
+    const hiringDate = jobDetails?.hiringDate;
+    if (!hiringDate) {
+      newEmployeeDataValidationError.jobDetails.hiringDate =
+        "Please select hiring date.";
+      isValid = false;
+    }
+
+    const joiningDate = jobDetails?.joiningDate;
+    if (!joiningDate) {
+      newEmployeeDataValidationError.jobDetails.joiningDate =
+        "Please select joining date.";
+      isValid = false;
+    }
+
+    const modeOfWork = jobDetails?.modeOfWork;
+    if (!modeOfWork) {
+      newEmployeeDataValidationError.jobDetails.modeOfWork =
+        "Please select mode of work.";
+      isValid = false;
+    }
+
+    const probationPeriodMonth = jobDetails?.probationPeriodMonth;
+    if (!probationPeriodMonth) {
+      newEmployeeDataValidationError.jobDetails.probationPeriodMonth =
+        "Please enter probation period month.";
+      isValid = false;
+    }
+
+    const userRoleLookupId = jobDetails?.userRoleLookupId;
+    if (!userRoleLookupId) {
+      newEmployeeDataValidationError.jobDetails.userRoleLookupId =
+        "Please select employee role.";
+      isValid = false;
+    }
+
+    const designationLookupId = jobDetails?.designationLookupId;
+    if (!designationLookupId) {
+      newEmployeeDataValidationError.jobDetails.designationLookupId =
+        "Please select designation.";
+      isValid = false;
+    }
+
+    const CTC = jobDetails?.CTC;
+    if (!CTC) {
+      newEmployeeDataValidationError.jobDetails.CTC = "Please enter CTC.";
+      isValid = false;
+    }
+
+    if (!isValid) {
+      setIsShowError(true);
+    }
+    setEmployeeDataValidationError(newEmployeeDataValidationError);
+    return isValid;
+  };
+
+  const validateBankDetails = (bankDetails = editEmployeeData?.bankDetails) => {
+    let isValid = true;
+    const newEmployeeDataValidationError = {
+      ...employeeDataValidationError,
+      bankDetails: [
+        {
+          bankName: "",
+          branchName: "",
+          ifscCode: "",
+          micrCode: "",
+          accountNumber: "",
+          isActive: true,
+        },
+      ],
+    };
+
+    const bankName = bankDetails?.[0]?.bankName;
+    if (!bankName) {
+      newEmployeeDataValidationError.bankDetails[0].bankName =
+        "Please enter bank name.";
+      isValid = false;
+    }
+
+    const branchName = bankDetails?.[0]?.branchName;
+    if (!branchName) {
+      newEmployeeDataValidationError.bankDetails[0].branchName =
+        "Please enter branch name.";
+      isValid = false;
+    }
+
+    const ifscCode = bankDetails?.[0]?.ifscCode;
+    if (!ifscCode) {
+      newEmployeeDataValidationError.bankDetails[0].ifscCode =
+        "Please enter IFSC code.";
+      isValid = false;
+    } else if (!validateIFSC(ifscCode)) {
+      newEmployeeDataValidationError.bankDetails[0].ifscCode =
+        "Invalid IFSC code.";
+      isValid = false;
+    }
+
+    const micrCode = bankDetails?.[0]?.micrCode;
+    if (!micrCode) {
+      newEmployeeDataValidationError.bankDetails[0].micrCode =
+        "Please enter MICR code.";
+      isValid = false;
+    } else if (!validateMICR(micrCode)) {
+      newEmployeeDataValidationError.bankDetails[0].micrCode =
+        "Invalid MICR code.";
+      isValid = false;
+    }
+
+    const accountNumber = bankDetails?.[0]?.accountNumber;
+    if (!accountNumber) {
+      newEmployeeDataValidationError.bankDetails[0].accountNumber =
+        "Please enter account number.";
+      isValid = false;
+    } else if (!validateAccountNumber(accountNumber)) {
+      newEmployeeDataValidationError.bankDetails[0].accountNumber =
+        "Invalid account number.";
+      isValid = false;
+    }
+
+    if (!isValid) {
+      setIsShowError(true);
+    }
     setEmployeeDataValidationError(newEmployeeDataValidationError);
     return isValid;
   };
@@ -559,6 +857,21 @@ const EditEmployee = () => {
 
   const validatePhoneNumber = (phoneNumber) => {
     return /^\d{10}$/.test(phoneNumber);
+  };
+
+  const validateIFSC = (ifscCode) => {
+    const regex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+    return regex.test(ifscCode);
+  };
+
+  const validateMICR = (micrCode) => {
+    const regex = /^[0-9]{9}$/;
+    return regex.test(micrCode);
+  };
+
+  const validateAccountNumber = (accountNumber) => {
+    const regex = /^\d{8,20}$/;
+    return regex.test(accountNumber);
   };
 
   const handleUpdateEmployeePersonalDetails = async () => {
@@ -651,7 +964,6 @@ const EditEmployee = () => {
       throw new Error("Response not ok");
     }
     const responseData = await response.json();
-    console.log(responseData);
     return responseData;
   };
 

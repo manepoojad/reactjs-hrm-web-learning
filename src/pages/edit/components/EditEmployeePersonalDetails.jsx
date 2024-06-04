@@ -188,7 +188,7 @@ const EditEmployeePersonalDetails = (props) => {
             className={
               "form-control" +
               (isShowError && personalDetailsError?.maidenName
-                ? " is-invalid"
+                ? "is-invalid"
                 : "")
             }
             placeholder="e.g. Mane"
@@ -248,7 +248,7 @@ const EditEmployeePersonalDetails = (props) => {
             name="dob"
             className={
               "form-control" +
-              (isShowError && personalDetailsError?.dob ? " is-invalid" : "")
+              (isShowError && personalDetailsError?.dob ? "is-invalid" : "")
             }
             value={formattedDate || ""}
             onChange={handleInputChange}
@@ -269,7 +269,7 @@ const EditEmployeePersonalDetails = (props) => {
             className={
               "form-control" +
               (isShowError && personalDetailsError?.bloodGroup
-                ? " is-invalid"
+                ? "is-invalid"
                 : "")
             }
             aria-label=".form-select-lg example"

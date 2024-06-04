@@ -6,6 +6,8 @@ const EditJobDetails = (props) => {
   const [lookupData, setLookupData] = useState([]);
   const {
     formData = {},
+    formValidationError = {},
+    isShowError = false,
     handleWizardInputChange = () => {},
     isEditableFields = false,
   } = props;
@@ -32,6 +34,7 @@ const EditJobDetails = (props) => {
   };
 
   const currentJobDetails = formData?.jobDetails;
+  const currentJobDetailsError = formValidationError?.jobDetails || {};
 
   const workModeLookup = lookupData?.find(
     (lookup) => lookup.lookupType === "modeOfWork"
@@ -118,11 +121,20 @@ const EditJobDetails = (props) => {
           type="date"
           name="hiringDate"
           value={formattedDate || ""}
-          className="form-control"
+          className={`form-control ${
+            isShowError && currentJobDetailsError?.hiringDate
+              ? "is-invalid"
+              : ""
+          }`}
           placeholder="e.g. 24/07/23"
           onChange={(e) => handleInputChange(e)}
           disabled={!isEditableFields}
         />
+        {isShowError && currentJobDetailsError?.hiringDate && (
+          <div className="invalid-feedback">
+            {currentJobDetailsError?.hiringDate}
+          </div>
+        )}
       </div>
 
       <div className="col-md-5">
@@ -133,11 +145,20 @@ const EditJobDetails = (props) => {
           type="date"
           name="joiningDate"
           value={formattedDate1 || ""}
-          className="form-control"
+          className={`form-control ${
+            isShowError && currentJobDetailsError?.joiningDate
+              ? "is-invalid"
+              : ""
+          }`}
           placeholder="e.g. 24/07/23"
           onChange={(e) => handleInputChange(e)}
           disabled={!isEditableFields}
         />
+        {isShowError && currentJobDetailsError?.joiningDate && (
+          <div className="invalid-feedback">
+            {currentJobDetailsError?.joiningDate}
+          </div>
+        )}
       </div>
 
       <div className="col-md-5">
@@ -146,7 +167,11 @@ const EditJobDetails = (props) => {
         </label>
         <select
           name="modeOfWork"
-          className="form-select"
+          className={`form-control ${
+            isShowError && currentJobDetailsError?.modeOfWork
+              ? "is-invalid"
+              : ""
+          }`}
           aria-label=".form-select-lg example"
           required
           value={currentJobDetails?.modeOfWork || ""}
@@ -165,7 +190,11 @@ const EditJobDetails = (props) => {
               );
             })}
         </select>
-        <div className="invalid-feedback">Please select a valid Work Mode.</div>
+        {isShowError && currentJobDetailsError?.modeOfWork && (
+          <div className="invalid-feedback">
+            {currentJobDetailsError?.modeOfWork}
+          </div>
+        )}
       </div>
 
       <div className="col-md-5">
@@ -175,12 +204,21 @@ const EditJobDetails = (props) => {
         <input
           type="text"
           name="probationPeriodMonth"
-          className="form-control"
+          className={`form-control ${
+            isShowError && currentJobDetailsError?.probationPeriodMonth
+              ? "is-invalid"
+              : ""
+          }`}
           value={currentJobDetails?.probationPeriodMonth || ""}
           placeholder="e.g. 1-6 Months"
           onChange={(e) => handleInputChange(e)}
           disabled={!isEditableFields}
         />
+        {isShowError && currentJobDetailsError?.probationPeriodMonth && (
+          <div className="invalid-feedback">
+            {currentJobDetailsError?.probationPeriodMonth}
+          </div>
+        )}
       </div>
 
       <div className="col-md-5">
@@ -189,7 +227,11 @@ const EditJobDetails = (props) => {
         </label>
         <select
           name="designationLookupId"
-          className="form-select"
+          className={`form-control ${
+            isShowError && currentJobDetailsError?.designationLookupId
+              ? "is-invalid"
+              : ""
+          }`}
           value={currentJobDetails?.designationLookupId || ""}
           aria-label=".form-select-lg example"
           required
@@ -208,7 +250,11 @@ const EditJobDetails = (props) => {
               );
             })}
         </select>
-        <div className="invalid-feedback">Please select Designation.</div>
+        {isShowError && currentJobDetailsError?.designationLookupId && (
+          <div className="invalid-feedback">
+            {currentJobDetailsError?.designationLookupId}
+          </div>
+        )}
       </div>
 
       <div className="col-md-5">
@@ -217,7 +263,11 @@ const EditJobDetails = (props) => {
         </label>
         <select
           name="userRoleLookupId"
-          className="form-select"
+          className={`form-control ${
+            isShowError && currentJobDetailsError?.userRoleLookupId
+              ? "is-invalid"
+              : ""
+          }`}
           value={formData?.userRoleLookupId || ""}
           aria-label=".form-select-lg example"
           required
@@ -236,7 +286,11 @@ const EditJobDetails = (props) => {
               );
             })}
         </select>
-        <div className="invalid-feedback">Please select Employee Role.</div>
+        {isShowError && currentJobDetailsError?.userRoleLookupId && (
+          <div className="invalid-feedback">
+            {currentJobDetailsError?.userRoleLookupId}
+          </div>
+        )}
       </div>
 
       <div className="col-md-5" style={{ marginRight: 650 }}>
@@ -247,10 +301,15 @@ const EditJobDetails = (props) => {
           type="text"
           name="CTC"
           value={currentJobDetails?.CTC || ""}
-          className="form-control"
+          className={`form-control ${
+            isShowError && currentJobDetailsError?.CTC ? "is-invalid" : ""
+          }`}
           onChange={(e) => handleInputChange(e)}
           disabled={!isEditableFields}
         />
+        {isShowError && currentJobDetailsError?.CTC && (
+          <div className="invalid-feedback">{currentJobDetailsError?.CTC}</div>
+        )}
       </div>
 
       <div className="text-start text-black fw-bold col-md-10 mt-5 h4">
@@ -259,7 +318,7 @@ const EditJobDetails = (props) => {
 
       {formData?.experience &&
         formData?.experience.map((experienceDetailItem, index) => (
-          <div className="row g-3 m-0 p-0 justify-content-center">
+          <div key={index} className="row g-3 m-0 p-0 justify-content-center">
             <div className="d-flex justify-content-between col-md-10">
               <div className="col-md-10 text-black fw-bold mt-3 text-center">
                 Past Experience Details - {index + 1}
