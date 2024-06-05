@@ -11,7 +11,7 @@ export const fetchInterceptor = async (
 ) => {
   try {
     //  full URL
-    //   const fullUrl = `${API_URL}${url}`;
+    //   const fullUrl = `${baseUrl}${url}`;
 
     const method = optionArg?.method ? optionArg?.method : "GET";
     const body = optionArg?.body ? optionArg?.body : "";

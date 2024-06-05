@@ -1,8 +1,7 @@
 import { Button, TextField } from "@mui/material";
-import Cookies from "js-cookie";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_ROUTES_PATH } from "../helper/Constants";
+import fetchInterceptor from "../helper/fetchInterceptor";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -21,24 +20,20 @@ const Login = () => {
 
   const handleClickSignIn = async () => {
     try {
-      const response = await fetch(API_ROUTES_PATH.SIGN_IN, {
-        method: "POST",
-        body: JSON.stringify(signInData),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Response not ok");
-      }
-      const responseData = await response.json();
-      Cookies.set("jwtToken", responseData.token, { expires: 7 });
+      const responseData = await fetchInterceptor(
+        "http://localhost:8888/api/user/auth",
 
+        {
+          method: "POST",
+          body: signInData,
+        }
+      );
       setSignInData({
         email: "",
         password: "",
       });
       navigate("/");
+      return responseData;
     } catch (error) {
       console.error(error);
     }

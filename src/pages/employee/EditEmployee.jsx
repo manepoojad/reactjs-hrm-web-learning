@@ -1,7 +1,7 @@
-import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
+import fetchInterceptor from "../../helper/fetchInterceptor";
 import EditBankDetailsAndDocuments from "../edit/components/EditBankDetailsAndDocuments";
 import EditContactInfo from "../edit/components/EditContactInfo";
 import EditEmployeePersonalDetails from "../edit/components/EditEmployeePersonalDetails";
@@ -349,6 +349,7 @@ const EditEmployee = () => {
       } else if (wizardIndex === 3) {
         const skillInfoResponse = await handleUpdateAddEmployeeSkillInfo();
         handleDataMapping(skillInfoResponse);
+        setWizardIndex(wizardIndex + 1);
       } else if (wizardIndex === 4) {
         isValid = validateBankDetails();
         if (isValid) {
@@ -875,116 +876,161 @@ const EditEmployee = () => {
   };
 
   const handleUpdateEmployeePersonalDetails = async () => {
-    const token = Cookies.get("jwtToken");
-    const response = await fetch(
+    // const token = Cookies.get("jwtToken");
+    const responseData = await fetchInterceptor(
       `http://localhost:8888/api/employee/${editEmployeeData?.employeeId}/personal`,
       {
         method: "PUT",
-        body: JSON.stringify(editEmployeeData?.personalDetails),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${token}`,
-        },
+        body: editEmployeeData?.personalDetails,
       }
     );
-    if (!response.ok) {
-      throw new Error("Response not ok");
-    }
-    const responseData = await response.json();
+
     return responseData;
+    // const response = await fetch(
+    //   `http://localhost:8888/api/employee/${editEmployeeData?.employeeId}/personal`,
+    //   {
+    //     method: "PUT",
+    //     body: JSON.stringify(editEmployeeData?.personalDetails),
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: `${token}`,
+    //     },
+    //   }
+    // );
+    // if (!response.ok) {
+    //   throw new Error("Response not ok");
+    // }
+    // const responseData = await response.json();
+    // return responseData;
   };
 
   const handleUpdateAddEmployeeContactInfo = async () => {
-    const token = Cookies.get("jwtToken");
+    // const token = Cookies.get("jwtToken");
 
     const payload = {
       contacts: editEmployeeData.contacts,
       addresses: editEmployeeData.addresses,
     };
-    const response = await fetch(
+    const responseData = await fetchInterceptor(
       `http://localhost:8888/api/employee/${editEmployeeData?.employeeId}/contact`,
       {
         method: "PUT",
-        body: JSON.stringify(payload),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${token}`,
-        },
+        body: payload,
       }
     );
-    if (!response.ok) {
-      throw new Error("Response not ok");
-    }
-    const responseData = await response.json();
+
     return responseData;
+    // const response = await fetch(
+    //   `http://localhost:8888/api/employee/${editEmployeeData?.employeeId}/contact`,
+    //   {
+    //     method: "PUT",
+    //     body: JSON.stringify(payload),
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: `${token}`,
+    //     },
+    //   }
+    // );
+    // if (!response.ok) {
+    //   throw new Error("Response not ok");
+    // }
+    // const responseData = await response.json();
+    // return responseData;
   };
 
   const handleUpdateAddEmployeeJobDetails = async () => {
-    const token = Cookies.get("jwtToken");
+    // const token = Cookies.get("jwtToken");
     const payload = {
       currentJobDetail: editEmployeeData?.jobDetails,
       experience: editEmployeeData?.experience,
     };
-    const response = await fetch(
+    const responseData = await fetchInterceptor(
       `http://localhost:8888/api/employee/${editEmployeeData?.employeeId}/job`,
       {
         method: "PUT",
-        body: JSON.stringify(payload),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${token}`,
-        },
+        body: payload,
       }
     );
-    if (!response.ok) {
-      throw new Error("Response not ok");
-    }
-    const responseData = await response.json();
+
     return responseData;
+    // const response = await fetch(
+    //   `http://localhost:8888/api/employee/${editEmployeeData?.employeeId}/job`,
+    //   {
+    //     method: "PUT",
+    //     body: JSON.stringify(payload),
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: `${token}`,
+    //     },
+    //   }
+    // );
+    // if (!response.ok) {
+    //   throw new Error("Response not ok");
+    // }
+    // const responseData = await response.json();
+    // return responseData;
   };
 
   const handleUpdateAddEmployeeSkillInfo = async () => {
-    const token = Cookies.get("jwtToken");
+    // const token = Cookies.get("jwtToken");
     const payload = {
       skills: editEmployeeData?.skills,
       hobbiesRecord: editEmployeeData?.hobbiesRecord,
     };
-    const response = await fetch(
+    const responseData = await fetchInterceptor(
       `http://localhost:8888/api/employee/${editEmployeeData?.employeeId}/skill`,
       {
         method: "PUT",
-        body: JSON.stringify(payload),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${token}`,
-        },
+        body: payload,
       }
     );
-    if (!response.ok) {
-      throw new Error("Response not ok");
-    }
-    const responseData = await response.json();
+
     return responseData;
+    // const response = await fetch(
+    //   `http://localhost:8888/api/employee/${editEmployeeData?.employeeId}/skill`,
+    //   {
+    //     method: "PUT",
+    //     body: JSON.stringify(payload),
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: `${token}`,
+    //     },
+    //   }
+    // );
+    // if (!response.ok) {
+    //   throw new Error("Response not ok");
+    // }
+    // const responseData = await response.json();
+    // return responseData;
   };
 
   const handleUpdateAddEmployeeBankDetails = async () => {
-    const token = Cookies.get("jwtToken");
-    const response = await fetch(
+    // const token = Cookies.get("jwtToken");
+    const responseData = await fetchInterceptor(
       `http://localhost:8888/api/employee/${editEmployeeData?.employeeId}/bank`,
       {
         method: "PUT",
-        body: JSON.stringify(editEmployeeData?.bankDetails?.[0]),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${token}`,
-        },
+        body: editEmployeeData?.bankDetails?.[0],
       }
     );
-    if (!response.ok) {
-      throw new Error("Response not ok");
-    }
-    const responseData = await response.json();
+
     return responseData;
+    // const response = await fetch(
+    //   `http://localhost:8888/api/employee/${editEmployeeData?.employeeId}/bank`,
+    //   {
+    //     method: "PUT",
+    //     body: JSON.stringify(editEmployeeData?.bankDetails?.[0]),
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: `${token}`,
+    //     },
+    //   }
+    // );
+    // if (!response.ok) {
+    //   throw new Error("Response not ok");
+    // }
+    // const responseData = await response.json();
+    // return responseData;
   };
 
   const WizardComponent = wizardData?.[wizardIndex]?.component;

@@ -268,7 +268,7 @@ const EditJobDetails = (props) => {
               ? "is-invalid"
               : ""
           }`}
-          value={formData?.userRoleLookupId || ""}
+          value={currentJobDetails?.userRoleLookupId || ""}
           aria-label=".form-select-lg example"
           required
           onChange={(e) => handleInputChange(e)}
