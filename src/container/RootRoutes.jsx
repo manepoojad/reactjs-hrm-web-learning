@@ -6,7 +6,7 @@ import PostAuthRoutes from "./PostAuthRoutes";
 
 const RootRoutes = () => {
   const isAuthStatus = (() => {
-    let userToken = Cookies.get("token") || "";
+    let userToken = Cookies.get("jwtToken") || "";
     if (userToken) {
       return true;
     } else {

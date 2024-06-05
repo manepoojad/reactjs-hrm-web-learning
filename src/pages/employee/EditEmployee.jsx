@@ -875,7 +875,7 @@ const EditEmployee = () => {
   };
 
   const handleUpdateEmployeePersonalDetails = async () => {
-    const token = Cookies.get("token");
+    const token = Cookies.get("jwtToken");
     const response = await fetch(
       `http://localhost:8888/api/employee/${editEmployeeData?.employeeId}/personal`,
       {
@@ -895,7 +895,7 @@ const EditEmployee = () => {
   };
 
   const handleUpdateAddEmployeeContactInfo = async () => {
-    const token = Cookies.get("token");
+    const token = Cookies.get("jwtToken");
 
     const payload = {
       contacts: editEmployeeData.contacts,
@@ -920,7 +920,7 @@ const EditEmployee = () => {
   };
 
   const handleUpdateAddEmployeeJobDetails = async () => {
-    const token = Cookies.get("token");
+    const token = Cookies.get("jwtToken");
     const payload = {
       currentJobDetail: editEmployeeData?.jobDetails,
       experience: editEmployeeData?.experience,
@@ -944,7 +944,7 @@ const EditEmployee = () => {
   };
 
   const handleUpdateAddEmployeeSkillInfo = async () => {
-    const token = Cookies.get("token");
+    const token = Cookies.get("jwtToken");
     const payload = {
       skills: editEmployeeData?.skills,
       hobbiesRecord: editEmployeeData?.hobbiesRecord,
@@ -968,7 +968,7 @@ const EditEmployee = () => {
   };
 
   const handleUpdateAddEmployeeBankDetails = async () => {
-    const token = Cookies.get("token");
+    const token = Cookies.get("jwtToken");
     const response = await fetch(
       `http://localhost:8888/api/employee/${editEmployeeData?.employeeId}/bank`,
       {

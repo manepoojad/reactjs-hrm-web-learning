@@ -9,6 +9,8 @@ import EmployeePersonalDetails from "./components/EmployeePersonalDetails";
 import JobDetails from "./components/JobDetails";
 import SkillInfo from "./components/SkillInfo";
 
+import fetchInterceptor from "../../helper/fetchInterceptor";
+
 const wizardData = [
   {
     key: 0,
@@ -242,27 +244,36 @@ const AddEmployee = () => {
   };
 
   const handleUpdateEmployeePersonalDetails = async () => {
-    const token = Cookies.get("token");
-    const response = await fetch(
+    const responseData = await fetchInterceptor(
       `http://localhost:8888/api/employee/${employeeData?.employeeId}/personal`,
       {
         method: "PUT",
-        body: JSON.stringify(employeeData?.personalDetails),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${token}`,
-        },
+        body: employeeData?.personalDetails,
       }
     );
-    if (!response.ok) {
-      throw new Error("Response not ok");
-    }
-    const responseData = await response.json();
+
     return responseData;
+    // const jwtToken = Cookies.get("jwtToken");
+    // const response = await fetch(
+    //   `http://localhost:8888/api/employee/${employeeData?.employeeId}/personal`,
+    //   {
+    //     method: "PUT",
+    //     body: JSON.stringify(employeeData?.personalDetails),
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: `${jwtToken}`,
+    //     },
+    //   }
+    // );
+    // if (!response.ok) {
+    //   throw new Error("Response not ok");
+    // }
+    // const responseData = await response.json();
+    // return responseData;
   };
 
   const handleUpdateAddEmployeeContactInfo = async () => {
-    const token = Cookies.get("token");
+    const jwtToken = Cookies.get("jwtToken");
     const payload = {
       contacts: employeeData?.contactInfo?.contacts,
       addresses: employeeData?.contactInfo?.addresses,
@@ -274,7 +285,7 @@ const AddEmployee = () => {
         body: JSON.stringify(payload),
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${token}`,
+          Authorization: `${jwtToken}`,
         },
       }
     );
@@ -286,7 +297,7 @@ const AddEmployee = () => {
   };
 
   const handleUpdateAddEmployeeJobDetails = async () => {
-    const token = Cookies.get("token");
+    const jwtToken = Cookies.get("jwtToken");
     const payload = {
       currentJobDetail: employeeData?.jobDetails?.currentJobDetail,
       experience: employeeData?.jobDetails?.experience,
@@ -298,7 +309,7 @@ const AddEmployee = () => {
         body: JSON.stringify(payload),
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${token}`,
+          Authorization: `${jwtToken}`,
         },
       }
     );
@@ -310,7 +321,7 @@ const AddEmployee = () => {
   };
 
   const handleUpdateAddEmployeeSkillInfo = async () => {
-    const token = Cookies.get("token");
+    const jwtToken = Cookies.get("jwtToken");
     const payload = {
       skills: employeeData?.skillInfo?.skills,
       hobbiesRecord: employeeData?.skillInfo?.hobbiesRecord,
@@ -322,7 +333,7 @@ const AddEmployee = () => {
         body: JSON.stringify(payload),
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${token}`,
+          Authorization: `${jwtToken}`,
         },
       }
     );
@@ -334,7 +345,7 @@ const AddEmployee = () => {
   };
 
   const handleUpdateAddEmployeeBankDetails = async () => {
-    const token = Cookies.get("token");
+    const jwtToken = Cookies.get("jwtToken");
     const response = await fetch(
       `http://localhost:8888/api/employee/${employeeData?.employeeId}/bank`,
       {
@@ -342,7 +353,7 @@ const AddEmployee = () => {
         body: JSON.stringify(employeeData?.bankDetails),
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${token}`,
+          Authorization: `${jwtToken}`,
         },
       }
     );

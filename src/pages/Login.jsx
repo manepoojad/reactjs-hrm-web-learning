@@ -32,7 +32,7 @@ const Login = () => {
         throw new Error("Response not ok");
       }
       const responseData = await response.json();
-      Cookies.set("token", responseData.token, { expires: 7 });
+      Cookies.set("jwtToken", responseData.token, { expires: 7 });
 
       setSignInData({
         email: "",

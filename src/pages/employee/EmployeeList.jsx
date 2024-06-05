@@ -1,7 +1,8 @@
-import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_ROUTES_PATH } from "../../helper/Constants";
+import fetchInterceptor from "../../helper/fetchInterceptor";
+
 
 const EmployeeList = () => {
   const navigate = useNavigate();
@@ -13,18 +14,21 @@ const EmployeeList = () => {
 
   const getEmployeeList = async () => {
     try {
-      const token = Cookies.get("token");
-      const response = await fetch(API_ROUTES_PATH.GET_EMPLOYEE_LIST, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${token}`,
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Response not ok. ");
-      }
-      const responseData = await response.json();
+      // const jwtToken = Cookies.get("jwtToken");
+      // const response = await fetch(API_ROUTES_PATH.GET_EMPLOYEE_LIST, {
+      //   method: "GET",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Authorization: `${jwtToken}`,
+      //   },
+      // });
+      // if (!response.ok) {
+      //   throw new Error("Response not ok. ");
+      // }
+      // const responseData = await response.json();
+      const responseData = await fetchInterceptor(API_ROUTES_PATH.GET_EMPLOYEE_LIST, {
+        method: "GET"
+      })
       setEmployeeList(responseData);
     } catch (error) {}
   };
