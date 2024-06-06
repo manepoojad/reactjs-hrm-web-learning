@@ -55,12 +55,32 @@ const EmployeeList = () => {
     setFilteredEmployeeList(filteredList);
   };
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const paginatedEmployeeList = filteredEmployeeList?.slice(
-    indexOfFirstItem, // 0
-    indexOfLastItem // 5
-  );
+  const getPaginationData = () => {
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const paginatedEmployeeList = filteredEmployeeList?.slice(
+      indexOfFirstItem, // 0
+      indexOfLastItem // 5
+    );
+
+    const totalPages = Math.ceil(filteredEmployeeList.length / itemsPerPage);
+
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pageNumbers.push(i);
+    }
+
+    const returnData = {
+      pageNumbers: pageNumbers,
+      indexOfFirstItem: indexOfFirstItem,
+      paginatedEmployeeList: paginatedEmployeeList,
+    };
+
+    return returnData;
+  };
+
+  const { pageNumbers, indexOfFirstItem, paginatedEmployeeList } =
+    getPaginationData();
 
   return (
     <>
@@ -142,17 +162,21 @@ const EmployeeList = () => {
         >
           Previous
         </button>
-        <span
-          style={{
-            margin: "8px",
-            padding: 8,
-            backgroundColor: "GrayText",
-            borderRadius: 30,
-          }}
-        >
-          {" "}
-          {currentPage}
-        </span>
+
+        {pageNumbers.map((number) => (
+          <button
+            key={number}
+            onClick={() => setCurrentPage(number)}
+            style={{
+              margin: "8px",
+              padding: 8,
+              backgroundColor: currentPage === number ? "GrayText" : "",
+              borderRadius: 30,
+            }}
+          >
+            {number}
+          </button>
+        ))}
         <button
           onClick={() => setCurrentPage(currentPage + 1)}
           disabled={paginatedEmployeeList?.length < itemsPerPage}
