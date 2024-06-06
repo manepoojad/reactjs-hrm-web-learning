@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ChangeStatusModal from "../../components/ChangeStatusDialog";
 import { API_ROUTES_PATH } from "../../helper/Constants";
 import fetchInterceptor from "../../helper/fetchInterceptor";
 
@@ -7,11 +8,15 @@ const EmployeeList = () => {
   const navigate = useNavigate();
   const [employeeList, setEmployeeList] = useState([]);
   const [filteredEmployeeList, setFilteredEmployeeList] = useState([]);
+  const [showDialog, setShowDialog] = useState(false);
+  const [lookupData, setLookupData] = useState([]);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
   useEffect(() => {
     getEmployeeList();
+    getLookupData();
   }, [currentPage]);
 
   const getEmployeeList = async () => {
@@ -63,7 +68,7 @@ const EmployeeList = () => {
       indexOfLastItem // 5
     );
 
-    const totalPages = Math.ceil(filteredEmployeeList.length / itemsPerPage);
+    const totalPages = Math.ceil(filteredEmployeeList?.length / itemsPerPage);
 
     const pageNumbers = [];
     for (let i = 1; i <= totalPages; i++) {
@@ -82,10 +87,53 @@ const EmployeeList = () => {
   const { pageNumbers, indexOfFirstItem, paginatedEmployeeList } =
     getPaginationData();
 
+  const handleOpenDialog = (id) => {
+    setSelectedEmployeeId(id);
+    setShowDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setShowDialog(false);
+  };
+
+  const getLookupData = async () => {
+    try {
+      const response = await fetch(API_ROUTES_PATH.GET_ALL_LOOKUP_LIST, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Response not ok. ");
+      }
+      const responseData = await response.json();
+      setLookupData(responseData.lookupData);
+    } catch (error) {
+      console.error("Error fetching lookup data:", error);
+    }
+  };
+
+  const statusLookup = lookupData?.find(
+    (lookup) => lookup?.lookupType === "employeeStatusInCompany"
+  );
+  const statusLookupList = statusLookup?.lookups;
+
   return (
     <>
+      <ChangeStatusModal
+        show={showDialog}
+        handleClose={handleCloseDialog}
+        id={selectedEmployeeId}
+        getEmployeeList={getEmployeeList}
+      />
       <div className="d-flex justify-content-end">
-        <input type="text" onChange={(e) => handleSearchEmployee(e)} />
+        <input
+          type="text"
+          placeholder="Search by first name or last name or email..."
+          onChange={(e) => handleSearchEmployee(e)}
+          style={{ margin: 5, borderRadius: 10, width: "20%" }}
+        />
         <button
           type="button"
           className="me-3  btn btn-dark mb-2 ms-1"
@@ -108,13 +156,19 @@ const EmployeeList = () => {
         <tbody>
           {paginatedEmployeeList && paginatedEmployeeList?.length > 0 ? (
             paginatedEmployeeList.map((employee, index) => {
+              const statusLookupData = statusLookupList?.find(
+                (lookup) => lookup?.id === employee?.employeeStatusesLookupId
+              );
+              const statusLabel = statusLookupData
+                ? statusLookupData?.label
+                : "";
               return (
                 <tr key={index}>
                   <td>{index + 1 + indexOfFirstItem}</td>
                   <td>{employee?.firstName}</td>
                   <td>{employee?.lastName}</td>
                   <td>{employee?.email}</td>
-                  <td>{employee?.status}</td>
+                  <td>{statusLabel}</td>
                   <td>
                     <button
                       className="btn btn-outline-success btn-sm mx-2"
@@ -141,6 +195,7 @@ const EmployeeList = () => {
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
                       title="Change Status"
+                      onClick={() => handleOpenDialog(employee.id)}
                     >
                       <i className="bi bi-three-dots-vertical"></i>
                     </button>

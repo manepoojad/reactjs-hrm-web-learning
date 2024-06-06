@@ -19,6 +19,14 @@ const NavigationBar = (props) => {
               Employee
             </Link>
           </li>
+          <li style={{ display: "inline", margin: 8 }}>
+            <Link
+              style={{ textDecoration: "none", color: "white" }}
+              to="/clientList"
+            >
+              Client
+            </Link>
+          </li>
         </ul>
       </div>
       <div>{props.children}</div>
