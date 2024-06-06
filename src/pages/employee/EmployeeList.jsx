@@ -10,7 +10,6 @@ const EmployeeList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-
   useEffect(() => {
     getEmployeeList();
   }, [currentPage]);
@@ -25,7 +24,7 @@ const EmployeeList = () => {
       );
 
       setEmployeeList(responseData?.employeeList);
-      setFilteredEmployeeList(responseData?.employeeList)
+      setFilteredEmployeeList(responseData?.employeeList);
     } catch (error) {}
   };
 
@@ -58,11 +57,10 @@ const EmployeeList = () => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems =
-    filteredEmployeeList?.length > 0
-      ? filteredEmployeeList?.slice(indexOfFirstItem, indexOfLastItem)
-      : filteredEmployeeList &&
-        filteredEmployeeList?.slice(indexOfFirstItem, indexOfLastItem);
+  const paginatedEmployeeList = filteredEmployeeList?.slice(
+    indexOfFirstItem, // 0
+    indexOfLastItem // 5
+  );
 
   return (
     <>
@@ -88,8 +86,8 @@ const EmployeeList = () => {
           </tr>
         </thead>
         <tbody>
-          {currentItems && currentItems?.length > 0 ? (
-            currentItems.map((employee, index) => {
+          {paginatedEmployeeList && paginatedEmployeeList?.length > 0 ? (
+            paginatedEmployeeList.map((employee, index) => {
               return (
                 <tr key={index}>
                   <td>{index + 1 + indexOfFirstItem}</td>
@@ -157,7 +155,7 @@ const EmployeeList = () => {
         </span>
         <button
           onClick={() => setCurrentPage(currentPage + 1)}
-          disabled={currentItems?.length < itemsPerPage}
+          disabled={paginatedEmployeeList?.length < itemsPerPage}
         >
           Next
         </button>
