@@ -1,20 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
 
 const DropdownFixedMenu = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickEvent = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
+      setIsOpen(false);
       }
     };
 
-    document.addEventListener("click", handleClickOutside);
+    document.addEventListener("click", handleClickEvent);
 
     return () => {
-      document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener("click", handleClickEvent);
     };
   }, []);
 
@@ -24,7 +24,7 @@ const DropdownFixedMenu = () => {
   };
 
   return (
-    <div style={{ position: "relative", display: "inline-block", }}>
+    <div style={{ position: "relative", display: "inline-block" }}>
       <button
         className="btn btn-outline-info btn-sm mx-2"
         type="button"
@@ -48,34 +48,37 @@ const DropdownFixedMenu = () => {
           }}
         >
           <li>
-            <button
+            <a
               className="dropdown-item"
+              role="button"
               onClick={() => {
-                setIsOpen(false);
+                // setIsOpen(false);
               }}
             >
               Change Status
-            </button>
+            </a>
           </li>
           <li>
-            <button
+            <a
               className="dropdown-item"
+              role="button"
               onClick={() => {
-                setIsOpen(false);
+                // setIsOpen(false);
               }}
             >
               Item 1
-            </button>
+            </a>
           </li>
           <li>
-            <button
+            <a
               className="dropdown-item"
+              role="button"
               onClick={() => {
-                setIsOpen(false);
+                // setIsOpen(false);
               }}
             >
               Item 2
-            </button>
+            </a>
           </li>
         </ul>
       )}
