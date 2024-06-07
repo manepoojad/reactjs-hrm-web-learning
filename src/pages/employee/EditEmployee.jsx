@@ -129,24 +129,24 @@ const EditEmployee = () => {
         organisationName: "",
         startDate: "",
         endDate: "",
-        designationLookupId: 0,
+        designationLookupId: null,
       },
     ],
     skills: [
       {
         // id: 6,
         notes: "",
-        skillType: 0,
-        skillName: 0,
-        skillLevel: 0,
-        skillExperienceYear: 0,
+        skillType: null,
+        skillName: null,
+        skillLevel: null,
+        skillExperienceYear: null,
       },
     ],
     hobbiesRecord: [
       {
         // id: 1,
         hobbiesType: 9,
-        hobbiesName: 0,
+        hobbiesName: null,
       },
     ],
     bankDetails: [

@@ -87,7 +87,7 @@ const EditJobDetails = (props) => {
       organisationName: "",
       startDate: "",
       endDate: "",
-      designationLookupId: "",
+      designationLookupId: null,
     };
 
     experience.push(newExperience);
@@ -380,7 +380,7 @@ const EditJobDetails = (props) => {
               <select
                 name="designationLookupId"
                 className="form-select"
-                value={experienceDetailItem?.designationLookupId || ""}
+                value={experienceDetailItem?.designationLookupId || null}
                 aria-label=".form-select-lg example"
                 onChange={(e) => handleExperienceInputChange(e, index)}
                 disabled={!isEditableFields}

@@ -1,35 +1,37 @@
 import React, { useEffect, useState } from "react";
+import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { API_ROUTES_PATH } from "../../helper/Constants";
 import fetchInterceptor from "../../helper/fetchInterceptor";
 
-const ClientList = () => {
+const AssetsList = () => {
   const navigate = useNavigate();
-  const [clientList, setClientList] = useState([]);
-  const [filteredClientList, setFilteredClientList] = useState([]);
+  const [assetsList, setAssetsList] = useState([]);
+  const [filteredAssetsList, setFilteredAssetsList] = useState([]);
+  const [lookupData, setLookupData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
   useEffect(() => {
-    getClientList();
+    getAssetsList();
+    getAllLookupList();
   }, [currentPage]);
 
-  const getClientList = async () => {
+  const getAssetsList = async () => {
     try {
       const responseData = await fetchInterceptor(
-        API_ROUTES_PATH.GET_CLIENT_LIST,
+        API_ROUTES_PATH.GET_ASSETS_LIST,
         {
           method: "GET",
         }
       );
-
-      setClientList(responseData?.clients);
-      setFilteredClientList(responseData?.clients);
+      setAssetsList(responseData?.assetList);
+      setFilteredAssetsList(responseData?.assetList);
     } catch (error) {}
   };
 
-  const addClient = () => {
-    navigate("/client/create");
+  const addAssets = () => {
+    navigate("/assets/create");
   };
 
   const handleDeleteEmployee = (id) => {
@@ -40,23 +42,23 @@ const ClientList = () => {
     const { value } = e.target;
 
     const filteredList =
-      clientList &&
-      clientList.filter((item, index) => {
+      assetsList &&
+      assetsList.filter((item, index) => {
         return item.companyName.toLowerCase().includes(value.toLowerCase());
       });
 
-    setFilteredClientList(filteredList);
+    setFilteredAssetsList(filteredList);
   };
 
   const getPaginationData = () => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const paginatedClientList = filteredClientList?.slice(
+    const paginatedAssetsList = filteredAssetsList?.slice(
       indexOfFirstItem, // 0
       indexOfLastItem // 5
     );
 
-    const totalPages = Math.ceil(filteredClientList?.length / itemsPerPage);
+    const totalPages = Math.ceil(filteredAssetsList?.length / itemsPerPage);
 
     const pageNumbers = [];
     for (let i = 1; i <= totalPages; i++) {
@@ -66,14 +68,42 @@ const ClientList = () => {
     const returnData = {
       pageNumbers: pageNumbers,
       indexOfFirstItem: indexOfFirstItem,
-      paginatedClientList: paginatedClientList,
+      paginatedAssetsList: paginatedAssetsList,
     };
 
     return returnData;
   };
 
-  const { pageNumbers, indexOfFirstItem, paginatedClientList } =
+  const { pageNumbers, indexOfFirstItem, paginatedAssetsList } =
     getPaginationData();
+
+  const getAllLookupList = async () => {
+    try {
+      const response = await fetch(API_ROUTES_PATH.GET_ALL_LOOKUP_LIST, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Response not ok. ");
+      }
+      const responseData = await response.json();
+      setLookupData(responseData.lookupData);
+    } catch (error) {
+      console.error("Error fetching lookup data:", error);
+    }
+  };
+
+  const assetsStatusLookup = lookupData?.find(
+    (lookup) => lookup.lookupType === "assetStatus"
+  );
+  const assetStatusLookupList = assetsStatusLookup?.lookups;
+
+  const assetsTypeLookup = lookupData?.find(
+    (lookup) => lookup.lookupType === "assetType"
+  );
+  const assetTypeLookupList = assetsTypeLookup?.lookups;
 
   return (
     <>
@@ -84,37 +114,53 @@ const ClientList = () => {
           onChange={(e) => handleSearchClient(e)}
           style={{ margin: 16, borderRadius: 10, width: "15%", padding: 10 }}
         />
-        <button
+        <Button
           type="button"
-          className="me-3 btn btn-dark mb-3 ms-1 mt-3"
-          onClick={addClient}
+          className="me-3  btn btn-dark mb-3 ms-1 mt-3"
+          onClick={addAssets}
         >
-          Add Client
-        </button>
+          Add Assets
+        </Button>
       </div>
       <table className="table table-dark  table-hover table-striped table-bordered">
         <thead style={{ borderBottom: "solid" }}>
           <tr>
-            <th>Sr.no</th>
+            <th>ID</th>
+            <th>Type</th>
+            <th>Condition Status</th>
             <th>Company Name</th>
-            <th>Country</th>
-            <th>Phone Number</th>
-            <th>Email</th>
-            <th>Primary Contact</th>
+            <th>Serial Number</th>
+            <th>Model Name</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          {paginatedClientList && paginatedClientList?.length > 0 ? (
-            paginatedClientList.map((client, index) => {
+          {paginatedAssetsList && paginatedAssetsList?.length > 0 ? (
+            paginatedAssetsList.map((asset, index) => {
+              const assetsStatusLookupData = assetStatusLookupList?.find(
+                (lookup) => lookup?.id === asset?.assetStatusLookupId
+              );
+
+              const assetStatusLabel = assetsStatusLookupData
+                ? assetsStatusLookupData?.label
+                : "";
+
+              const assetsTypeLookupData = assetTypeLookupList?.find(
+                (lookup) => lookup?.id === asset?.assetTypeLookupId
+              );
+
+              const assetTypeLabel = assetsTypeLookupData
+                ? assetsTypeLookupData?.label
+                : "";
+
               return (
                 <tr key={index}>
                   <td>{index + 1 + indexOfFirstItem}</td>
-                  <td>{client?.companyName}</td>
-                  <td>{client?.country}</td>
-                  <td>{client?.phoneNumber}</td>
-                  <td>{client?.email}</td>
-                  <td>{client?.primaryContact}</td>
+                  <td>{assetTypeLabel}</td>
+                  <td>{assetStatusLabel}</td>
+                  <td>{asset?.companyName}</td>
+                  <td>{asset?.serialNumber}</td>
+                  <td>{asset?.modelName}</td>
                   <td>
                     <button
                       className="btn btn-outline-success btn-sm mx-2"
@@ -129,8 +175,8 @@ const ClientList = () => {
                       className="btn btn-outline-success btn-md mx-2"
                       title="Edit Client Details"
                       onClick={() => {
-                        navigate(`/client/${client?.id}`, {
-                          state: { client },
+                        navigate(`/assets/${asset?.id}`, {
+                          state: { asset },
                         });
                       }}
                       style={{ border: "none" }}
@@ -180,7 +226,7 @@ const ClientList = () => {
         ))}
         <button
           onClick={() => setCurrentPage(currentPage + 1)}
-          disabled={paginatedClientList?.length < itemsPerPage}
+          disabled={paginatedAssetsList?.length < itemsPerPage}
         >
           Next
         </button>
@@ -189,4 +235,4 @@ const ClientList = () => {
   );
 };
 
-export default ClientList;
+export default AssetsList;

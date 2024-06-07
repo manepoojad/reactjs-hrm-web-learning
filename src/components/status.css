@@ -1,0 +1,12 @@
+.custom-modal {
+  position: absolute;
+  right: 0px;
+  left: 0px;
+  top: 300px;
+  bottom: 0px;
+  height: 100px;
+}
+
+.modal-content {
+  border-radius: unset;
+}

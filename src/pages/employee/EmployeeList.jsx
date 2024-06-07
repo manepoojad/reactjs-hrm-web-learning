@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ChangeStatusModal from "../../components/ChangeStatusDialog";
+import DropdownFixedMenu from "../../components/DropdownFixedMenu";
 import { API_ROUTES_PATH } from "../../helper/Constants";
 import fetchInterceptor from "../../helper/fetchInterceptor";
 
@@ -10,7 +11,7 @@ const EmployeeList = () => {
   const [filteredEmployeeList, setFilteredEmployeeList] = useState([]);
   const [showDialog, setShowDialog] = useState(false);
   const [lookupData, setLookupData] = useState([]);
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
@@ -87,10 +88,11 @@ const EmployeeList = () => {
   const { pageNumbers, indexOfFirstItem, paginatedEmployeeList } =
     getPaginationData();
 
-  const handleOpenDialog = (id) => {
-    setSelectedEmployeeId(id);
+  const handleOpenDialog = (id, firstName, lastName) => {
+    setSelectedEmployee({ id, firstName, lastName });
     setShowDialog(true);
   };
+  // console.log("selected", selectedEmployee);
 
   const handleCloseDialog = () => {
     setShowDialog(false);
@@ -121,22 +123,26 @@ const EmployeeList = () => {
 
   return (
     <>
-      <ChangeStatusModal
-        show={showDialog}
-        handleClose={handleCloseDialog}
-        id={selectedEmployeeId}
-        getEmployeeList={getEmployeeList}
-      />
+      {showDialog && (
+        <ChangeStatusModal
+          show={showDialog}
+          handleClose={handleCloseDialog}
+          selectedEmployee={selectedEmployee}
+          getEmployeeList={getEmployeeList}
+        />
+      )}
+
+      {/* <StatusModal show={showDialog} handleClose={handleCloseDialog} /> */}
       <div className="d-flex justify-content-end">
         <input
           type="text"
           placeholder="Search by first name or last name or email..."
           onChange={(e) => handleSearchEmployee(e)}
-          style={{ margin: 5, borderRadius: 10, width: "20%" }}
+          style={{ margin: 16, borderRadius: 10, width: "24%", padding: 10 }}
         />
         <button
           type="button"
-          className="me-3  btn btn-dark mb-2 ms-1"
+          className="me-3 btn btn-dark mb-3 ms-1 mt-3"
           onClick={addEmployee}
         >
           Add Employee
@@ -187,18 +193,47 @@ const EmployeeList = () => {
                     >
                       <i className="bi bi-trash"></i>
                     </button>
-                    <button
-                      className="btn btn-outline-info btn-sm mx-2 "
-                      type="button"
-                      id="dropdownMenuButton2"
-                      style={{ border: "none" }}
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                      title="Change Status"
-                      onClick={() => handleOpenDialog(employee.id)}
-                    >
-                      <i className="bi bi-three-dots-vertical"></i>
-                    </button>
+                    <DropdownFixedMenu
+                      show={showDialog}
+                      handleClose={handleCloseDialog}
+                      handleOpenDialog={() =>
+                        handleOpenDialog(
+                          employee?.id,
+                          employee?.firstName,
+                          employee?.lastName
+                        )
+                      }
+                    />
+                    {/* <>
+                      <button
+                        className="btn btn-outline-info btn-sm mx-2 "
+                        type="button"
+                        id="dropdownMenuButton2"
+                        style={{ border: "none" }}
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        title="Change Status"
+                        // onClick={() => handleOpenDialog(employee.id)}
+                      >
+                        <i className="bi bi-three-dots-vertical"></i>
+                      </button>
+                      <ul
+                        className="dropdown-menu dropdown-menu-dark"
+                        aria-labelledby="dropdownMenuButton2"
+                      >
+                        <li>
+                          <a className="dropdown-item" data-bs-toggle="modal">
+                            change status
+                          </a>
+                        </li>
+                        <li>
+                          <a className="dropdown-item">item 1</a>
+                        </li>
+                        <li>
+                          <a className="dropdown-item">item 2</a>
+                        </li>
+                      </ul>
+                    </> */}
                   </td>
                 </tr>
               );

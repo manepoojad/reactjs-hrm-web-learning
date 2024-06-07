@@ -1,13 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 
-const DropdownFixedMenu = () => {
+const DropdownFixedMenu = ({
+  show,
+  handleClose = () => {},
+  handleOpenDialog = () => {},
+}) => {
   const dropdownRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const handleClickEvent = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setIsOpen(false);
+        setIsOpen(false);
       }
     };
 
@@ -51,9 +55,7 @@ const DropdownFixedMenu = () => {
             <a
               className="dropdown-item"
               role="button"
-              onClick={() => {
-                // setIsOpen(false);
-              }}
+              onClick={handleOpenDialog}
             >
               Change Status
             </a>
@@ -66,7 +68,7 @@ const DropdownFixedMenu = () => {
                 // setIsOpen(false);
               }}
             >
-              Item 1
+              Delete
             </a>
           </li>
           <li>

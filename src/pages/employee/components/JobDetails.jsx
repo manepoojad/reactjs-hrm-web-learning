@@ -83,7 +83,7 @@ const JobDetails = (props) => {
       organisationName: "",
       startDate: "",
       endDate: "",
-      designationLookupId: "",
+      designationLookupId: null,
     };
     const newJobDetails = {
       ...formData?.jobDetails,

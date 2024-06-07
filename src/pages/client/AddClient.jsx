@@ -109,7 +109,6 @@ const AddClient = () => {
     setClientDataValidationError(newErrors);
     return isValid;
   };
-  console.log("clientDataValidationError", clientDataValidationError);
 
   return (
     <div className="row g-3 m-0 p-0 d-flex flex-direction-row justify-content-center">
