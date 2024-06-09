@@ -1,5 +1,5 @@
-import React from "react";
 import { Route, Routes } from "react-router-dom";
+import EmployeeList from "src/pages/employee/EmployeeList";
 import NavigationBar from "../layouts/components/navbar/NavigationBar";
 import Home from "../pages/Home";
 import AddAssets from "../pages/assets/AddAssets";
@@ -10,7 +10,6 @@ import ClientList from "../pages/client/ClientList";
 import UpdateClient from "../pages/client/EditClient";
 import AddEmployee from "../pages/employee/AddEmployee";
 import EditEmployee from "../pages/employee/EditEmployee";
-import EmployeeList from "../pages/employee/EmployeeList";
 import EmployeeProfile from "../pages/employeeProfile/EmployeeProfile";
 
 const PostAuthRoutes = () => {
