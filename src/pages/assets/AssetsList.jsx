@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { API_ROUTES_PATH } from "../../helper/Constants";
@@ -6,7 +6,7 @@ import fetchInterceptor from "../../helper/fetchInterceptor";
 
 const AssetsList = () => {
   const navigate = useNavigate();
-  const [assetsList, setAssetsList] = useState([]);
+  const assetListRef = useRef([]);
   const [filteredAssetsList, setFilteredAssetsList] = useState([]);
   const [lookupData, setLookupData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -25,7 +25,8 @@ const AssetsList = () => {
           method: "GET",
         }
       );
-      setAssetsList(responseData?.assetList);
+
+      assetListRef.current = responseData?.assetList;
       setFilteredAssetsList(responseData?.assetList);
     } catch (error) {}
   };
@@ -42,8 +43,8 @@ const AssetsList = () => {
     const { value } = e.target;
 
     const filteredList =
-      assetsList &&
-      assetsList.filter((item, index) => {
+      assetListRef.current &&
+      assetListRef.current.filter((item, index) => {
         return item.companyName.toLowerCase().includes(value.toLowerCase());
       });
 
