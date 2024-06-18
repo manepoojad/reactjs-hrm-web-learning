@@ -79,6 +79,20 @@ const NavigationBar = (props) => {
               Assets
             </Link>
           </li>
+
+          <li style={{ display: "inline", margin: 8 }}>
+            <Link
+              style={{
+                textDecoration: "none",
+                color: isActiveLink("/projectList") ? "black" : "white",
+                fontWeight: isActiveLink("/projectList") ? "bold" : "normal",
+              }}
+              to="/projectList"
+            >
+              Project
+            </Link>
+          </li>
+
         </ul>
       </div>
       <div>{props.children}</div>

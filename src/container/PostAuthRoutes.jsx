@@ -1,5 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 import EmployeeList from "src/pages/employee/EmployeeList";
+import AddProject from "src/pages/project/AddProject";
+import EditProject from "src/pages/project/EditProject";
+import ProjectList from "src/pages/project/ProjectList";
 import NavigationBar from "../layouts/components/navbar/NavigationBar";
 import Home from "../pages/Home";
 import AddAssets from "../pages/assets/AddAssets";
@@ -28,6 +31,9 @@ const PostAuthRoutes = () => {
           <Route path="/assetsList" element={<AssetsList />} />
           <Route path="/assets/create" element={<AddAssets />} />
           <Route path="/assets/:id" element={<EditAssets />} />
+          <Route path="/projectList" element={<ProjectList />} />
+          <Route path="/project/create" element={<AddProject />} />
+          <Route path="/project/:id" element={<EditProject />} />
         </Routes>
       </NavigationBar>
     </>

@@ -11,4 +11,6 @@ export const API_ROUTES_PATH = {
   CREATE_ASSETS: "http://localhost:8888/api/asset",
   GET_ALL_USER_PROFILE: "http://localhost:8888/api/user/profile",
   GET_SPECIFIC_EMPLOYEE_PROFILE: "http://localhost:8888/api/employee/2",
+  GET_PROJECT_LIST: "http://localhost:8888/api/project",
+  CREATE_PROJECT:"http://localhost:8888/api/client"
 };
