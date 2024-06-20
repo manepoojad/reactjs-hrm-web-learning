@@ -1,65 +1,59 @@
-import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import fetchInterceptor from "src/helper/fetchInterceptor";
 
-const ProjectList = () => {
+const LeaveList = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const projectListRef = useRef();
+  const leaveListRef = useRef();
   const [currentPage, setCurrentPage] = useState(1);
-  const [filteredProjectList, setFilteredProjectList] = useState([]);
+  const [filteredLeaveList, setFilteredLeaveList] = useState([]);
   const itemsPerPage = 5;
 
   useEffect(() => {
-    getProjectList();
+    getLeaveList();
   }, []);
 
-  const getProjectList = async () => {
+  const getLeaveList = async () => {
     try {
       const responseData = await fetchInterceptor(
-        "http://localhost:8888/api/project",
+        "http://localhost:8888/api/leave",
         {
           method: "GET",
         }
       );
 
-      projectListRef.current = responseData?.project;
-      setFilteredProjectList(responseData?.project);
+      leaveListRef.current = responseData?.leaveList;
+      setFilteredLeaveList(responseData?.leaveList);
     } catch (error) {}
   };
 
-  const project = projectListRef.current;
-  const projectItem = project?.find((project) => project?.clientId);
-
-  const AddProject = () => {
-    navigate("/project/create", {
-      state: { projectItem },
-    });
+  const AddLeave = () => {
+    navigate("/leave/create");
   };
 
-  const handleSearchProject = (e) => {
+  const handleSearchLeave = (e) => {
     const { value } = e.target;
 
     const filteredList =
-      projectListRef.current &&
-      projectListRef.current.filter((item, index) => {
-        return item.projectName.toLowerCase().includes(value.toLowerCase());
+      leaveListRef.current &&
+      leaveListRef.current.filter((item, index) => {
+        return item.employeeName.toLowerCase().includes(value.toLowerCase());
       });
 
-    setFilteredProjectList(filteredList);
+    setFilteredLeaveList(filteredList);
   };
 
   const getPaginationData = () => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const paginatedProjectList = filteredProjectList?.slice(
+    const paginatedLeaveList = filteredLeaveList?.slice(
       indexOfFirstItem, // 0
       indexOfLastItem // 5
     );
 
-    const totalPages = Math.ceil(filteredProjectList?.length / itemsPerPage);
+    const totalPages = Math.ceil(filteredLeaveList?.length / itemsPerPage);
 
     const pageNumbers = [];
     for (let i = 1; i <= totalPages; i++) {
@@ -69,68 +63,58 @@ const ProjectList = () => {
     const returnData = {
       pageNumbers: pageNumbers,
       indexOfFirstItem: indexOfFirstItem,
-      paginatedProjectList: paginatedProjectList,
+      paginatedLeaveList: paginatedLeaveList,
     };
 
     return returnData;
   };
 
-  const { pageNumbers, indexOfFirstItem, paginatedProjectList } =
+  const { pageNumbers, indexOfFirstItem, paginatedLeaveList } =
     getPaginationData();
-
-    const handleDeleteProject = async (projectId, clickProjectIndex) => {
-      try {
-        await fetchInterceptor(`http://localhost:8888/api/project/${projectId}`, {
-          method: "DELETE",
-        });
-  
-        const updatedProjects = filteredProjectList.filter(
-          (item, index) => index !== clickProjectIndex
-        );
-        setFilteredProjectList(updatedProjects);
-      } catch (error) {
-        console.error("Error deleting project:", error);
-      }
-    };
-    
   return (
     <>
+      {" "}
       <div className="d-flex justify-content-end">
         <input
           type="text"
           placeholder="Search by Project Name..."
-          onChange={(e) => handleSearchProject(e)}
+          onChange={(e) => handleSearchLeave(e)}
           style={{ margin: 16, borderRadius: 10, width: "15%", padding: 10 }}
         />
         <Button
           type="button"
           className="me-3  btn btn-dark mb-3 ms-1 mt-3"
-          onClick={AddProject}
+          onClick={AddLeave}
         >
-          Add Project
+          Add Leave
         </Button>
       </div>
       <table className="table table-dark  table-hover table-striped table-bordered">
         <thead style={{ borderBottom: "solid" }}>
           <tr>
             <th>ID</th>
-            <th>projectName</th>
+            <th>Employee Name</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Leave Type</th>
             <th>Status</th>
-            <th>Start Date</th>
+            <th>Comment</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          {paginatedProjectList && paginatedProjectList?.length > 0 ? (
-            paginatedProjectList.map((project, index) => {
-              const startDate = moment(project?.startDate).format("DD/MM/YYYY");
-
+          {paginatedLeaveList && paginatedLeaveList?.length > 0 ? (
+            paginatedLeaveList.map((leave, index) => {
               return (
                 <tr key={index}>
                   <td>{index + 1 + indexOfFirstItem}</td>
-                  <td>{project?.projectName}</td>
-                  <td>{project?.status}</td>
-                  <td>{startDate}</td>
+                  <td>{leave?.employeeName}</td>
+                  <td>{leave?.title}</td>
+                  <td>{leave?.description}</td>
+                  <td>{leave?.leaveType}</td>
+                  <td>{leave?.status}</td>
+                  <td>{leave?.comment}</td>
+
                   <td>
                     <button
                       className="btn btn-outline-success btn-sm mx-2"
@@ -143,9 +127,9 @@ const ProjectList = () => {
                     </button>
                     <button
                       className="btn btn-outline-success btn-md mx-2"
-                      title="Edit Project Details"
+                      title="Edit leave Details"
                       onClick={() => {
-                        navigate(`/project/${project?.id}`);
+                        navigate(`/leave/${leave?.id}`);
                       }}
                       style={{ border: "none" }}
                     >
@@ -154,7 +138,7 @@ const ProjectList = () => {
                     <button
                       className="btn btn-outline-danger btn-sm mx-2 "
                       title="Remove Employee"
-                      onClick={() => handleDeleteProject(project.id, index)}
+                      //   onClick={() => handleDeleteProject(leave.id, index)}
                       style={{ border: "none" }}
                     >
                       <i className="bi bi-trash"></i>
@@ -194,7 +178,7 @@ const ProjectList = () => {
         ))}
         <button
           onClick={() => setCurrentPage(currentPage + 1)}
-          disabled={paginatedProjectList?.length < itemsPerPage}
+          disabled={paginatedLeaveList?.length < itemsPerPage}
         >
           Next
         </button>
@@ -203,4 +187,4 @@ const ProjectList = () => {
   );
 };
 
-export default ProjectList;
+export default LeaveList;

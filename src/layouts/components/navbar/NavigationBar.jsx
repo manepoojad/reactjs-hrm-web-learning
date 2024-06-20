@@ -1,4 +1,3 @@
-import React from "react";
 import { Link, useLocation } from "react-router-dom";
 
 const NavigationBar = (props) => {
@@ -37,7 +36,7 @@ const NavigationBar = (props) => {
               }}
               to="/employeeProfile"
             >
-              <i className=" me-1 bi-person-circle"></i> Profile 
+              <i className=" me-1 bi-person-circle"></i> Profile
             </Link>
           </li>
 
@@ -93,6 +92,18 @@ const NavigationBar = (props) => {
             </Link>
           </li>
 
+          <li style={{ display: "inline", margin: 8 }}>
+            <Link
+              style={{
+                textDecoration: "none",
+                color: isActiveLink("/leaveList") ? "black" : "white",
+                fontWeight: isActiveLink("/leaveList") ? "bold" : "normal",
+              }}
+              to="/leaveList"
+            >
+              Leave
+            </Link>
+          </li>
         </ul>
       </div>
       <div>{props.children}</div>

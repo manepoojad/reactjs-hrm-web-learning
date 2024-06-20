@@ -1,93 +1,108 @@
+import moment from "moment";
 import { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { API_ROUTES_PATH } from "src/helper/Constants";
 import fetchInterceptor from "src/helper/fetchInterceptor";
 
 const EditProject = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const projectData = location?.state?.projectData;
-  const employee=projectData?.employees?.firstName
-  const clientId = location?.state?.projectItem?.clientId;
+  const params = useParams();
+  console.log(params);
+  //   const clientId = location?.state?.projectItem?.clientId;
   const [isError, setIsError] = useState(false);
-  console.log(location?.state);
+  const [isEmployeeError, setIsEmployeeError] = useState(false);
   const [lookupData, setLookupData] = useState([]);
   const [companyList, setCompanyList] = useState([]);
-  const [showModal, setShowModal] = useState(false);
+
   const [employeeNameList, setEmployeeNameList] = useState([]);
-  const [editProjectDataValidationError, setEditProjectDataValidationError] =
-    useState({
-      projectName: "",
-      clientId: null,
-      startDate: "",
-      status: "",
-      employeeId: null,
-      employeeAllocation: "",
-    });
+
   const [editProjectData, setEditProjectData] = useState({
-    projectName: projectData?.projectName,
-    clientId: projectData?.clientId,
-    startDate: projectData?.startDate,
-    status: projectData?.status,
-    employeeId: projectData?.employeeId,
-    employeeAllocation: projectData,
+    projectName: "",
+    clientId: null,
+    startDate: "",
+    status: "",
+    projectEmployeeRecords: [
+      {
+        employeeId: null,
+        employeeAllocation: "",
+      },
+    ],
+  });
+
+  const [projectDataValidationError, setProjectDataValidationError] = useState({
+    projectName: "",
+    clientId: null,
+    startDate: "",
+    status: "",
+    projectEmployeeRecords: [
+      //   {
+      //     employeeId: null,
+      //     employeeAllocation: "",
+      //   },
+    ],
+  });
+
+  const [addEmployeeModalDataError, setAddEmployeeModalDataError] = useState({
+    isShow: false,
+    employeeId: null,
+    employeeAllocation: "",
+  });
+
+  const [addEmployeeModalData, setAddEmployeeModalData] = useState({
+    isShow: false,
+    employeeId: null,
+    employeeAllocation: "",
   });
 
   const handleCloseConfirmModal = () => {
-    setShowModal(false);
+    setAddEmployeeModalData({
+      isShow: false,
+      employeeId: null,
+      employeeAllocation: "",
+    });
   };
 
   const handleIconClick = () => {
-    setShowModal(true);
+    setAddEmployeeModalData({
+      ...addEmployeeModalData,
+      isShow: true,
+    });
   };
 
   useEffect(() => {
-    getAllLookupList();
     getEmployeeNameList();
+    getAllLookupList();
     getCompanyList();
+    getProjectDataById();
   }, []);
 
-  const handleUpdateProject = async () => {
-    let isValid;
-    isValid = validateForm();
-    const payload = {
-      projectName: editProjectData?.projectName,
-      status: editProjectData?.status,
-      startDate: editProjectData?.startDate,
-      employee: [
-        {
-          employeeId: editProjectData?.employeeId,
-          employeeAllocation: editProjectData?.employeeAllocation,
-        },
-      ],
-    };
-    if (isValid) {
+  const getEmployeeNameList = async () => {
+    try {
       const responseData = await fetchInterceptor(
-        `http://localhost:8888/api/client/${clientId}/project`,
+        "http://localhost:8888/api/employee/currentAllocableEmployee",
         {
-          method: "POST",
-          body: payload,
+          method: "GET",
         }
       );
-      navigate("/projectList");
-      return responseData;
-    }
+
+      setEmployeeNameList(responseData?.allocableEmployees);
+    } catch (error) {}
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
+  const getAllLookupList = async () => {
+    try {
+      const responseData = await fetchInterceptor(
+        API_ROUTES_PATH.GET_ALL_LOOKUP_LIST,
+        {
+          method: "GET",
+        }
+      );
 
-    const newProjectData = {
-      ...editProjectData,
-      [name]: value,
-    };
-
-    setEditProjectData(newProjectData);
-    validateForm(newProjectData);
+      setLookupData(responseData?.lookupData);
+    } catch (error) {}
   };
-  //   console.log("client",editProjectData)
 
   const getCompanyList = async () => {
     try {
@@ -101,49 +116,123 @@ const EditProject = () => {
       setCompanyList(responseData?.clients);
     } catch (error) {}
   };
-  console.log(companyList);
 
-  const getAllLookupList = async () => {
+  const getProjectDataById = async () => {
     try {
-      const response = await fetch(API_ROUTES_PATH.GET_ALL_LOOKUP_LIST, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Response not ok. ");
+      const responseData = await fetchInterceptor(
+        `http://localhost:8888/api/project/${params?.id}`,
+        {
+          method: "GET",
+        }
+      );
+      console.log(responseData);
+
+      if (responseData?.project?.projectemployeerecords?.length > 0) {
+        const employeeData = responseData.project.projectemployeerecords;
+        console.log(employeeData);
+
+        const employeeAllocations = employeeData.map((item) => ({
+          //   employeeId: item.employeeId,
+          employeeId: item.employeeId,
+          employeeAllocation: item.employeeAllocation,
+        }));
+
+        console.log(employeeAllocations);
+
+        setEditProjectData({
+          projectName: responseData?.project?.projectName,
+          clientId: responseData?.project?.clientId,
+          startDate: moment(responseData?.project?.startDate).format(
+            "YYYY-MM-DD"
+          ),
+          status: responseData?.project?.status,
+          projectEmployeeRecords: employeeAllocations,
+        });
+      } else {
+        setEditProjectData({
+          projectName: responseData?.project?.projectName,
+          clientId: responseData?.project?.clientId,
+          startDate: moment(responseData?.project?.startDate).format(
+            "YYYY-MM-DD"
+          ),
+          status: responseData?.project?.status,
+          projectEmployeeRecords: [],
+        });
       }
-      const responseData = await response.json();
-      const lookupData = responseData.lookupData;
-      setLookupData(lookupData);
     } catch (error) {}
+  };
+  console.log(editProjectData);
+
+    // const handleUpdateProject = async () => {
+    //   let isValid;
+    //   isValid = validateForm();
+    //   const payload = {
+    //     projectName: editProjectData?.projectName,
+    //     status: editProjectData?.status,
+    //     startDate: editProjectData?.startDate,
+    //     employee: [
+    //       {
+    //         employeeId: editProjectData?.employeeId,
+    //         employeeAllocation: editProjectData?.employeeAllocation,
+    //       },
+    //     ],
+    //   };
+    //   if (isValid) {
+    //     const responseData = await fetchInterceptor(
+    //       `http://localhost:8888/api/client/${clientId}/project`,
+    //       {
+    //         method: "POST",
+    //         body: payload,
+    //       }
+    //     );
+    //     navigate("/projectList");
+    //     return responseData;
+    //   }
+    // };
+
+  const handleInputChange = (e) => {
+    const { name, value, type } = e.target;
+    console.log(type);
+
+    let newProjectData;
+    if (type === "select") {
+      newProjectData = {
+        ...editProjectData,
+        projectEmployeeRecords: [
+          {
+            ...editProjectData.projectEmployeeRecords[0],
+            [name]: value,
+          },
+        ],
+      };
+    } else {
+      newProjectData = {
+        ...editProjectData,
+        [name]: value,
+      };
+    }
+
+    setEditProjectData(newProjectData);
+    validateForm(newProjectData);
+  };
+  //   console.log("client",editProjectData)
+
+  const handleModalInputChange = (e) => {
+    const { name, value, type } = e.target;
+
+    const newEmployeeData = {
+      ...addEmployeeModalData,
+      [name]: value,
+    };
+
+    setAddEmployeeModalData(newEmployeeData);
+    employeeValidForm(newEmployeeData);
   };
 
   const employeeAllocationLookup = lookupData?.find(
     (lookup) => lookup.lookupType === "employeeAllocation"
   );
   const employeeAllocationLookupList = employeeAllocationLookup?.lookups;
-
-  const getEmployeeNameList = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:8888/api/employee/currentAllocableEmployee`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Response not ok. ");
-      }
-      const responseData = await response.json();
-
-      setEmployeeNameList(responseData?.allocableEmployees);
-    } catch (error) {}
-  };
 
   const statusList = [
     { id: 1, status: "Active" },
@@ -154,7 +243,7 @@ const EditProject = () => {
   const validateForm = (projectInfo = editProjectData) => {
     let isValid = true;
     const newErrors = {
-      ...editProjectDataValidationError,
+      ...projectDataValidationError,
     };
 
     if (!projectInfo?.projectName) {
@@ -188,18 +277,83 @@ const EditProject = () => {
     if (!isValid) {
       setIsError(true);
     }
-    setEditProjectDataValidationError(newErrors);
+    setProjectDataValidationError(newErrors);
     return isValid;
   };
 
-  const handleAddEmployee = (employeeId, employeeAllocation) => {
-    const updatedProjectData = {
-      ...editProjectData,
-      employeeId,
-      employeeAllocation,
+  const employeeValidForm = (employeeInfo = addEmployeeModalData) => {
+    let isValid = true;
+    const newErrors = {
+      ...addEmployeeModalDataError,
     };
-    setEditProjectData(updatedProjectData);
-    setShowModal(false);
+    if (!employeeInfo?.employeeId) {
+      newErrors.employeeId = "Please select employee name.";
+      isValid = false;
+    } else {
+      newErrors.employeeId = "";
+    }
+
+    if (!employeeInfo?.employeeAllocation) {
+      newErrors.employeeAllocation = "Please select employee allocation.";
+      isValid = false;
+    } else {
+      newErrors.employeeAllocation = "";
+    }
+
+    if (!isValid) {
+      setIsEmployeeError(true);
+    }
+    setAddEmployeeModalDataError(newErrors);
+    return isValid;
+  };
+
+  const getEmployeeNameById = (employeeId) => {
+    const employeeData = employeeNameList?.find(
+      (employee) => employee.id == employeeId
+    );
+    const employeeName = `${employeeData?.firstName} ${employeeData?.lastName}`;
+    return employeeName;
+  };
+
+  const handleAddEmployee = () => {
+    // validation ==>
+    let isValid;
+    isValid = employeeValidForm();
+
+    if (isValid) {
+      const newEmployee = {
+        employeeId: addEmployeeModalData.employeeId,
+        employeeAllocation: addEmployeeModalData.employeeAllocation,
+      };
+
+      const newProjectData = {
+        ...editProjectData,
+        projectEmployeeRecords: [
+          ...editProjectData.projectEmployeeRecords,
+          newEmployee,
+        ],
+      };
+
+      setEditProjectData(newProjectData);
+
+      // Reset modal state
+      setAddEmployeeModalData({
+        isShow: false,
+        employeeId: null,
+        employeeAllocation: "",
+      });
+    }
+  };
+
+  const handleDeleteEmployee = (clickIndex) => {
+    const newEmployeeData = editProjectData?.projectEmployeeRecords?.filter(
+      (item, index) => index !== clickIndex
+    );
+    console.log(newEmployeeData);
+    setEditProjectData({
+      ...editProjectData,
+      projectEmployeeRecords: newEmployeeData,
+    });
   };
 
   return (
@@ -216,7 +370,7 @@ const EditProject = () => {
       <div style={{ display: "flex", flexDirection: "row" }}>
         <div
           style={{
-            width: "50%",
+            width: "60%",
             padding: 32,
             display: "flex",
             flexDirection: "column",
@@ -228,10 +382,7 @@ const EditProject = () => {
               flexDirection: "row",
             }}
           >
-            <div
-              className="col-md-6"
-              style={{ marginRight: 40, marginLeft: 100 }}
-            >
+            <div className="col-md-6" style={{ marginRight: 40 }}>
               <label className="form-label personal-label">
                 Project Name<span style={{ color: "red" }}>*</span>
               </label>
@@ -239,7 +390,7 @@ const EditProject = () => {
                 type="text"
                 name="projectName"
                 className={`form-control ${
-                  isError && editProjectDataValidationError?.projectName
+                  isError && projectDataValidationError?.projectName
                     ? "is-invalid"
                     : ""
                 }`}
@@ -248,9 +399,9 @@ const EditProject = () => {
                 onChange={handleInputChange}
                 required
               />
-              {isError && editProjectDataValidationError?.projectName && (
+              {isError && projectDataValidationError?.projectName && (
                 <div className="invalid-feedback">
-                  {editProjectDataValidationError?.projectName}
+                  {projectDataValidationError?.projectName}
                 </div>
               )}
             </div>
@@ -262,7 +413,7 @@ const EditProject = () => {
               <select
                 name="clientId"
                 className={`form-control ${
-                  isError && editProjectDataValidationError?.clientId
+                  isError && projectDataValidationError?.clientId
                     ? "is-invalid"
                     : ""
                 }`}
@@ -284,9 +435,9 @@ const EditProject = () => {
                     );
                   })}
               </select>
-              {isError && editProjectDataValidationError?.clientId && (
+              {isError && projectDataValidationError?.clientId && (
                 <div className="invalid-feedback">
-                  {editProjectDataValidationError?.clientId}
+                  {projectDataValidationError?.clientId}
                 </div>
               )}
             </div>
@@ -299,10 +450,7 @@ const EditProject = () => {
               paddingTop: 20,
             }}
           >
-            <div
-              className="col-md-6"
-              style={{ marginRight: 40, marginLeft: 100 }}
-            >
+            <div className="col-md-6" style={{ marginRight: 40 }}>
               <label className="form-label personal-label">
                 Start Date<span style={{ color: "red" }}>*</span>
               </label>
@@ -310,7 +458,7 @@ const EditProject = () => {
                 type="date"
                 name="startDate"
                 className={`form-control ${
-                  isError && editProjectDataValidationError?.startDate
+                  isError && projectDataValidationError?.startDate
                     ? "is-invalid"
                     : ""
                 }`}
@@ -319,9 +467,9 @@ const EditProject = () => {
                 onChange={handleInputChange}
                 required
               />
-              {isError && editProjectDataValidationError?.startDate && (
+              {isError && projectDataValidationError?.startDate && (
                 <div className="invalid-feedback">
-                  {editProjectDataValidationError?.startDate}
+                  {projectDataValidationError?.startDate}
                 </div>
               )}
             </div>
@@ -333,7 +481,7 @@ const EditProject = () => {
               <select
                 name="status"
                 className={`form-control ${
-                  isError && editProjectDataValidationError?.status
+                  isError && projectDataValidationError?.status
                     ? "is-invalid"
                     : ""
                 }`}
@@ -348,38 +496,98 @@ const EditProject = () => {
                 {statusList?.[0] &&
                   statusList.map((item, index) => {
                     return (
-                      <option key={index} value={item.status}>
+                      <option key={index} value={item.id}>
                         {item.status}
                       </option>
                     );
                   })}
               </select>
-              {isError && editProjectDataValidationError?.status && (
+              {isError && projectDataValidationError?.status && (
                 <div className="invalid-feedback">
-                  {editProjectDataValidationError?.status}
+                  {projectDataValidationError?.status}
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        <div style={{ width: "50%" }}>
-          <div>
-            Click On <i class="bi bi-plus-circle-fill"></i> To Add Employee On
-            Project
-          </div>
+        <div style={{ borderRight: "2px solid grey", marginLeft: 20 }}></div>
 
-          <div style={{ marginLeft: 250, marginTop: 10 }}>
-            {" "}
-            <i
-              style={{ fontSize: 25, cursor: "pointer" }}
-              class="bi bi-plus-circle-fill"
-              onClick={handleIconClick}
-            ></i>
-          </div>
+        <div
+          style={{
+            width: "30%",
+            marginLeft: 15,
+            marginRight: 100,
+            marginTop: 30,
+          }}
+        >
+          {editProjectData?.projectEmployeeRecords?.length > 0 ? (
+            <>
+              <div style={{ display: "flex", justifyContent: "flex-start" }}>
+                Employee On Project{" "}
+                <i
+                  style={{ marginLeft: 10, cursor: "pointer" }}
+                  class="bi bi-plus-circle-fill"
+                  onClick={handleIconClick}
+                ></i>{" "}
+              </div>
+              {editProjectData.projectEmployeeRecords.map((employee, index) => {
+                console.log(employee);
+                return (
+                  <div
+                    key={index}
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      marginTop: 10,
+                      border: "1px solid grey",
+                      padding: 8,
+                      borderRadius: 10,
+                    }}
+                  >
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                      <div>
+                        {index + 1}. {getEmployeeNameById(employee.employeeId)}
+                      </div>
+                      <div> {employee.employeeAllocation}</div>
+                    </div>
+                    <div
+                      style={{
+                        marginTop: 12,
+                        marginRight: 16,
+                        color: "red",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => handleDeleteEmployee(index)}
+                    >
+                      <i className="bi bi-trash"></i>
+                    </div>
+                  </div>
+                );
+              })}
+            </>
+          ) : (
+            <>
+              <div>
+                Click On <i class="bi bi-plus-circle-fill"></i> To Add Employee
+                On Project
+              </div>
+
+              <div style={{ marginLeft: 250, marginTop: 10 }}>
+                {" "}
+                <i
+                  style={{ fontSize: 25, cursor: "pointer" }}
+                  class="bi bi-plus-circle-fill"
+                  onClick={handleIconClick}
+                ></i>
+              </div>
+            </>
+          )}
+
           <Modal
             dialogClassName="custom-modal"
-            show={showModal}
+            show={addEmployeeModalData.isShow}
             onHide={handleCloseConfirmModal}
           >
             <Modal.Header closeButton>
@@ -394,13 +602,13 @@ const EditProject = () => {
                   <select
                     name="employeeId"
                     className={`form-control ${
-                      isError && editProjectDataValidationError?.employeeId
+                      isEmployeeError && addEmployeeModalDataError?.employeeId
                         ? "is-invalid"
                         : ""
                     }`}
                     aria-label=".form-select-lg example"
-                    value={editProjectData?.employeeId || ""}
-                    onChange={handleInputChange}
+                    value={addEmployeeModalData?.employeeId || ""}
+                    onChange={handleModalInputChange}
                     required
                   >
                     <option defaultValue disabled value="">
@@ -416,9 +624,9 @@ const EditProject = () => {
                         );
                       })}
                   </select>
-                  {isError && editProjectDataValidationError?.employeeId && (
+                  {isEmployeeError && addEmployeeModalDataError?.employeeId && (
                     <div className="invalid-feedback">
-                      {editProjectDataValidationError?.employeeId}
+                      {addEmployeeModalDataError?.employeeId}
                     </div>
                   )}
                 </div>
@@ -430,14 +638,14 @@ const EditProject = () => {
                   <select
                     name="employeeAllocation"
                     className={`form-control ${
-                      isError &&
-                      editProjectDataValidationError?.employeeAllocation
+                      isEmployeeError &&
+                      addEmployeeModalDataError?.employeeAllocation
                         ? "is-invalid"
                         : ""
                     }`}
                     aria-label=".form-select-lg example"
-                    value={editProjectData?.employeeAllocation || ""}
-                    onChange={handleInputChange}
+                    value={addEmployeeModalData?.employeeAllocation || ""}
+                    onChange={handleModalInputChange}
                     required
                   >
                     <option defaultValue disabled value="">
@@ -452,10 +660,10 @@ const EditProject = () => {
                         );
                       })}
                   </select>
-                  {isError &&
-                    editProjectDataValidationError?.employeeAllocation && (
+                  {isEmployeeError &&
+                    addEmployeeModalDataError?.employeeAllocation && (
                       <div className="invalid-feedback">
-                        {editProjectDataValidationError?.employeeAllocation}
+                        {addEmployeeModalDataError?.employeeAllocation}
                       </div>
                     )}
                 </div>
@@ -465,15 +673,7 @@ const EditProject = () => {
               <Button variant="secondary" onClick={handleCloseConfirmModal}>
                 No
               </Button>
-              <Button
-                variant="primary"
-                onClick={() =>
-                  handleAddEmployee(
-                    editProjectData.employeeId,
-                    editProjectData.employeeAllocation
-                  )
-                }
-              >
+              <Button variant="primary" onClick={() => handleAddEmployee()}>
                 Yes
               </Button>
             </Modal.Footer>
@@ -484,7 +684,7 @@ const EditProject = () => {
         <Button
           type="button"
           className="bg-success text-white"
-          onClick={() => handleUpdateProject()}
+            // onClick={() => handleUpdateProject()}
         >
           Update
         </Button>

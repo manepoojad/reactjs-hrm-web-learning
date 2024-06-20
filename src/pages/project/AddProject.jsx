@@ -10,7 +10,7 @@ const AddProject = () => {
   const location = useLocation();
   const clientId = location?.state?.projectItem?.clientId;
   const [isError, setIsError] = useState(false);
-  console.log(location?.state);
+  const [isEmployeeError, setIsEmployeeError] = useState(false);
   const [lookupData, setLookupData] = useState([]);
   const [companyList, setCompanyList] = useState([]);
 
@@ -21,12 +21,7 @@ const AddProject = () => {
     clientId: null,
     startDate: "",
     status: "",
-    employee: [
-      //   {
-      //     employeeId: null,
-      //     employeeAllocation: "",
-      //   },
-    ],
+    employee: [],
   });
 
   const [projectDataValidationError, setProjectDataValidationError] = useState({
@@ -40,6 +35,12 @@ const AddProject = () => {
       //     employeeAllocation: "",
       //   },
     ],
+  });
+
+  const [addEmployeeModalDataError, setAddEmployeeModalDataError] = useState({
+    isShow: false,
+    employeeId: null,
+    employeeAllocation: "",
   });
 
   const [addEmployeeModalData, setAddEmployeeModalData] = useState({
@@ -72,23 +73,13 @@ const AddProject = () => {
   const handleCreateProject = async () => {
     let isValid;
     isValid = validateForm();
-    const payload = {
-      projectName: projectData?.projectName,
-      status: projectData?.status,
-      startDate: projectData?.startDate,
-      employee: [
-        {
-          employeeId: projectData?.employeeId,
-          employeeAllocation: projectData?.employeeAllocation,
-        },
-      ],
-    };
+
     if (isValid) {
       const responseData = await fetchInterceptor(
         `http://localhost:8888/api/client/${clientId}/project`,
         {
           method: "POST",
-          body: payload,
+          body: projectData,
         }
       );
       navigate("/projectList");
@@ -98,7 +89,6 @@ const AddProject = () => {
 
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
-    console.log(type);
 
     let newProjectData;
     if (type === "select") {
@@ -121,16 +111,17 @@ const AddProject = () => {
     setProjectData(newProjectData);
     validateForm(newProjectData);
   };
-  //   console.log("client",projectData)
 
   const handleModalInputChange = (e) => {
     const { name, value, type } = e.target;
 
-    setAddEmployeeModalData({
+    const newEmployeeData = {
       ...addEmployeeModalData,
       [name]: value,
-    });
-    // validateForm(newProjectData);
+    };
+
+    setAddEmployeeModalData(newEmployeeData);
+    employeeValidForm(newEmployeeData);
   };
 
   const getCompanyList = async () => {
@@ -145,7 +136,6 @@ const AddProject = () => {
       setCompanyList(responseData?.clients);
     } catch (error) {}
   };
-  console.log(companyList);
 
   const getAllLookupList = async () => {
     try {
@@ -189,13 +179,7 @@ const AddProject = () => {
     } catch (error) {}
   };
 
-  const getEmployeeNameBYId = (employeeId) => {
-    const employeeData = employeeNameList?.find(
-      (employee) => employee.id == employeeId
-    );
-    const employeeName = `${employeeData?.firstName} ${employeeData?.lastName}`;
-    return employeeName;
-  };
+  
 
   const statusList = [
     { id: 1, status: "Active" },
@@ -237,20 +221,6 @@ const AddProject = () => {
       newErrors.startDate = "";
     }
 
-    if (!projectInfo.employee?.employeeId) {
-      newErrors.employee.employeeId = "Please select employee name.";
-      isValid = false;
-    } else {
-      newErrors.employee.employeeId = "";
-    }
-
-    if (!projectInfo.employee?.employeeAllocation) {
-      newErrors.employeeAllocation = "Please select employee allocation.";
-      isValid = false;
-    } else {
-      newErrors.employeeAllocation = "";
-    }
-
     if (!isValid) {
       setIsError(true);
     }
@@ -258,21 +228,94 @@ const AddProject = () => {
     return isValid;
   };
 
-  const handleAddEmployee = () => {
+  const employeeValidForm = (employeeInfo = addEmployeeModalData) => {
+    let isValid = true;
+    const newErrors = {
+      ...addEmployeeModalDataError,
+    };
+    if (!employeeInfo?.employeeId) {
+      newErrors.employeeId = "Please select employee name.";
+      isValid = false;
+    } else {
+      newErrors.employeeId = "";
+    }
+
+    if (!employeeInfo?.employeeAllocation) {
+      newErrors.employeeAllocation = "Please select employee allocation.";
+      isValid = false;
+    } else {
+      newErrors.employeeAllocation = "";
+    }
+
+    if (!isValid) {
+      setIsEmployeeError(true);
+    }
+    setAddEmployeeModalDataError(newErrors);
+    return isValid;
+  };
+//   const handleAddEmployee = () => {
+//     // validation ==>
+//     let isValid;
+//     isValid = employeeValidForm();
+//     if (isValid) {
+//       const newProjectData = { ...projectData };
+
+//       newProjectData.employee.push({
+//         employeeId: addEmployeeModalData.employeeId,
+//         employeeAllocation: addEmployeeModalData.employeeAllocation,
+//       });
+
+//       setAddEmployeeModalData({
+//         isShow: false,
+//         employeeId: null,
+//         employeeAllocation: "",
+//       });
+//     }
+//   };
+
+const handleAddEmployee = () => {
     // validation ==>
+    let isValid;
+    isValid = employeeValidForm();
+  
+    if (isValid) {
+      const newEmployee = {
+        employeeId: addEmployeeModalData.employeeId,
+        employeeAllocation: addEmployeeModalData.employeeAllocation,
+      };
+  
+      const newProjectData = {
+        ...projectData,
+        employee: [...projectData.employee, newEmployee],
+      };
+  
+      setProjectData(newProjectData);
+  
+      // Reset modal state
+      setAddEmployeeModalData({
+        isShow: false,
+        employeeId: null,
+        employeeAllocation: "",
+      });
+    }
+  };
 
-    const newProjectData = { ...projectData };
-
-    newProjectData.employee.push({
-      employeeId: addEmployeeModalData.employeeId,
-      employeeAllocation: addEmployeeModalData.employeeAllocation,
+  const handleDeleteEmployee = (clickIndex) => {
+    const newEmployeeData = projectData?.employee?.filter(
+      (item, index) => index !== clickIndex
+    );
+    setProjectData({
+      ...projectData,
+      employee: newEmployeeData,
     });
+  };
 
-    setAddEmployeeModalData({
-      isShow: false,
-      employeeId: null,
-      employeeAllocation: "",
-    });
+  const getEmployeeNameBYId = (employeeId) => {
+    const employeeData = employeeNameList?.find(
+      (employee) => employee.id == employeeId
+    );
+    const employeeName = `${employeeData?.firstName} ${employeeData?.lastName}`;
+    return employeeName;
   };
 
   return (
@@ -289,7 +332,7 @@ const AddProject = () => {
       <div style={{ display: "flex", flexDirection: "row" }}>
         <div
           style={{
-            width: "50%",
+            width: "60%",
             padding: 32,
             display: "flex",
             flexDirection: "column",
@@ -301,10 +344,7 @@ const AddProject = () => {
               flexDirection: "row",
             }}
           >
-            <div
-              className="col-md-6"
-              style={{ marginRight: 40, marginLeft: 100 }}
-            >
+            <div className="col-md-6" style={{ marginRight: 40 }}>
               <label className="form-label personal-label">
                 Project Name<span style={{ color: "red" }}>*</span>
               </label>
@@ -372,10 +412,7 @@ const AddProject = () => {
               paddingTop: 20,
             }}
           >
-            <div
-              className="col-md-6"
-              style={{ marginRight: 40, marginLeft: 100 }}
-            >
+            <div className="col-md-6" style={{ marginRight: 40 }}>
               <label className="form-label personal-label">
                 Start Date<span style={{ color: "red" }}>*</span>
               </label>
@@ -436,28 +473,77 @@ const AddProject = () => {
           </div>
         </div>
 
-        <div style={{ width: "50%" }}>
-          <div>
-            Click On <i class="bi bi-plus-circle-fill"></i> To Add Employee On
-            Project
-          </div>
+        <div style={{ borderRight: "2px solid grey", marginLeft: 20 }}></div>
 
-          <div style={{ marginLeft: 250, marginTop: 10 }}>
-            {" "}
-            <i
-              style={{ fontSize: 25, cursor: "pointer" }}
-              class="bi bi-plus-circle-fill"
-              onClick={handleIconClick}
-            ></i>
-          </div>
+        <div
+          style={{
+            width: "30%",
+            marginLeft: 15,
+            marginRight: 100,
+            marginTop: 30,
+          }}
+        >
+          {projectData?.employee?.length > 0 ? (
+            <>
+              <div style={{ display: "flex", justifyContent: "flex-start" }}>
+                Employee On Project{" "}
+                <i
+                  style={{ marginLeft: 10, cursor: "pointer" }}
+                  class="bi bi-plus-circle-fill"
+                  onClick={handleIconClick}
+                ></i>{" "}
+              </div>
+              {projectData.employee.map((employee, index) => (
+                <div
+                  key={index}
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    marginTop: 10,
+                    border: "1px solid grey",
+                    padding: 8,
+                    borderRadius: 10,
+                  }}
+                >
+                  <div style={{ display: "flex", flexDirection: "column" }}>
+                    <div>
+                      {index + 1}. {getEmployeeNameBYId(employee.employeeId)}
+                    </div>
+                    <div> {employee.employeeAllocation}</div>
+                  </div>
+                  <div
+                    style={{
+                      marginTop: 12,
+                      marginRight: 16,
+                      color: "red",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => handleDeleteEmployee(index)}
+                  >
+                    <i className="bi bi-trash"></i>
+                  </div>
+                </div>
+              ))}
+            </>
+          ) : (
+            <>
+              <div>
+                Click On <i class="bi bi-plus-circle-fill"></i> To Add Employee
+                On Project
+              </div>
 
-          {/* Display selected employees */}
-          {projectData.employee.map((employee, index) => (
-            <div key={index} style={{ marginTop: 10 }}>
-              Employee {index + 1}: {getEmployeeNameBYId(employee.employeeId)} -{" "}
-              {employee.employeeAllocation}
-            </div>
-          ))}
+              <div style={{ marginLeft: 250, marginTop: 10 }}>
+                {" "}
+                <i
+                  style={{ fontSize: 25, cursor: "pointer" }}
+                  class="bi bi-plus-circle-fill"
+                  onClick={handleIconClick}
+                ></i>
+              </div>
+            </>
+          )}
+
           <Modal
             dialogClassName="custom-modal"
             show={addEmployeeModalData.isShow}
@@ -474,11 +560,11 @@ const AddProject = () => {
                   </label>
                   <select
                     name="employeeId"
-                    // className={`form-control ${
-                    //   isError && projectDataValidationError?.employeeId
-                    //     ? "is-invalid"
-                    //     : ""
-                    // }`}
+                    className={`form-control ${
+                      isEmployeeError && addEmployeeModalDataError?.employeeId
+                        ? "is-invalid"
+                        : ""
+                    }`}
                     aria-label=".form-select-lg example"
                     value={addEmployeeModalData?.employeeId || ""}
                     onChange={handleModalInputChange}
@@ -497,11 +583,11 @@ const AddProject = () => {
                         );
                       })}
                   </select>
-                  {/* {isError && projectDataValidationError?.status && (
+                  {isEmployeeError && addEmployeeModalDataError?.employeeId && (
                     <div className="invalid-feedback">
-                      {projectDataValidationError?.status}
+                      {addEmployeeModalDataError?.employeeId}
                     </div>
-                  )} */}
+                  )}
                 </div>
 
                 <div className="col-md-6">
@@ -510,12 +596,12 @@ const AddProject = () => {
                   </label>
                   <select
                     name="employeeAllocation"
-                    // className={`form-control ${
-                    //   isError &&
-                    //   projectDataValidationError?.employee?.employeeAllocation
-                    //     ? "is-invalid"
-                    //     : ""
-                    // }`}
+                    className={`form-control ${
+                      isEmployeeError &&
+                      addEmployeeModalDataError?.employeeAllocation
+                        ? "is-invalid"
+                        : ""
+                    }`}
                     aria-label=".form-select-lg example"
                     value={addEmployeeModalData?.employeeAllocation || ""}
                     onChange={handleModalInputChange}
@@ -533,16 +619,12 @@ const AddProject = () => {
                         );
                       })}
                   </select>
-                  {/* {isError &&
-                    projectDataValidationError?.employee
-                      ?.employeeAllocation && (
+                  {isEmployeeError &&
+                    addEmployeeModalDataError?.employeeAllocation && (
                       <div className="invalid-feedback">
-                        {
-                          projectDataValidationError?.employee
-                            ?.employeeAllocation
-                        }
+                        {addEmployeeModalDataError?.employeeAllocation}
                       </div>
-                    )} */}
+                    )}
                 </div>
               </div>
             </Modal.Body>
