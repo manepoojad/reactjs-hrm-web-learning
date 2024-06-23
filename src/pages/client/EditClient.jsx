@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import fetchInterceptor from "../../helper/fetchInterceptor";
@@ -36,7 +36,7 @@ const UpdateClient = () => {
 
   const handleConfirmUpdateClient = async () => {
     const responseData = await fetchInterceptor(
-      `http://localhost:8888/api/client/${params?.id}`,
+      `/client/${params?.id}`,
       {
         method: "PUT",
         body: UpdateClientData,

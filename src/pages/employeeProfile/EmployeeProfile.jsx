@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { API_ROUTES_PATH } from "../../helper/Constants";
 import fetchInterceptor from "../../helper/fetchInterceptor";
@@ -14,7 +14,7 @@ const EmployeeProfile = () => {
   const getUserProfileData = async () => {
     try {
       const responseData = await fetchInterceptor(
-        `http://localhost:8888/api/employee/2`,
+        `/employee/2`,
         {
           method: "GET",
         }

@@ -115,7 +115,7 @@ const AddLeave = () => {
     isValid = validateForm();
     if (isValid) {
       const responseData = await fetchInterceptor(
-        "http://localhost:8888/api/leave",
+        "/leave",
         {
           method: "POST",
           body: leaveData,

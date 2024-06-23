@@ -22,7 +22,7 @@ const Login = () => {
   const handleClickSignIn = async () => {
     try {
       const responseData = await fetchInterceptor(
-        "http://localhost:8888/api/user/auth",
+        "/user/auth",
 
         {
           method: "POST",

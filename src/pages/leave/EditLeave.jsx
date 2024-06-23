@@ -32,7 +32,7 @@ const EditLeave = () => {
   const getLeaveById = async () => {
     try {
       const responseData = await fetchInterceptor(
-        `http://localhost:8888/api/leave/1`,
+        `/leave/1`,
         {
           method: "GET",
         }
@@ -142,7 +142,7 @@ const EditLeave = () => {
     isValid = validateForm();
     if (isValid) {
       const responseData = await fetchInterceptor(
-        "http://localhost:8888/api/leave",
+        "/leave",
         {
           method: "POST",
           body: editLeaveData,

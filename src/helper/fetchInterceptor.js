@@ -1,4 +1,5 @@
 import Cookies from "js-cookie";
+import { baseUrl } from "./Constants";
 
 const optionsDefaultValue = {
   method: "GET",
@@ -10,7 +11,7 @@ export const fetchInterceptor = async (
   optionArg = optionsDefaultValue
 ) => {
   //  full URL
-  //   const fullUrl = `${baseUrl}${url}`;
+  const fullUrl = `${baseUrl}${url}`;
 
   const method = optionArg?.method ? optionArg?.method : "GET";
   const body = optionArg?.body ? optionArg?.body : "";
@@ -35,7 +36,7 @@ export const fetchInterceptor = async (
   }
 
   // Executing the fetch request
-  const response = await fetch(url, options);
+  const response = await fetch(fullUrl, options);
 
   // Handling response status
   if (response.status === 401) {

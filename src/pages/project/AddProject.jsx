@@ -76,7 +76,7 @@ const AddProject = () => {
 
     if (isValid) {
       const responseData = await fetchInterceptor(
-        `http://localhost:8888/api/client/${clientId}/project`,
+        `/client/${clientId}/project`,
         {
           method: "POST",
           body: projectData,
@@ -162,7 +162,7 @@ const AddProject = () => {
   const getEmployeeNameList = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8888/api/employee/currentAllocableEmployee`,
+        `/employee/currentAllocableEmployee`,
         {
           method: "GET",
           headers: {

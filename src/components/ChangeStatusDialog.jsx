@@ -25,7 +25,7 @@ const ChangeStatusModal = ({
 
   // const handleChangeEmployeeStatus = async () => {
   //   const responseData = await fetchInterceptor(
-  //     `http://localhost:8888/api/employee/${id}/statusOfemployee`,
+  //     `/employee/${id}/statusOfemployee`,
   //     {
   //       method: "POST",
   //       body: statusData,
@@ -44,7 +44,7 @@ const ChangeStatusModal = ({
   const confirmStatusChange = async () => {
     // Perform the status change
     const responseData = await fetchInterceptor(
-      `http://localhost:8888/api/employee/${selectedEmployee?.id}/statusOfemployee`,
+      `/employee/${selectedEmployee?.id}/statusOfemployee`,
       {
         method: "POST",
         body: statusData,

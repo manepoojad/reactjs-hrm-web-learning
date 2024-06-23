@@ -81,7 +81,7 @@ const EditProject = () => {
   const getEmployeeNameList = async () => {
     try {
       const responseData = await fetchInterceptor(
-        "http://localhost:8888/api/employee/currentAllocableEmployee",
+        "/employee/currentAllocableEmployee",
         {
           method: "GET",
         }
@@ -120,7 +120,7 @@ const EditProject = () => {
   const getProjectDataById = async () => {
     try {
       const responseData = await fetchInterceptor(
-        `http://localhost:8888/api/project/${params?.id}`,
+        `/project/${params?.id}`,
         {
           method: "GET",
         }
@@ -179,7 +179,7 @@ const EditProject = () => {
     //   };
     //   if (isValid) {
     //     const responseData = await fetchInterceptor(
-    //       `http://localhost:8888/api/client/${clientId}/project`,
+    //       `/client/${clientId}/project`,
     //       {
     //         method: "POST",
     //         body: payload,

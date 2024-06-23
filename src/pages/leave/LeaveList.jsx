@@ -18,7 +18,7 @@ const LeaveList = () => {
   const getLeaveList = async () => {
     try {
       const responseData = await fetchInterceptor(
-        "http://localhost:8888/api/leave",
+        "/leave",
         {
           method: "GET",
         }
@@ -75,7 +75,7 @@ const LeaveList = () => {
   const handleDeleteLeave = async (leaveId, clickIndex) => {
     console.log(clickIndex);
     try {
-      await fetchInterceptor(`http://localhost:8888/api/leave/${leaveId}`, {
+      await fetchInterceptor(`/leave/${leaveId}`, {
         method: "DELETE",
       });
 

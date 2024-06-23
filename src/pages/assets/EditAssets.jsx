@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { API_ROUTES_PATH } from "../../helper/Constants";
@@ -45,7 +45,7 @@ const EditAssets = () => {
 
   const handleConfirmUpdateAsset = async () => {
     const responseData = await fetchInterceptor(
-      `http://localhost:8888/api/asset/${params?.id}`,
+      `/asset/${params?.id}`,
       {
         method: "PUT",
         body: editAssetsData,

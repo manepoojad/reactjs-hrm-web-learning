@@ -19,7 +19,7 @@ const ProjectList = () => {
   const getProjectList = async () => {
     try {
       const responseData = await fetchInterceptor(
-        "http://localhost:8888/api/project",
+        "/project",
         {
           method: "GET",
         }
@@ -80,7 +80,7 @@ const ProjectList = () => {
 
     const handleDeleteProject = async (projectId, clickProjectIndex) => {
       try {
-        await fetchInterceptor(`http://localhost:8888/api/project/${projectId}`, {
+        await fetchInterceptor(`/project/${projectId}`, {
           method: "DELETE",
         });
   

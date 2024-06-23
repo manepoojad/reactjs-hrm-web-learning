@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import BankDetailsAndDocuments from "./components/BankDetailsAndDocuments";
@@ -228,7 +228,7 @@ const AddEmployee = () => {
 
   const handleAddEmployeePersonalDetails = async () => {
     const responseData = await fetchInterceptor(
-      `http://localhost:8888/api/employee/${employeeData?.employeeId}/personal`,
+      `/employee/${employeeData?.employeeId}/personal`,
       {
         method: "POST",
         body: employeeData?.personalDetails,
@@ -252,7 +252,7 @@ const AddEmployee = () => {
 
   const handleUpdateEmployeePersonalDetails = async () => {
     const responseData = await fetchInterceptor(
-      `http://localhost:8888/api/employee/${employeeData?.employeeId}/personal`,
+      `/employee/${employeeData?.employeeId}/personal`,
       {
         method: "PUT",
         body: employeeData?.personalDetails,
@@ -261,7 +261,7 @@ const AddEmployee = () => {
 
     return responseData;
     // const jwtToken = Cookies.get("jwtToken");
-    // const url = `http://localhost:8888/api/employee/${employeeData?.employeeId}/personal`;
+    // const url = `/employee/${employeeData?.employeeId}/personal`;
     // const options = {
     //   method: "PUT",
     //   body: JSON.stringify(employeeData?.personalDetails),
@@ -287,7 +287,7 @@ const AddEmployee = () => {
       addresses: employeeData?.contactInfo?.addresses,
     };
     const responseData = await fetchInterceptor(
-      `http://localhost:8888/api/employee/${employeeData?.employeeId}/contact`,
+      `/employee/${employeeData?.employeeId}/contact`,
       {
         method: "PUT",
         body: payload,
@@ -296,7 +296,7 @@ const AddEmployee = () => {
 
     return responseData;
     // const response = await fetch(
-    //   `http://localhost:8888/api/employee/${employeeData?.employeeId}/contact`,
+    //   `/employee/${employeeData?.employeeId}/contact`,
     //   {
     //     method: "PUT",
     //     body: JSON.stringify(payload),
@@ -320,7 +320,7 @@ const AddEmployee = () => {
       experience: employeeData?.jobDetails?.experience,
     };
     const responseData = await fetchInterceptor(
-      `http://localhost:8888/api/employee/${employeeData?.employeeId}/job`,
+      `/employee/${employeeData?.employeeId}/job`,
       {
         method: "PUT",
         body: payload,
@@ -329,7 +329,7 @@ const AddEmployee = () => {
 
     return responseData;
     // const response = await fetch(
-    //   `http://localhost:8888/api/employee/${employeeData?.employeeId}/job`,
+    //   `/employee/${employeeData?.employeeId}/job`,
     //   {
     //     method: "PUT",
     //     body: JSON.stringify(payload),
@@ -353,7 +353,7 @@ const AddEmployee = () => {
       hobbiesRecord: employeeData?.skillInfo?.hobbiesRecord,
     };
     const responseData = await fetchInterceptor(
-      `http://localhost:8888/api/employee/${employeeData?.employeeId}/skill`,
+      `/employee/${employeeData?.employeeId}/skill`,
       {
         method: "PUT",
         body: payload,
@@ -362,7 +362,7 @@ const AddEmployee = () => {
 
     return responseData;
     // const response = await fetch(
-    //   `http://localhost:8888/api/employee/${employeeData?.employeeId}/skill`,
+    //   `/employee/${employeeData?.employeeId}/skill`,
     //   {
     //     method: "PUT",
     //     body: JSON.stringify(payload),
@@ -382,7 +382,7 @@ const AddEmployee = () => {
   const handleUpdateAddEmployeeBankDetails = async () => {
     // const jwtToken = Cookies.get("jwtToken");
     const responseData = await fetchInterceptor(
-      `http://localhost:8888/api/employee/${employeeData?.employeeId}/bank`,
+      `/employee/${employeeData?.employeeId}/bank`,
       {
         method: "PUT",
         body: employeeData?.bankDetails,
@@ -391,7 +391,7 @@ const AddEmployee = () => {
 
     return responseData;
     // const response = await fetch(
-    //   `http://localhost:8888/api/employee/${employeeData?.employeeId}/bank`,
+    //   `/employee/${employeeData?.employeeId}/bank`,
     //   {
     //     method: "PUT",
     //     body: JSON.stringify(employeeData?.bankDetails),
