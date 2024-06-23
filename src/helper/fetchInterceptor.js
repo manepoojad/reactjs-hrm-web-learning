@@ -22,7 +22,9 @@ export const fetchInterceptor = async (
     },
   };
 
-  if (method !== "GET" && method !== "get") {
+  const apiMethodListWithBody = ["post", "put", "patch"];
+  const lowerCaseMethod = method.toLowerCase();
+  if (apiMethodListWithBody.includes(lowerCaseMethod)) {
     options.body = JSON.stringify(body);
   }
 
