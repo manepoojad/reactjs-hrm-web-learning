@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { getEmployeeListAction } from "src/redux/thunk/employeeThunk";
 import ChangeStatusModal from "../../components/ChangeStatusDialog";
 import DropdownFixedMenu from "../../components/DropdownFixedMenu";
 import { API_ROUTES_PATH } from "../../helper/Constants";
@@ -7,6 +9,9 @@ import fetchInterceptor from "../../helper/fetchInterceptor";
 
 const EmployeeList = () => {
   const navigate = useNavigate();
+
+  const dispatch = useDispatch()
+
   const [employeeList, setEmployeeList] = useState([]);
   const [filteredEmployeeList, setFilteredEmployeeList] = useState([]);
   const [showDialog, setShowDialog] = useState(false);
@@ -22,12 +27,7 @@ const EmployeeList = () => {
 
   const getEmployeeList = async () => {
     try {
-      const responseData = await fetchInterceptor(
-        API_ROUTES_PATH.GET_EMPLOYEE_LIST,
-        {
-          method: "GET",
-        }
-      );
+      const responseData = await dispatch(getEmployeeListAction()).unwrap()
 
       setEmployeeList(responseData?.employeeList);
       setFilteredEmployeeList(responseData?.employeeList);

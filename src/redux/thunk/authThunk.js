@@ -2,8 +2,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
 import fetchInterceptor from "src/helper/fetchInterceptor";
 
-export const userLoginAction = createAsyncThunk(
-  "auth/userLoginAction",
+export const userLoginActionAction = createAsyncThunk(
+  "auth/userLoginActionAction",
   async (arg, thunkAPI) => {
     try {
       const responseData = await fetchInterceptor(

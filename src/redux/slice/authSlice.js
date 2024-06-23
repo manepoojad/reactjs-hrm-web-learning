@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { userLoginAction } from '../thunk/authThunk'
+import { userLoginActionAction } from '../thunk/authThunk'
 
 const initialState = {
     isLoading: false,
@@ -16,14 +16,14 @@ const authSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(userLoginAction.pending, (state, action) => {
+            .addCase(userLoginActionAction.pending, (state, action) => {
                 state.isLoading = true
             })
-            .addCase(userLoginAction.fulfilled, (state, action) => {
+            .addCase(userLoginActionAction.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.loginUserInfo=action.payload
             })
-            .addCase(userLoginAction.rejected, (state, action) => {
+            .addCase(userLoginActionAction.rejected, (state, action) => {
                 state.isLoading = false
             })
 

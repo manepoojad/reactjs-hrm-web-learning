@@ -2,7 +2,7 @@ import { Button, TextField } from "@mui/material";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { userLoginAction } from "src/redux/thunk/authThunk";
+import { userLoginActionAction } from "src/redux/thunk/authThunk";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ const Login = () => {
 
   const handleClickSignIn = async () => {
     try {
-      await dispatch(userLoginAction(signInData)).unwrap();
+      await dispatch(userLoginActionAction(signInData)).unwrap();
 
       setSignInData({
         email: "",
