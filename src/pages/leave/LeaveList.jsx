@@ -71,6 +71,19 @@ const LeaveList = () => {
 
   const { pageNumbers, indexOfFirstItem, paginatedLeaveList } =
     getPaginationData();
+
+  const handleDeleteLeave = async (leaveId, clickIndex) => {
+    console.log(clickIndex);
+    try {
+      await fetchInterceptor(`http://localhost:8888/api/leave/${leaveId}`, {
+        method: "DELETE",
+      });
+
+      getLeaveList();
+    } catch (error) {
+      console.error("Error deleting project:", error);
+    }
+  };
   return (
     <>
       {" "}
@@ -138,7 +151,7 @@ const LeaveList = () => {
                     <button
                       className="btn btn-outline-danger btn-sm mx-2 "
                       title="Remove Employee"
-                      //   onClick={() => handleDeleteProject(leave.id, index)}
+                      onClick={() => handleDeleteLeave(leave.id, index)}
                       style={{ border: "none" }}
                     >
                       <i className="bi bi-trash"></i>

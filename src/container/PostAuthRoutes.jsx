@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import EmployeeList from "src/pages/employee/EmployeeList";
 import AddLeave from "src/pages/leave/AddLeave";
+import EditLeave from "src/pages/leave/EditLeave";
 import LeaveList from "src/pages/leave/LeaveList";
 import AddProject from "src/pages/project/AddProject";
 import EditProject from "src/pages/project/EditProject";
@@ -38,6 +39,8 @@ const PostAuthRoutes = () => {
           <Route path="/project/:id" element={<EditProject />} />
           <Route path="/leaveList" element={<LeaveList />} />
           <Route path="/leave/create" element={<AddLeave />} />
+          <Route path="/leave/:id" element={<EditLeave />} />
+
 
         </Routes>
       </NavigationBar>
