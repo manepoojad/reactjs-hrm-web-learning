@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
+import fetchInterceptor from "src/helper/fetchInterceptor";
 import { API_ROUTES_PATH } from "../../../helper/Constants";
 
 const JobDetails = (props) => {
@@ -12,16 +13,12 @@ const JobDetails = (props) => {
 
   const getAllLookupList = async () => {
     try {
-      const response = await fetch(API_ROUTES_PATH.GET_ALL_LOOKUP_LIST, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Response not ok. ");
-      }
-      const responseData = await response.json();
+      const responseData = await fetchInterceptor(
+        API_ROUTES_PATH.GET_ALL_LOOKUP_LIST,
+        {
+          method: "GET",
+        }
+      );
       const lookupData = responseData.lookupData;
       setLookupData(lookupData);
     } catch (error) {}

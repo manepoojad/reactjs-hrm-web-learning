@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ChangeStatusModal from "../../components/ChangeStatusDialog";
 import DropdownFixedMenu from "../../components/DropdownFixedMenu";
@@ -100,16 +100,12 @@ const EmployeeList = () => {
 
   const getLookupData = async () => {
     try {
-      const response = await fetch(API_ROUTES_PATH.GET_ALL_LOOKUP_LIST, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Response not ok. ");
-      }
-      const responseData = await response.json();
+      const responseData = await fetchInterceptor(
+        API_ROUTES_PATH.GET_ALL_LOOKUP_LIST,
+        {
+          method: "GET",
+        }
+      );
       setLookupData(responseData.lookupData);
     } catch (error) {
       console.error("Error fetching lookup data:", error);

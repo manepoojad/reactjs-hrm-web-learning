@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { API_ROUTES_PATH } from "../../helper/Constants";
@@ -80,16 +80,12 @@ const AssetsList = () => {
 
   const getAllLookupList = async () => {
     try {
-      const response = await fetch(API_ROUTES_PATH.GET_ALL_LOOKUP_LIST, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Response not ok. ");
-      }
-      const responseData = await response.json();
+      const responseData = await fetchInterceptor(
+        API_ROUTES_PATH.GET_ALL_LOOKUP_LIST,
+        {
+          method: "GET",
+        }
+      );
       setLookupData(responseData.lookupData);
     } catch (error) {
       console.error("Error fetching lookup data:", error);
