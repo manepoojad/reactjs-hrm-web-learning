@@ -103,14 +103,14 @@ const EmployeeMenu = [
   },
   {
     key: "routekey-profile",
-    label: "profile",
+    label: "Profile",
     path: "/profile",
     icon: <i className=" me-1 bi-person-circle"></i>,
     vissbleOnSmallScrren: true,
   },
   {
     key: "routekey-myassets",
-    label: "myassets",
+    label: "My assets",
     path: "/myAssets",
     icon: <i className="me-1 bi bi-pc-display"></i>,
     vissbleOnSmallScrren: true,

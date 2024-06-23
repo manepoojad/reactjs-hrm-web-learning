@@ -1,11 +1,13 @@
 import { Button, TextField } from "@mui/material";
-import Cookies from "js-cookie";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import fetchInterceptor from "../helper/fetchInterceptor";
+import { userLoginAction } from "src/redux/thunk/authThunk";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [signInData, setSignInData] = useState({
     email: "",
     password: "",
@@ -21,34 +23,13 @@ const Login = () => {
 
   const handleClickSignIn = async () => {
     try {
-      const responseData = await fetchInterceptor(
-        "/user/auth",
-
-        {
-          method: "POST",
-          body: signInData,
-        }
-      );
-      const { employeeId, token, userEmail, roles } = responseData; // Modify this according to your API response structure
-      // Set the token in cookies
-
-      const roleList = roles.map((roleObject) => roleObject.label);
-
-      localStorage.setItem("roles", JSON.stringify(roleList));
-      localStorage.setItem("employeeId", JSON.stringify(employeeId));
-      localStorage.setItem("userEmail", JSON.stringify(userEmail));
-
-      Cookies.set("jwtToken", token, {
-        expires: 7, // Expires in 7 days
-        secure: true, // Cookie will only be sent over HTTPS
-      });
+      await dispatch(userLoginAction(signInData)).unwrap();
 
       setSignInData({
         email: "",
         password: "",
       });
       navigate("/");
-      return responseData;
     } catch (error) {
       console.error(error);
     }
