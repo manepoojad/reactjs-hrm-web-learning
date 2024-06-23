@@ -1,33 +1,30 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getEmployeeListAction } from "src/redux/thunk/employeeThunk";
 import ChangeStatusModal from "../../components/ChangeStatusDialog";
 import DropdownFixedMenu from "../../components/DropdownFixedMenu";
-import { API_ROUTES_PATH } from "../../helper/Constants";
-import fetchInterceptor from "../../helper/fetchInterceptor";
 
 const EmployeeList = () => {
   const navigate = useNavigate();
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const { lookupData } = useSelector((state) => state.lookup);
 
   const [employeeList, setEmployeeList] = useState([]);
   const [filteredEmployeeList, setFilteredEmployeeList] = useState([]);
   const [showDialog, setShowDialog] = useState(false);
-  const [lookupData, setLookupData] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
   useEffect(() => {
     getEmployeeList();
-    getLookupData();
   }, [currentPage]);
 
   const getEmployeeList = async () => {
     try {
-      const responseData = await dispatch(getEmployeeListAction()).unwrap()
+      const responseData = await dispatch(getEmployeeListAction()).unwrap();
 
       setEmployeeList(responseData?.employeeList);
       setFilteredEmployeeList(responseData?.employeeList);
@@ -98,25 +95,12 @@ const EmployeeList = () => {
     setShowDialog(false);
   };
 
-  const getLookupData = async () => {
-    try {
-      const responseData = await fetchInterceptor(
-        API_ROUTES_PATH.GET_ALL_LOOKUP_LIST,
-        {
-          method: "GET",
-        }
-      );
-      setLookupData(responseData.lookupData);
-    } catch (error) {
-      console.error("Error fetching lookup data:", error);
-    }
-  };
-
   const statusLookup = lookupData?.find(
     (lookup) => lookup?.lookupType === "employeeStatusInCompany"
   );
   const statusLookupList = statusLookup?.lookups;
 
+  console.log("statusLookupList", statusLookupList);
   return (
     <>
       {showDialog && (

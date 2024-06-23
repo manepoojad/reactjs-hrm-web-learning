@@ -254,19 +254,12 @@ const EditEmployee = () => {
 
   const getSpecificEmployeeDetails = async () => {
     try {
-      const response = await fetch(
+      const responseData = await fetchInterceptor(
         `/employee/${params?.id}`,
         {
           method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
         }
       );
-      if (!response.ok) {
-        throw new Error("Response not ok. ");
-      }
-      const responseData = await response.json();
 
       handleDataMapping(responseData);
     } catch (error) {}

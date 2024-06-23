@@ -1,10 +1,20 @@
+import { useEffect } from "react";
+
 import Cookies from "js-cookie";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
+import { useDispatch } from "react-redux";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { getLookupAction } from "src/redux/thunk/lookupThunk";
 import Login from "../pages/Login";
 import PostAuthRoutes from "./PostAuthRoutes";
+
 const RootRoutes = () => {
+  const dispatch = useDispatch();
   const location = useLocation();
+
+  useEffect(() => {
+    dispatch(getLookupAction());
+  }, []);
 
   const isAuthStatus = useMemo(() => {
     let userToken = Cookies.get("jwtToken") || "";
