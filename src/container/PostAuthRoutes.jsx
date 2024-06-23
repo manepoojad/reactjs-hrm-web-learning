@@ -24,7 +24,7 @@ const PostAuthRoutes = () => {
       <NavigationBar>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/employeeProfile" element={<EmployeeProfile />} />
+          <Route path="/profile" element={<EmployeeProfile />} />
           <Route path="/employeeList" element={<EmployeeList />} />
           <Route path="/employee/create" element={<AddEmployee />} />
           <Route path="/employee/:id" element={<EditEmployee />} />

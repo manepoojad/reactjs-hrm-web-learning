@@ -1,8 +1,22 @@
 import Cookies from "js-cookie";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+
+import { EmployeeMenu, HrMenu, ManagerMenu } from "src/helper/menuList";
 
 const NavigationBar = (props) => {
   const location = useLocation();
+  const [menuList, setMenuList] = useState(EmployeeMenu);
+
+  useEffect(() => {
+    const rolesStringify = localStorage.getItem("roles");
+    const roles = JSON.parse(rolesStringify);
+    if (roles.includes("Admin") || roles.includes("HR")) {
+      setMenuList(HrMenu);
+    } else if (roles.includes("Manager")) {
+      setMenuList(ManagerMenu);
+    }
+  }, []);
 
   // Function to determine if a link is active based on the current route
   const isActiveLink = (pathname) => {
@@ -24,98 +38,21 @@ const NavigationBar = (props) => {
         style={{ marginBottom: 16, backgroundColor: "#00ce3f" }}
       >
         <ul style={{ listStyleType: "none", margin: 0, padding: 16 }}>
-          <li style={{ display: "inline", margin: 8 }}>
-            <Link
-              style={{
-                textDecoration: "none",
-                color: isActiveLink("/") ? "black" : "white",
-                fontWeight: isActiveLink("/") ? "bold" : "normal",
-              }}
-              to="/"
-            >
-              Home
-            </Link>
-          </li>
-
-          <li style={{ display: "inline", margin: 8 }}>
-            <Link
-              style={{
-                textDecoration: "none",
-                color: isActiveLink("/employeeProfile") ? "black" : "white",
-                fontWeight: isActiveLink("/employeeProfile")
-                  ? "bold"
-                  : "normal",
-              }}
-              to="/employeeProfile"
-            >
-              <i className=" me-1 bi-person-circle"></i> Profile
-            </Link>
-          </li>
-
-          <li style={{ display: "inline", margin: 8 }}>
-            <Link
-              style={{
-                textDecoration: "none",
-                color: isActiveLink("/employeeList") ? "black" : "white",
-                fontWeight: isActiveLink("/employeeList") ? "bold" : "normal",
-              }}
-              to="/employeeList"
-            >
-              Employee
-            </Link>
-          </li>
-
-          <li style={{ display: "inline", margin: 8 }}>
-            <Link
-              style={{
-                textDecoration: "none",
-                color: isActiveLink("/clientList") ? "black" : "white",
-                fontWeight: isActiveLink("/clientList") ? "bold" : "normal",
-              }}
-              to="/clientList"
-            >
-              Client
-            </Link>
-          </li>
-
-          <li style={{ display: "inline", margin: 8 }}>
-            <Link
-              style={{
-                textDecoration: "none",
-                color: isActiveLink("/assetsList") ? "black" : "white",
-                fontWeight: isActiveLink("/assetsList") ? "bold" : "normal",
-              }}
-              to="/assetsList"
-            >
-              Assets
-            </Link>
-          </li>
-
-          <li style={{ display: "inline", margin: 8 }}>
-            <Link
-              style={{
-                textDecoration: "none",
-                color: isActiveLink("/projectList") ? "black" : "white",
-                fontWeight: isActiveLink("/projectList") ? "bold" : "normal",
-              }}
-              to="/projectList"
-            >
-              Project
-            </Link>
-          </li>
-
-          <li style={{ display: "inline", margin: 8 }}>
-            <Link
-              style={{
-                textDecoration: "none",
-                color: isActiveLink("/leaveList") ? "black" : "white",
-                fontWeight: isActiveLink("/leaveList") ? "bold" : "normal",
-              }}
-              to="/leaveList"
-            >
-              Leave
-            </Link>
-          </li>
+          {menuList.map((menuObject) => (
+            <li style={{ display: "inline", margin: 8 }}>
+              <Link
+                style={{
+                  textDecoration: "none",
+                  color: isActiveLink(menuObject.path) ? "black" : "white",
+                  fontWeight: isActiveLink(menuObject.path) ? "bold" : "normal",
+                }}
+                to={menuObject.path}
+              >
+                {menuObject.label}
+              </Link>
+            </li>
+          ))}
+         
         </ul>
         <span
           className="me-4"
