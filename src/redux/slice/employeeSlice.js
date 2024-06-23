@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getEmployeeListAction } from "../thunk/authThunk";
+import { getEmployeeListAction } from "../thunk/employeeThunk";
 
 const initialState = {
   isLoading: false,
@@ -10,17 +10,19 @@ const employeeSlice = createSlice({
   name: "employeeSlice",
   initialState,
   reducers: {},
-  extraReducers: {
-    [getEmployeeListAction.pending]: (state, action) => {
-      state.loading = true;
-    },
-    [getEmployeeListAction.fulfilled]: (state, action) => {
-      state.loading = false;
-      state.employeeList = action.payload;
-    },
-    [getEmployeeListAction.rejected]: (state, action) => {
-      state.loading = false;
-    },
+
+  extraReducers: (builder) => {
+    builder
+      .addCase(getEmployeeListAction.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(getEmployeeListAction.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.employeeList = action.payload.employeeList;
+      })
+      .addCase(getEmployeeListAction.rejected, (state, action) => {
+        state.isLoading = false;
+      });
   },
 });
 
