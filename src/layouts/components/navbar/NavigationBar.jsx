@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import { Link, useLocation } from "react-router-dom";
 
 const NavigationBar = (props) => {
@@ -8,9 +9,20 @@ const NavigationBar = (props) => {
     return location.pathname === pathname;
   };
 
+  const handleLogout = () => {
+    Cookies.remove("jwtToken");
+    localStorage.removeItem("roles");
+    localStorage.removeItem("employeeId");
+    localStorage.removeItem("userEmail");
+    window.location = "/login";
+  };
+
   return (
     <div>
-      <div style={{ marginBottom: 16, backgroundColor: "#00ce3f" }}>
+      <div
+        className="d-flex flex-row justify-content-between align-items-center"
+        style={{ marginBottom: 16, backgroundColor: "#00ce3f" }}
+      >
         <ul style={{ listStyleType: "none", margin: 0, padding: 16 }}>
           <li style={{ display: "inline", margin: 8 }}>
             <Link
@@ -105,6 +117,14 @@ const NavigationBar = (props) => {
             </Link>
           </li>
         </ul>
+        <span
+          className="me-4"
+          role="button"
+          style={{ textAlign: "center" }}
+          onClick={handleLogout}
+        >
+          logout
+        </span>
       </div>
       <div>{props.children}</div>
     </div>

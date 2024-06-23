@@ -41,6 +41,9 @@ export const fetchInterceptor = async (
   if (response.status === 401) {
     // Handle jwtToken expiration
     Cookies.remove("jwtToken");
+    localStorage.removeItem("roles");
+    localStorage.removeItem("employeeId");
+    localStorage.removeItem("userEmail");
     window.location = "/login";
     throw new Error("Token expired");
   }

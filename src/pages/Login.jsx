@@ -1,6 +1,6 @@
 import { Button, TextField } from "@mui/material";
 import Cookies from "js-cookie";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import fetchInterceptor from "../helper/fetchInterceptor";
 
@@ -29,12 +29,20 @@ const Login = () => {
           body: signInData,
         }
       );
-      const token = responseData.token; // Modify this according to your API response structure
+      const { employeeId, token, userEmail, roles } = responseData; // Modify this according to your API response structure
       // Set the token in cookies
+
+      const roleList = roles.map((roleObject) => roleObject.label);
+
+      localStorage.setItem("roles", JSON.stringify(roleList));
+      localStorage.setItem("employeeId", JSON.stringify(employeeId));
+      localStorage.setItem("userEmail", JSON.stringify(userEmail));
+
       Cookies.set("jwtToken", token, {
         expires: 7, // Expires in 7 days
         secure: true, // Cookie will only be sent over HTTPS
       });
+
       setSignInData({
         email: "",
         password: "",
