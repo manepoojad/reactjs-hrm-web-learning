@@ -1,17 +1,22 @@
 import { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { API_ROUTES_PATH } from "src/helper/Constants";
 import fetchInterceptor from "src/helper/fetchInterceptor";
+import { getEmployeeListAction } from "src/redux/thunk/employeeThunk";
 
 const AddProject = () => {
+  const dispatch = useDispatch();
+  const lookup = useSelector((state) => state.lookup.lookupData);
   const navigate = useNavigate();
   const location = useLocation();
   const clientId = location?.state?.projectItem?.clientId;
+
   const [isError, setIsError] = useState(false);
   const [isEmployeeError, setIsEmployeeError] = useState(false);
-  const [lookupData, setLookupData] = useState([]);
+  // const [lookupData, setLookupData] = useState([]);
   const [companyList, setCompanyList] = useState([]);
 
   const [employeeNameList, setEmployeeNameList] = useState([]);
@@ -65,8 +70,8 @@ const AddProject = () => {
   };
 
   useEffect(() => {
-    getAllLookupList();
-    getEmployeeNameList();
+    // getAllLookupList();
+    getEmployeeList();
     getCompanyList();
   }, []);
 
@@ -137,45 +142,32 @@ const AddProject = () => {
     } catch (error) {}
   };
 
-  const getAllLookupList = async () => {
-    try {
-      const responseData = await fetchInterceptor(
-        API_ROUTES_PATH.GET_ALL_LOOKUP_LIST,
-        {
-          method: "GET",
-        }
-      );
-      const lookupData = responseData.lookupData;
-      setLookupData(lookupData);
-    } catch (error) {}
-  };
+  // const getAllLookupList = async () => {
+  //   try {
+  //     const responseData = await fetchInterceptor(
+  //       API_ROUTES_PATH.GET_ALL_LOOKUP_LIST,
+  //       {
+  //         method: "GET",
+  //       }
+  //     );
+  //     const lookupData = responseData.lookupData;
+  //     setLookupData(lookupData);
+  //   } catch (error) {}
+  // };
 
-  const employeeAllocationLookup = lookupData?.find(
+  const employeeAllocationLookup = lookup?.find(
     (lookup) => lookup.lookupType === "employeeAllocation"
   );
   const employeeAllocationLookupList = employeeAllocationLookup?.lookups;
 
-  const getEmployeeNameList = async () => {
+  const getEmployeeList = async () => {
     try {
-      const response = await fetch(
-        `/employee/currentAllocableEmployee`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Response not ok. ");
-      }
-      const responseData = await response.json();
-
-      setEmployeeNameList(responseData?.allocableEmployees);
-    } catch (error) {}
+      const responseData = await dispatch(getEmployeeListAction()).unwrap();
+      setEmployeeNameList(responseData?.employeeList);
+    } catch (error) {
+      console.error("Error fetching employee list:", error);
+    }
   };
-
-  
 
   const statusList = [
     { id: 1, status: "Active" },
@@ -249,44 +241,44 @@ const AddProject = () => {
     setAddEmployeeModalDataError(newErrors);
     return isValid;
   };
-//   const handleAddEmployee = () => {
-//     // validation ==>
-//     let isValid;
-//     isValid = employeeValidForm();
-//     if (isValid) {
-//       const newProjectData = { ...projectData };
+  //   const handleAddEmployee = () => {
+  //     // validation ==>
+  //     let isValid;
+  //     isValid = employeeValidForm();
+  //     if (isValid) {
+  //       const newProjectData = { ...projectData };
 
-//       newProjectData.employee.push({
-//         employeeId: addEmployeeModalData.employeeId,
-//         employeeAllocation: addEmployeeModalData.employeeAllocation,
-//       });
+  //       newProjectData.employee.push({
+  //         employeeId: addEmployeeModalData.employeeId,
+  //         employeeAllocation: addEmployeeModalData.employeeAllocation,
+  //       });
 
-//       setAddEmployeeModalData({
-//         isShow: false,
-//         employeeId: null,
-//         employeeAllocation: "",
-//       });
-//     }
-//   };
+  //       setAddEmployeeModalData({
+  //         isShow: false,
+  //         employeeId: null,
+  //         employeeAllocation: "",
+  //       });
+  //     }
+  //   };
 
-const handleAddEmployee = () => {
+  const handleAddEmployee = () => {
     // validation ==>
     let isValid;
     isValid = employeeValidForm();
-  
+
     if (isValid) {
       const newEmployee = {
         employeeId: addEmployeeModalData.employeeId,
         employeeAllocation: addEmployeeModalData.employeeAllocation,
       };
-  
+
       const newProjectData = {
         ...projectData,
         employee: [...projectData.employee, newEmployee],
       };
-  
+
       setProjectData(newProjectData);
-  
+
       // Reset modal state
       setAddEmployeeModalData({
         isShow: false,
@@ -571,10 +563,10 @@ const handleAddEmployee = () => {
                     </option>
                     {employeeNameList?.[0] &&
                       employeeNameList.map((item, index) => {
+                        {/* console.log(item) */}
                         return (
                           <option key={index} value={item.id}>
-                            {item.firstName} {item.lastName} (
-                            {item.currentStatusOfAllocation})
+                            {item.firstName} {item.lastName}
                           </option>
                         );
                       })}

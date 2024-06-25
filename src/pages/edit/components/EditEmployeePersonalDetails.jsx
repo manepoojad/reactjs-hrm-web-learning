@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import fetchInterceptor from "src/helper/fetchInterceptor";
-import { API_ROUTES_PATH } from "../../../helper/Constants";
+import { useSelector } from "react-redux";
 
 const EditEmployeePersonalDetails = (props) => {
-  const [lookupData, setLookupData] = useState([]);
+  const lookup = useSelector((state) => state?.lookup?.lookupData);
+
+  // const [lookupData, setLookupData] = useState([]);
   const {
     formData = {},
     formValidationError = {},
@@ -14,29 +14,25 @@ const EditEmployeePersonalDetails = (props) => {
   const personalDetails = formData?.personalDetails || {};
   const personalDetailsError = formValidationError?.personalDetails || {};
 
-  const titleLookup = lookupData?.find(
-    (lookup) => lookup.lookupType === "title"
-  );
+  const titleLookup = lookup?.find((lookup) => lookup.lookupType === "title");
   const titleLookupList = titleLookup?.lookups;
 
-  const genderLookup = lookupData?.find(
-    (lookup) => lookup.lookupType === "gender"
-  );
+  const genderLookup = lookup?.find((lookup) => lookup.lookupType === "gender");
   const genderLookupList = genderLookup?.lookups;
 
-  const bloodGroupLookup = lookupData?.find(
+  const bloodGroupLookup = lookup?.find(
     (lookup) => lookup.lookupType === "bloodGroup"
   );
   const bloodGroupLookupList = bloodGroupLookup?.lookups;
 
-  const marriedStatusLookup = lookupData?.find(
+  const marriedStatusLookup = lookup?.find(
     (lookup) => lookup?.lookupType === "marriedStatus"
   );
   const marriedStatusLookupList = marriedStatusLookup?.lookups;
 
-  useEffect(() => {
-    getAllLookupList();
-  }, []);
+  // useEffect(() => {
+  //   getAllLookupList();
+  // }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -48,18 +44,18 @@ const EditEmployeePersonalDetails = (props) => {
     handleWizardInputChange("personalDetails", newPersonalDetail);
   };
 
-  const getAllLookupList = async () => {
-    try {
-      const responseData = await fetchInterceptor(
-        API_ROUTES_PATH.GET_ALL_LOOKUP_LIST,
-        {
-          method: "GET",
-        }
-      );
-      const lookupData = responseData.lookupData;
-      setLookupData(lookupData);
-    } catch (error) {}
-  };
+  // const getAllLookupList = async () => {
+  //   try {
+  //     const responseData = await fetchInterceptor(
+  //       API_ROUTES_PATH.GET_ALL_LOOKUP_LIST,
+  //       {
+  //         method: "GET",
+  //       }
+  //     );
+  //     const lookupData = responseData.lookupData;
+  //     setLookupData(lookupData);
+  //   } catch (error) {}
+  // };
 
   const isoDateString = personalDetails?.dob;
   const formattedDate = isoDateString?.split("T")[0];
@@ -177,28 +173,23 @@ const EditEmployeePersonalDetails = (props) => {
 
         <div className="col-md-5">
           <label className="form-label personal-label">
-            Maiden Name<span style={{ color: "red" }}>*</span>
+            Maiden Name
           </label>
           <input
             type="text"
             name="maidenName"
-            className={
-              "form-control" +
-              (isShowError && personalDetailsError?.maidenName
-                ? "is-invalid"
-                : "")
-            }
+            className={"form-control"}
             placeholder="e.g. Mane"
             value={personalDetails?.maidenName || ""}
             onChange={handleInputChange}
             required
             disabled={!isEditableFields}
           />
-          {isShowError && personalDetailsError?.maidenName && (
+          {/* {isShowError && personalDetailsError?.maidenName && (
             <div className="invalid-feedback">
               {personalDetailsError?.maidenName}
             </div>
-          )}
+          )} */}
         </div>
 
         <div className="col-md-5">

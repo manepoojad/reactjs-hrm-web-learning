@@ -158,6 +158,7 @@ const EmployeeList = () => {
                   <td>
                     <button
                       className="btn btn-outline-success btn-sm mx-2"
+                      title="View Employee Detail"
                       onClick={() => {
                         navigate(`/employee/${employee.id}`);
                       }}
@@ -165,14 +166,14 @@ const EmployeeList = () => {
                     >
                       <i className="bi bi-eye-fill"></i>
                     </button>
-                    <button
+                    {/* <button
                       className="btn btn-outline-danger btn-sm mx-2 "
                       title="Remove Employee"
                       onClick={() => handleDeleteEmployee(employee.id)}
                       style={{ border: "none" }}
                     >
                       <i className="bi bi-trash"></i>
-                    </button>
+                    </button> */}
                     <DropdownFixedMenu
                       show={showDialog}
                       handleClose={handleCloseDialog}

@@ -1,17 +1,19 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
+import { useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { API_ROUTES_PATH } from "../../helper/Constants";
 import fetchInterceptor from "../../helper/fetchInterceptor";
 
 const EditAssets = () => {
   const params = useParams();
+  const lookup = useSelector((state) => state?.lookup?.lookupData);
   const location = useLocation();
   const assetObject = location?.state?.asset;
+  console.log(assetObject);
   const navigate = useNavigate();
   const [isError, setIsError] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [lookupData, setLookupData] = useState([]);
+  // const [lookupData, setLookupData] = useState([]);
   const [assetsDataValidationError, setAssetsDataValidationError] = useState({
     assetTypeLookupId: null,
     assetStatusLookupId: null,
@@ -31,9 +33,9 @@ const EditAssets = () => {
     notes: assetObject?.notes,
   });
 
-  useEffect(() => {
-    getAllLookupList();
-  }, []);
+  // useEffect(() => {
+  //   getAllLookupList();
+  // }, []);
 
   const handleUpdateAssets = () => {
     let isValid;
@@ -42,15 +44,33 @@ const EditAssets = () => {
       setShowConfirmation(true);
     }
   };
+  const assetsTypeLookupData = lookup?.find(
+    (lookup) => lookup.lookupType === "assetType"
+  );
+  const assetTypeLookup = assetsTypeLookupData?.lookups;
 
+  const assetsType = assetTypeLookup?.find(
+    (lookup) => lookup?.label === editAssetsData?.assetTypeLookupId
+  );
+
+  const assetTypeLookupIntegerValue = assetsType ? assetsType?.label : "";
+
+  const assetsStatusLookupData = lookup?.find(
+    (lookup) => lookup.lookupType === "assetStatus"
+  );
+  const assetStatusLookup = assetsStatusLookupData?.lookups;
+
+  const assetsStatus = assetStatusLookup?.find(
+    (lookup) => lookup?.label === editAssetsData?.assetStatusLookupId
+  );
+
+  const assetStatusLookupIntegerValue = assetsStatus ? assetsStatus?.label : "";
   const handleConfirmUpdateAsset = async () => {
-    const responseData = await fetchInterceptor(
-      `/asset/${params?.id}`,
-      {
-        method: "PUT",
-        body: editAssetsData,
-      }
-    );
+    
+    const responseData = await fetchInterceptor(`/asset/${params?.id}`, {
+      method: "PUT",
+      body: editAssetsData,
+    });
     navigate("/assetsList");
     return responseData;
   };
@@ -68,33 +88,33 @@ const EditAssets = () => {
   };
   //   console.log("client",editAssetsData)
 
-  const getAllLookupList = async () => {
-    try {
-      const responseData = await fetchInterceptor(
-        API_ROUTES_PATH.GET_ALL_LOOKUP_LIST,
-        {
-          method: "GET",
-        }
-      );
-      const lookupData = responseData.lookupData;
-      setLookupData(lookupData);
-    } catch (error) {}
-  };
+  // const getAllLookupList = async () => {
+  //   try {
+  //     const responseData = await fetchInterceptor(
+  //       API_ROUTES_PATH.GET_ALL_LOOKUP_LIST,
+  //       {
+  //         method: "GET",
+  //       }
+  //     );
+  //     const lookupData = responseData.lookupData;
+  //     setLookupData(lookupData);
+  //   } catch (error) {}
+  // };
 
-  const assetsTypeLookup = lookupData?.find(
+  const assetsTypeLookup = lookup?.find(
     (lookup) => lookup.lookupType === "assetType"
   );
   const assetTypeLookupList = assetsTypeLookup?.lookups;
 
-  const assetsTypeLookupData = assetTypeLookupList?.find(
+  const assetsTypeLookupDataConvert = assetTypeLookupList?.find(
     (lookup) => lookup?.id === editAssetsData?.assetTypeLookupId
   );
 
-  const assetTypeLabel = assetsTypeLookupData
-    ? assetsTypeLookupData?.label
+  const assetTypeLabel = assetsTypeLookupDataConvert
+    ? assetsTypeLookupDataConvert?.label
     : "";
 
-  const assetsStatusLookup = lookupData?.find(
+  const assetsStatusLookup = lookup?.find(
     (lookup) => lookup.lookupType === "assetStatus"
   );
   const assetStatusLookupList = assetsStatusLookup?.lookups;

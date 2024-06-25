@@ -52,7 +52,6 @@ const EditEmployee = () => {
       firstName: "",
       middleName: "",
       lastName: "",
-      maidenName: "",
       gender: "",
       dob: "",
       bloodGroup: "",
@@ -169,7 +168,6 @@ const EditEmployee = () => {
         firstName: "",
         middleName: "",
         lastName: "",
-        maidenName: "",
         gender: "",
         dob: "",
         bloodGroup: "",
@@ -417,7 +415,6 @@ const EditEmployee = () => {
         firstName: "",
         middleName: "",
         lastName: "",
-        maidenName: "",
         gender: "",
         dob: "",
         bloodGroup: "",
@@ -471,17 +468,17 @@ const EditEmployee = () => {
       isValid = false;
     }
 
-    // maidenName validation
-    const maidenName = personalDetails?.maidenName;
-    if (maidenName.length === 0) {
-      newEmployeeDataValidationError.personalDetails.maidenName =
-        "Please enter Maiden Name.";
-      isValid = false;
-    } else if (maidenName.length < 3) {
-      newEmployeeDataValidationError.personalDetails.maidenName =
-        "Maiden Name should be at least 3 characters.";
-      isValid = false;
-    }
+    // // maidenName validation
+    // const maidenName = personalDetails?.maidenName;
+    // if (maidenName.length === 0) {
+    //   newEmployeeDataValidationError.personalDetails.maidenName =
+    //     "Please enter Maiden Name.";
+    //   isValid = false;
+    // } else if (maidenName.length < 3) {
+    //   newEmployeeDataValidationError.personalDetails.maidenName =
+    //     "Maiden Name should be at least 3 characters.";
+    //   isValid = false;
+    // }
 
     // gender validation
     const gender = personalDetails?.gender;

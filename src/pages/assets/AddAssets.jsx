@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "react-bootstrap";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { API_ROUTES_PATH } from "../../helper/Constants";
 import fetchInterceptor from "../../helper/fetchInterceptor";
 
 const AddAssets = () => {
   const navigate = useNavigate();
+  const lookup = useSelector((state) => state?.lookup?.lookupData);
   const [isError, setIsError] = useState(false);
-  const [lookupData, setLookupData] = useState([]);
+  // const [lookupData, setLookupData] = useState([]);
   const [assetsDataValidationError, setAssetsDataValidationError] = useState({
     assetTypeLookupId: null,
     assetStatusLookupId: null,
@@ -27,9 +29,9 @@ const AddAssets = () => {
     notes: "",
   });
 
-  useEffect(() => {
-    getAllLookupList();
-  }, []);
+  // useEffect(() => {
+  //   getAllLookupList();
+  // }, []);
 
   const handleCreateAssets = async () => {
     let isValid;
@@ -60,25 +62,25 @@ const AddAssets = () => {
   };
   //   console.log("client",assetsData)
 
-  const getAllLookupList = async () => {
-    try {
-      const responseData = await fetchInterceptor(
-        API_ROUTES_PATH.GET_ALL_LOOKUP_LIST,
-        {
-          method: "GET",
-        }
-      );
-      const lookupData = responseData.lookupData;
-      setLookupData(lookupData);
-    } catch (error) {}
-  };
+  // const getAllLookupList = async () => {
+  //   try {
+  //     const responseData = await fetchInterceptor(
+  //       API_ROUTES_PATH.GET_ALL_LOOKUP_LIST,
+  //       {
+  //         method: "GET",
+  //       }
+  //     );
+  //     const lookupData = responseData.lookupData;
+  //     setLookupData(lookupData);
+  //   } catch (error) {}
+  // };
 
-  const assetsTypeLookup = lookupData?.find(
+  const assetsTypeLookup = lookup?.find(
     (lookup) => lookup.lookupType === "assetType"
   );
   const assetTypeLookupList = assetsTypeLookup?.lookups;
 
-  const assetsStatusLookup = lookupData?.find(
+  const assetsStatusLookup = lookup?.find(
     (lookup) => lookup.lookupType === "assetStatus"
   );
   const assetStatusLookupList = assetsStatusLookup?.lookups;

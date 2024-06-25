@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getEmployeeListAction } from "../thunk/employeeThunk";
+import { getEmployeeDataByIdAction, getEmployeeListAction } from "../thunk/employeeThunk";
 
 const initialState = {
   isLoading: false,
   employeeList: [],
+  employeeData:[],
 };
 
 const employeeSlice = createSlice({
@@ -21,6 +22,17 @@ const employeeSlice = createSlice({
         state.employeeList = action.payload.employeeList;
       })
       .addCase(getEmployeeListAction.rejected, (state, action) => {
+        state.isLoading = false;
+      })
+
+      .addCase(getEmployeeDataByIdAction.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(getEmployeeDataByIdAction.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.employeeData = action.payload?.employeeDetail;
+      })
+      .addCase(getEmployeeDataByIdAction.rejected, (state, action) => {
         state.isLoading = false;
       });
   },

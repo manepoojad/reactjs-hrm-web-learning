@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { API_ROUTES_PATH } from "../helper/Constants";
+import { useSelector } from "react-redux";
 import fetchInterceptor from "../helper/fetchInterceptor";
 import "./status.css";
 
@@ -11,7 +11,9 @@ const ChangeStatusModal = ({
   selectedEmployee,
   getEmployeeList = () => {},
 }) => {
-  const [lookupData, setLookupData] = useState([]);
+  const lookup=useSelector(state=>state?.lookup?.lookupData)
+  console.log(lookup);
+  // const [lookupData, setLookupData] = useState([]);
   const [isError, setIsError] = useState(false);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [statusData, setStatusData] = useState({
@@ -19,9 +21,9 @@ const ChangeStatusModal = ({
     lookupId: null,
   });
 
-  useEffect(() => {
-    getAllLookupList();
-  }, []);
+  // useEffect(() => {
+  //   getAllLookupList();
+  // }, []);
 
   // const handleChangeEmployeeStatus = async () => {
   //   const responseData = await fetchInterceptor(
@@ -60,20 +62,20 @@ const ChangeStatusModal = ({
     setConfirmModalOpen(false);
   };
 
-  const getAllLookupList = async () => {
-    try {
-      const responseData = await fetchInterceptor(
-        API_ROUTES_PATH.GET_ALL_LOOKUP_LIST,
-        {
-          method: "GET",
-        }
-      );
-      const lookupData = responseData.lookupData;
-      setLookupData(lookupData);
-    } catch (error) {}
-  };
+  // const getAllLookupList = async () => {
+  //   try {
+  //     const responseData = await fetchInterceptor(
+  //       API_ROUTES_PATH.GET_ALL_LOOKUP_LIST,
+  //       {
+  //         method: "GET",
+  //       }
+  //     );
+  //     const lookupData = responseData.lookupData;
+  //     setLookupData(lookupData);
+  //   } catch (error) {}
+  // };
 
-  const statusLookup = lookupData?.find(
+  const statusLookup = lookup?.find(
     (lookup) => lookup.lookupType === "employeeStatusInCompany"
   );
   const statusLookupList = statusLookup?.lookups;

@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom";
+import MyAssets from "src/pages/assets/MyAssets";
 import EmployeeList from "src/pages/employee/EmployeeList";
 import AddLeave from "src/pages/leave/AddLeave";
 import EditLeave from "src/pages/leave/EditLeave";
@@ -32,6 +33,7 @@ const PostAuthRoutes = () => {
           <Route path="/client/create" element={<AddClient />} />
           <Route path="/client/:id" element={<UpdateClient />} />
           <Route path="/assetsList" element={<AssetsList />} />
+          <Route path="/myAssets" element={<MyAssets />} />
           <Route path="/assets/create" element={<AddAssets />} />
           <Route path="/assets/:id" element={<EditAssets />} />
           <Route path="/projectList" element={<ProjectList />} />
@@ -40,8 +42,6 @@ const PostAuthRoutes = () => {
           <Route path="/leaveList" element={<LeaveList />} />
           <Route path="/leave/create" element={<AddLeave />} />
           <Route path="/leave/:id" element={<EditLeave />} />
-
-
         </Routes>
       </NavigationBar>
     </>

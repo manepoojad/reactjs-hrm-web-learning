@@ -9,7 +9,6 @@ const AddLeave = () => {
   const [lookupData, setLookupData] = useState([]);
   const [isError, setIsError] = useState(false);
   const [leaveData, setLeaveData] = useState({
-    title: "",
     description: "",
     leaveType: "",
     startDate: "",
@@ -17,7 +16,6 @@ const AddLeave = () => {
   });
 
   const [leaveDataValidationError, setLeaveDataValidationError] = useState({
-    title: "",
     description: "",
     leaveType: "",
     startDate: "",
@@ -46,11 +44,11 @@ const AddLeave = () => {
       ...leaveDataValidationError,
     };
 
-    if (!leaveInfo?.title.trim()) {
-      newErrors.title = "Please enter title.";
+    if (!leaveInfo.leaveType) {
+      newErrors.leaveType = "Please select leave type.";
       isValid = false;
     } else {
-      newErrors.title = "";
+      newErrors.leaveType = "";
     }
 
     if (!leaveInfo.description.trim()) {
@@ -58,13 +56,6 @@ const AddLeave = () => {
       isValid = false;
     } else {
       newErrors.description = "";
-    }
-
-    if (!leaveInfo.leaveType) {
-      newErrors.leaveType = "Please select leave type.";
-      isValid = false;
-    } else {
-      newErrors.leaveType = "";
     }
 
     if (!leaveInfo.startDate) {
@@ -110,13 +101,10 @@ const AddLeave = () => {
     let isValid;
     isValid = validateForm();
     if (isValid) {
-      const responseData = await fetchInterceptor(
-        "/leave",
-        {
-          method: "POST",
-          body: leaveData,
-        }
-      );
+      const responseData = await fetchInterceptor("/leave", {
+        method: "POST",
+        body: leaveData,
+      });
       navigate("/leaveList");
       return responseData;
     }
@@ -131,10 +119,10 @@ const AddLeave = () => {
             className="m-3 fw-bold h5"
             style={{ color: "white", backgroundColor: "#00ce3f", padding: 16 }}
           >
-            Assets Details
+            Leave Details
           </label>
         </div>
-        <div className="col-md-5">
+        {/* <div className="col-md-5">
           <label className="form-label personal-label">
             Title<span style={{ color: "red" }}>*</span>
           </label>
@@ -154,31 +142,7 @@ const AddLeave = () => {
               {leaveDataValidationError?.title}
             </div>
           )}
-        </div>
-
-        <div className="col-md-5">
-          <label className="form-label personal-label">
-            Description<span style={{ color: "red" }}>*</span>
-          </label>
-          <input
-            type="text"
-            name="description"
-            className={`form-control ${
-              isError && leaveDataValidationError?.description
-                ? "is-invalid"
-                : ""
-            }`}
-            placeholder="e.g. HP"
-            value={leaveData?.description || ""}
-            onChange={handleInputChange}
-            required
-          />
-          {isError && leaveDataValidationError?.description && (
-            <div className="invalid-feedback">
-              {leaveDataValidationError?.description}
-            </div>
-          )}
-        </div>
+        </div> */}
 
         <div className="col-md-5">
           <label className="form-label personal-label">
@@ -209,6 +173,30 @@ const AddLeave = () => {
           {isError && leaveDataValidationError?.leaveType && (
             <div className="invalid-feedback">
               {leaveDataValidationError?.leaveType}
+            </div>
+          )}
+        </div>
+
+        <div className="col-md-5">
+          <label className="form-label personal-label">
+            Description<span style={{ color: "red" }}>*</span>
+          </label>
+          <input
+            type="text"
+            name="description"
+            className={`form-control ${
+              isError && leaveDataValidationError?.description
+                ? "is-invalid"
+                : ""
+            }`}
+            placeholder="e.g. HP"
+            value={leaveData?.description || ""}
+            onChange={handleInputChange}
+            required
+          />
+          {isError && leaveDataValidationError?.description && (
+            <div className="invalid-feedback">
+              {leaveDataValidationError?.description}
             </div>
           )}
         </div>

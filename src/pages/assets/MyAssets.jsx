@@ -2,19 +2,17 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import AssignAssetsDialog from "src/components/AssignAssestsDialog";
-import AssignAssetMenu from "src/components/AssignAssetMenu";
-import { getAssetsListAction } from "src/redux/thunk/assetsThunk";
+import { getAssetsBySpecificEmployeeIdAction } from "src/redux/thunk/assetsThunk";
 
-const AssetsList = () => {
+const MyAssets = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const lookup = useSelector((state) => state?.lookup?.lookupData);
   const assetListRef = useRef([]);
   const [filteredAssetsList, setFilteredAssetsList] = useState([]);
-  const [showDialog, setShowDialog] = useState(false);
+  //   const [showDialog, setShowDialog] = useState(false);
   // const [lookupData, setLookupData] = useState([]);
-  const [selectedAssets, setSelectedAssets] = useState(null);
+  //   const [selectedAssets, setSelectedAssets] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
@@ -23,40 +21,44 @@ const AssetsList = () => {
     // getAllLookupList();
   }, [currentPage]);
 
+  const employeeId = JSON.parse(localStorage.getItem("employeeId"));
+
+
   const getAssetsList = async () => {
     try {
-      const responseData = await dispatch(getAssetsListAction()).unwrap();
-
-      // const responseData = await fetchInterceptor(
-      //   API_ROUTES_PATH.GET_ASSETS_LIST,
-      //   {
-      //     method: "GET",
-      //   }
-      // );
+      const responseData = await dispatch(
+        getAssetsBySpecificEmployeeIdAction(employeeId)
+      ).unwrap();
+      //   const responseData = await fetchInterceptor(
+      //     `/employee/${employeeId}/asset`,
+      //     {
+      //       method: "GET",
+      //     }
+      //   );
 
       assetListRef.current = responseData;
       setFilteredAssetsList(responseData);
     } catch (error) {}
   };
 
+//   console.log(filteredAssetsList);
   const addAssets = () => {
     navigate("/assets/create");
   };
 
-  // const handleDeleteEmployee = (id) => {
-  //   console.log(id);
-  // };
+//   const handleDeleteEmployee = (id) => {
+//     console.log(id);
+//   };
 
-  const handleOpenDialog = (assets) => {
-    console.log(assets);
-    setSelectedAssets(assets);
-    setShowDialog(true);
-  };
-  // console.log("selected", selectedAssets);
+  //   const handleOpenDialog = (assets) => {
+  //     setSelectedAssets(assets);
+  //     setShowDialog(true);
+  //   };
+  //   console.log("selected", selectedAssets);
 
-  const handleCloseDialog = () => {
-    setShowDialog(false);
-  };
+  //   const handleCloseDialog = () => {
+  //     setShowDialog(false);
+  //   };
 
   const handleSearchClient = (e) => {
     const { value } = e.target;
@@ -123,14 +125,14 @@ const AssetsList = () => {
 
   return (
     <>
-      {showDialog && (
+      {/* {showDialog && (
         <AssignAssetsDialog
           show={showDialog}
           handleClose={handleCloseDialog}
           selectedAssets={selectedAssets}
           getAssetsList={getAssetsList}
         />
-      )}
+      )} */}
 
       <div className="d-flex justify-content-end">
         <input
@@ -162,9 +164,7 @@ const AssetsList = () => {
         <tbody>
           {paginatedAssetsList && paginatedAssetsList?.length > 0 ? (
             paginatedAssetsList.map((asset, index) => {
-              {
-                /* console.log(asset); */
-              }
+              {/* console.log(asset); */}
               const assetsStatusLookupData = assetStatusLookupList?.find(
                 (lookup) => lookup?.id === asset?.assetStatusLookupId
               );
@@ -184,8 +184,8 @@ const AssetsList = () => {
               return (
                 <tr key={index}>
                   <td>{index + 1 + indexOfFirstItem}</td>
-                  <td>{assetTypeLabel}</td>
-                  <td>{assetStatusLabel}</td>
+                  <td>{asset?.assetTypeLookupId}</td>
+                  <td>{asset?.assetStatusLookupId}</td>
                   <td>{asset?.companyName}</td>
                   <td>{asset?.serialNumber}</td>
                   <td>{asset?.modelName}</td>
@@ -219,18 +219,17 @@ const AssetsList = () => {
                     >
                       <i className="bi bi-trash"></i>
                     </button> */}
-                    <AssignAssetMenu
+                    {/* <AssignAssetMenu
                       show={showDialog}
                       handleClose={handleCloseDialog}
                       handleOpenDialog={() =>
                         handleOpenDialog(
-                          { assetsId: asset?.id, assetsLabel: assetTypeLabel }
-
+                          asset?.assetTypeLookupId
                           // asset?.firstName,
                           // asset?.lastName
                         )
                       }
-                    />
+                    /> */}
                   </td>
                 </tr>
               );
@@ -275,4 +274,4 @@ const AssetsList = () => {
   );
 };
 
-export default AssetsList;
+export default MyAssets;

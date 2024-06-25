@@ -38,8 +38,8 @@ const NavigationBar = (props) => {
         style={{ marginBottom: 16, backgroundColor: "#00ce3f" }}
       >
         <ul style={{ listStyleType: "none", margin: 0, padding: 16 }}>
-          {menuList.map((menuObject) => (
-            <li style={{ display: "inline", margin: 8 }}>
+          {menuList.map((menuObject, index) => (
+            <li key={index} style={{ display: "inline", margin: 8 }}>
               <Link
                 style={{
                   textDecoration: "none",
@@ -52,15 +52,19 @@ const NavigationBar = (props) => {
               </Link>
             </li>
           ))}
-         
         </ul>
         <span
           className="me-4"
           role="button"
-          style={{ textAlign: "center" }}
+          style={{
+            textDecoration: "none",
+            textAlign: "center",
+            color: isActiveLink("/login") ? "black" : "white",
+            fontWeight: isActiveLink("/login") ? "bold" : "normal",
+          }}
           onClick={handleLogout}
         >
-          logout
+          Logout
         </span>
       </div>
       <div>{props.children}</div>

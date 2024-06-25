@@ -1,10 +1,13 @@
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import fetchInterceptor from "src/helper/fetchInterceptor";
+import { getProjectListAction } from "src/redux/thunk/projectThunk";
 
 const ProjectList = () => {
+  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const projectListRef = useRef();
@@ -18,15 +21,16 @@ const ProjectList = () => {
 
   const getProjectList = async () => {
     try {
-      const responseData = await fetchInterceptor(
-        "/project",
-        {
-          method: "GET",
-        }
-      );
+      const responseData = await dispatch(getProjectListAction()).unwrap();
 
-      projectListRef.current = responseData?.project;
-      setFilteredProjectList(responseData?.project);
+      // const responseData = await fetchInterceptor(
+      //   "/project",
+      //   {
+      //     method: "GET",
+      //   }
+      // );
+      projectListRef.current = responseData;
+      setFilteredProjectList(responseData);
     } catch (error) {}
   };
 
@@ -78,21 +82,22 @@ const ProjectList = () => {
   const { pageNumbers, indexOfFirstItem, paginatedProjectList } =
     getPaginationData();
 
-    const handleDeleteProject = async (projectId, clickProjectIndex) => {
-      try {
-        await fetchInterceptor(`/project/${projectId}`, {
-          method: "DELETE",
-        });
-  
-        const updatedProjects = filteredProjectList.filter(
-          (item, index) => index !== clickProjectIndex
-        );
-        setFilteredProjectList(updatedProjects);
-      } catch (error) {
-        console.error("Error deleting project:", error);
-      }
-    };
-    
+  const handleDeleteProject = async (projectId, clickProjectIndex) => {
+    try {
+      await fetchInterceptor(`/project/${projectId}`, {
+        method: "DELETE",
+      });
+
+      // const updatedProjects = filteredProjectList.filter(
+      //   (item, index) => index !== clickProjectIndex
+      // );
+      // setFilteredProjectList(updatedProjects);
+      getProjectList();
+    } catch (error) {
+      console.error("Error deleting project:", error);
+    }
+  };
+
   return (
     <>
       <div className="d-flex justify-content-end">

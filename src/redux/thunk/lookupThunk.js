@@ -12,7 +12,7 @@ export const getLookupAction = createAsyncThunk(
           method: "GET",
         }
       );
-      console.log("responseData", responseData);
+      // console.log("responseData", responseData);
       return responseData.lookupData;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response.data);

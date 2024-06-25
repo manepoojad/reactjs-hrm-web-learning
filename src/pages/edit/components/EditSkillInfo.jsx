@@ -3,7 +3,7 @@ import { Button } from "react-bootstrap";
 import fetchInterceptor from "src/helper/fetchInterceptor";
 import { API_ROUTES_PATH } from "../../../helper/Constants";
 
-const SkillInfo = (props) => {
+const EditSkillInfo = (props) => {
   const [lookupData, setLookupData] = useState([]);
 
   const {
@@ -317,4 +317,4 @@ const SkillInfo = (props) => {
   );
 };
 
-export default SkillInfo;
+export default EditSkillInfo;

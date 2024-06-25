@@ -1,28 +1,100 @@
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { getAssetsBySpecificEmployeeIdAction } from "src/redux/thunk/assetsThunk";
+import { getEmployeeDataByIdAction } from "src/redux/thunk/employeeThunk";
+import { getProjectListByIdAction } from "src/redux/thunk/projectThunk";
 import { API_ROUTES_PATH } from "../../helper/Constants";
 import fetchInterceptor from "../../helper/fetchInterceptor";
 
 const EmployeeProfile = () => {
+  const navigate=useNavigate()
+  const dispatch = useDispatch();
   const [userProfileData, setUserProfileData] = useState({});
+  const [asset, setAsset] = useState([]);
+  const [project, setProject] = useState([]);
   const [lookupData, setLookupData] = useState([]);
+
   useEffect(() => {
     getUserProfileData();
+    getAssetsList();
     getAllLookupList();
+    getProjectList();
   }, []);
+
+  const employeeId = JSON.parse(localStorage.getItem("employeeId"));
+
+  // const getProjectList = async () => {
+  //   try {
+  //     const responseData = await dispatch(getProjectListAction()).unwrap();
+
+  //     // const responseData = await fetchInterceptor(
+  //     //   "/project",
+  //     //   {
+  //     //     method: "GET",
+  //     //   }
+  //     // );
+  //     setProject(responseData);
+  //     // setFilteredProjectList(responseData);
+  //   } catch (error) {}
+  // };
+
+  const getProjectList = async () => {
+    try {
+      const responseData = await dispatch(
+        getProjectListByIdAction(employeeId)
+      ).unwrap();
+
+      // const responseData = await fetchInterceptor(
+      //   "/project",
+      //   {
+      //     method: "GET",
+      //   }
+      // );
+      // console.log(responseData);
+
+      setProject(responseData);
+      // setFilteredProjectList(responseData);
+    } catch (error) {}
+  };
+
+  const getAssetsList = async () => {
+    try {
+      const responseData = await dispatch(
+        getAssetsBySpecificEmployeeIdAction(employeeId)
+      ).unwrap();
+      //   const responseData = await fetchInterceptor(
+      //     `/employee/${employeeId}/asset`,
+      //     {
+      //       method: "GET",
+      //     }
+      //   );
+      // console.log(responseData);
+      setAsset(responseData);
+    } catch (error) {}
+  };
+
+  // const employeeId = localStorage.getItem("employeeId");
+  const role = JSON.parse(localStorage.getItem("roles"));
 
   const getUserProfileData = async () => {
     try {
-      const responseData = await fetchInterceptor(
-        `/employee/2`,
-        {
-          method: "GET",
-        }
-      );
-      console.log(responseData);
+      const responseData = await dispatch(
+        getEmployeeDataByIdAction(employeeId)
+      ).unwrap();
+      // const responseData = await fetchInterceptor(
+      //   `/employee/2`,
+      //   {
+      //     method: "GET",
+      //   }
+      // );
+      // console.log(responseData);
       setUserProfileData(responseData?.employeeDetail);
     } catch (error) {}
   };
+  // console.log(userProfileData);
 
   const getAllLookupList = async () => {
     try {
@@ -50,7 +122,7 @@ const EmployeeProfile = () => {
     ? designationLookupData?.label
     : "";
 
-  console.log(designationLabel);
+  // console.log(designationLabel);
 
   const userEmail =
     userProfileData?.contacts &&
@@ -69,7 +141,10 @@ const EmployeeProfile = () => {
     userProfileData?.addresses.find(
       (address) => address?.addressType === "current"
     );
-
+  // const assetsData = asset.find((assetObject) => assetObject);
+  const handleEditProfile = () => {
+    navigate(`/employee/${employeeId}`);
+  };
   return (
     <div
       style={{
@@ -164,12 +239,13 @@ const EmployeeProfile = () => {
           style={{
             display: "flex",
             justifyContent: "end",
-            margin: 24,
+            marginTop: 80,
             padding: 8,
           }}
         >
           <Button
             style={{ backgroundColor: "rgb(0, 206, 63)", border: "none" }}
+            onClick={() => handleEditProfile()}
           >
             Edit
           </Button>
@@ -188,8 +264,54 @@ const EmployeeProfile = () => {
           <h5 style={{ marginLeft: 24, marginTop: 24, textAlign: "justify" }}>
             Assets
           </h5>
-          <div style={{ textAlign: "initial", marginLeft: 24 }}>
-            No Project Allocated
+          <div
+            style={{
+              textAlign: "initial",
+              marginLeft: 24,
+              marginRight: 24,
+              marginBottom: 20,
+            }}
+          >
+            {asset && asset.length > 0 ? (
+              <>
+                <div style={{ overflow: "auto" }}>
+                  <ol
+                    className="list-group list-group-numbered"
+                    style={{ height: "20vh" }}
+                  >
+                    {asset &&
+                      asset.map((item, i) => {
+                        {
+                          /* console.log(item); */
+                        }
+                        return (
+                          <li
+                            className="list-group-item d-flex justify-content-between align-items-start"
+                            key={i}
+                          >
+                            <div className="ms-2 me-auto">
+                              <div className="fw-bold">
+                                {item.assetTypeLookupId} {item.companyName}
+                              </div>
+                              {item.modelName}
+                            </div>
+                            <div className="ms-2 me-auto">
+                              <div className="fw-bold">
+                                {"Serial Number"}
+                                <br></br>
+                              </div>
+                              {/* {moment(item.startDate).format("YYYY-MM-DD")} */}
+                              {item.serialNumber}
+                            </div>
+                          </li>
+                        );
+                      })}
+                  </ol>
+                </div>
+              </>
+            ) : (
+              "No Asset Allocated"
+            )}
           </div>
         </div>
         <div
@@ -202,8 +324,48 @@ const EmployeeProfile = () => {
           <h5 style={{ marginLeft: 24, marginTop: 24, textAlign: "justify" }}>
             Project
           </h5>
-          <div style={{ textAlign: "initial", marginLeft: 24 }}>
-            No Project Allocated
+          <div
+            style={{
+              textAlign: "initial",
+              marginLeft: 24,
+              marginRight: 24,
+              marginBottom: 20,
+            }}
+          >
+            {project && project.length > 0 ? (
+              <>
+                <div style={{ overflow: "auto" }}>
+                  <ol
+                    className="list-group list-group-numbered"
+                    style={{ height: "20vh" }}
+                  >
+                    {project &&
+                      project.map((item, i) => {
+                        return (
+                          <li
+                            className="list-group-item d-flex justify-content-between align-items-start"
+                            key={i}
+                          >
+                            <div className="ms-2 me-auto">
+                              <div className="fw-bold">{item.projectName}</div>
+                              {item.employeeAllocation}
+                            </div>
+                            <div className="ms-2 me-auto">
+                              <div className="fw-bold">
+                                {"Start Date"}
+                                <br></br>
+                              </div>
+                              {moment(item.startDate).format("YYYY-MM-DD")}
+                            </div>
+                          </li>
+                        );
+                      })}
+                  </ol>
+                </div>
+              </>
+            ) : (
+              "No Project Allocated"
+            )}
           </div>
         </div>
       </div>

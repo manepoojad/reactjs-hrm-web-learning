@@ -53,7 +53,7 @@ const ManagerMenu = [
   {
     key: "routekey-dashboard",
     label: "Dashboard",
-    path: "/dashboard",
+    path: "/",
     icon: <i className="me-1 bi bi-house"></i>,
     vissbleOnSmallScrren: true,
   },
@@ -97,7 +97,7 @@ const EmployeeMenu = [
   {
     key: "routekey-dashboard",
     label: "Dashboard",
-    path: "/dashboard",
+    path: "/",
     icon: <i className="me-1 bi bi-house"></i>,
     vissbleOnSmallScrren: true,
   },
@@ -109,7 +109,7 @@ const EmployeeMenu = [
     vissbleOnSmallScrren: true,
   },
   {
-    key: "routekey-myassets",
+    key: "routekey-myAssets",
     label: "My assets",
     path: "/myAssets",
     icon: <i className="me-1 bi bi-pc-display"></i>,

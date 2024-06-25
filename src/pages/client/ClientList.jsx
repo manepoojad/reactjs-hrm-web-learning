@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_ROUTES_PATH } from "../../helper/Constants";
 import fetchInterceptor from "../../helper/fetchInterceptor";
@@ -116,7 +116,7 @@ const ClientList = () => {
                   <td>{client?.email}</td>
                   <td>{client?.primaryContact}</td>
                   <td>
-                    <button
+                    {/* <button
                       className="btn btn-outline-success btn-sm mx-2"
                       //   onClick={() => {
                       //     navigate(`/client/${client?.id}`);
@@ -124,7 +124,7 @@ const ClientList = () => {
                       style={{ border: "none" }}
                     >
                       <i className="bi bi-eye-fill"></i>
-                    </button>
+                    </button> */}
                     <button
                       className="btn btn-outline-success btn-md mx-2"
                       title="Edit Client Details"
@@ -137,14 +137,14 @@ const ClientList = () => {
                     >
                       <i className="bi bi-pen"></i>
                     </button>
-                    <button
+                    {/* <button
                       className="btn btn-outline-danger btn-sm mx-2 "
                       title="Remove Employee"
                       //   onClick={() => handleDeleteEmployee(employee.id)}
                       style={{ border: "none" }}
                     >
                       <i className="bi bi-trash"></i>
-                    </button>
+                    </button> */}
                   </td>
                 </tr>
               );
