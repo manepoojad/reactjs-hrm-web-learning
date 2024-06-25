@@ -34,3 +34,26 @@ export const getEmployeeDataByIdAction = createAsyncThunk(
     }
   }
 );
+
+export const updateEmployeeStatusAction = createAsyncThunk(
+  "employee/updateEmployeeStatusAction",
+  async (arg, thunkAPI) => {
+    try {
+      const responseData = await fetchInterceptor(
+        `/employee/${arg?.employeeId}/statusOfemployee`,
+        {
+          method: "POST",
+          body: {
+            // employeeId: selectedEmployee?.id,
+            comment: arg?.comment,
+            lookupId: arg?.lookupId,
+          },
+        }
+      );
+
+      return responseData;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data);
+    }
+  }
+);

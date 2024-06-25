@@ -20,20 +20,34 @@ export const getAssetsListAction = createAsyncThunk(
   }
 );
 
-// const employeeId = JSON.parse(localStorage.getItem("employeeId"));
-
 export const getAssetsBySpecificEmployeeIdAction = createAsyncThunk(
   "asset/getAssetsBySpecificEmployeeIdAction",
   async (arg, thunkAPI) => {
     try {
+      const responseData = await fetchInterceptor(`/employee/${arg}/asset`, {
+        method: "GET",
+      });
+      //   console.log("responseData", responseData);
+      return responseData?.getAllAssetsForSpecificEmployeeResponse?.asset;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const assignAssetsToEmployeeAction = createAsyncThunk(
+  "asset/assignAssetsToEmployeeAction",
+  async (arg, thunkAPI) => {
+    try {
       const responseData = await fetchInterceptor(
-        `/employee/${arg}/asset`,
+        `/employee/${arg.employeeId}/asset/${arg.assetId}`,
         {
-          method: "GET",
+          method: "POST",
+          body: { assignedComment: arg?.assignedComment },
         }
       );
       //   console.log("responseData", responseData);
-      return responseData?.getAllAssetsForSpecificEmployeeResponse?.asset;
+      return responseData;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response.data);
     }

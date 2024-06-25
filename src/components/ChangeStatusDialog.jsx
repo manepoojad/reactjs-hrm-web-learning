@@ -1,8 +1,8 @@
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { useSelector } from "react-redux";
-import fetchInterceptor from "../helper/fetchInterceptor";
+import { useDispatch, useSelector } from "react-redux";
+import { updateEmployeeStatusAction } from "src/redux/thunk/employeeThunk";
 import "./status.css";
 
 const ChangeStatusModal = ({
@@ -11,7 +11,8 @@ const ChangeStatusModal = ({
   selectedEmployee,
   getEmployeeList = () => {},
 }) => {
-  const lookup=useSelector(state=>state?.lookup?.lookupData)
+  const dispatch = useDispatch();
+  const lookup = useSelector((state) => state?.lookup?.lookupData);
   console.log(lookup);
   // const [lookupData, setLookupData] = useState([]);
   const [isError, setIsError] = useState(false);
@@ -45,13 +46,15 @@ const ChangeStatusModal = ({
 
   const confirmStatusChange = async () => {
     // Perform the status change
-    const responseData = await fetchInterceptor(
-      `/employee/${selectedEmployee?.id}/statusOfemployee`,
-      {
-        method: "POST",
-        body: statusData,
-      }
-    );
+    const payload = {
+      employeeId: selectedEmployee?.id,
+      comment: statusData?.comment,
+      lookupId: statusData?.lookupId,
+    };
+    const responseData = await dispatch(
+      updateEmployeeStatusAction(payload)
+    ).unwrap();
+
     getEmployeeList();
     handleClose();
     setConfirmModalOpen(false);

@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
-import fetchInterceptor from "src/helper/fetchInterceptor";
 import { getAssetsListAction } from "src/redux/thunk/assetsThunk";
+import { getAllocableEmployeeListAction } from "src/redux/thunk/dashboardThunk";
 import { getEmployeeListAction } from "src/redux/thunk/employeeThunk";
+import { getProjectListAction } from "src/redux/thunk/projectThunk";
 
 const Home = () => {
   const lookup = useSelector((state) => state.lookup.lookupData);
   const [search, changeSearch] = useState("");
   const [employeeList, setEmployeeList] = useState([]);
+  const [projectList, setProjectList] = useState([]);
   const [assetsList, setAssetsList] = useState([]);
   const [allocableEmployeeList, setAllocableEmployeeList] = useState([]);
   const dispatch = useDispatch();
@@ -22,6 +24,7 @@ const Home = () => {
     getEmployeeList();
     getAllocableEmployeeList();
     getAssetsList();
+    getProjectList();
   }, []);
 
   let roles = JSON.parse(localStorage.getItem("roles"));
@@ -36,7 +39,19 @@ const Home = () => {
   const onLeaveEmployeeCount =
     totalEmployeeCount - allocableEmployeeList.length;
 
-  
+  const getProjectList = async () => {
+    try {
+      const responseData = await dispatch(getProjectListAction()).unwrap();
+
+      // const responseData = await fetchInterceptor(
+      //   "/project",
+      //   {
+      //     method: "GET",
+      //   }
+      // );
+      setProjectList(responseData);
+    } catch (error) {}
+  };
 
   const getEmployeeList = async () => {
     try {
@@ -48,14 +63,17 @@ const Home = () => {
 
   const getAllocableEmployeeList = async () => {
     try {
-      const responseData = await fetchInterceptor(
-        "/employee/currentAllocableEmployee",
-        {
-          method: "GET",
-        }
-      );
+      const responseData = await dispatch(
+        getAllocableEmployeeListAction()
+      ).unwrap();
+      // const responseData = await fetchInterceptor(
+      //   "/employee/currentAllocableEmployee",
+      //   {
+      //     method: "GET",
+      //   }
+      // );
 
-      setAllocableEmployeeList(responseData?.allocableEmployees);
+      setAllocableEmployeeList(responseData);
     } catch (error) {}
   };
 
@@ -66,8 +84,6 @@ const Home = () => {
       setAssetsList(responseData);
     } catch (error) {}
   };
-
-  
 
   const onChangeSearch = (e) => {
     let value = e.target.value;
@@ -95,7 +111,7 @@ const Home = () => {
         </div>
         {roles == "HR" || roles == "Manager" ? (
           <>
-            <div style={{ overflow: "scroll" }}>
+            <div>
               <div style={{ display: "flex", flexDirection: "row" }}>
                 <div className="col-sm-4 mb-3">
                   <div
@@ -138,7 +154,7 @@ const Home = () => {
                         </table>
                       </div>
                       <NavLink
-                        to="/app/employee"
+                        to="/employeeList"
                         className="bg-success text-white btn btn-primary"
                       >
                         Employees
@@ -170,35 +186,26 @@ const Home = () => {
                       <div>
                         <table className="table table-sm">
                           <tbody>
-                            {assetsList.length > 0 &&
-                              assetsList.map((asset, index) => {
-                                const assetsTypeLookupData =
-                                  assetTypeLookupList?.find(
-                                    (lookup) =>
-                                      lookup?.id === asset?.assetTypeLookupId
-                                  );
-
-                                const assetTypeLabel = assetsTypeLookupData
-                                  ? assetsTypeLookupData?.label
-                                  : "";
+                            {assetTypeLookupList?.length > 0 &&
+                              assetTypeLookupList.map((asset, index) => {
+                                {
+                                  /* assetsList */
+                                }
 
                                 return (
-                                  <tr key={index}>
+                                  <tr key={asset.id}>
                                     <td className="text-start fw-bold">
-                                      {assetTypeLabel}
+                                      {asset.label}
                                     </td>
-                                    <td className=" fw-bold">
-                                      {asset.assetTypeLookupId.count || "0"}
-                                    </td>
+                                    <td className=" fw-bold">{0}</td>
                                   </tr>
                                 );
                               })}
-                            
                           </tbody>
                         </table>
                       </div>
                       <NavLink
-                        to="/app/assets"
+                        to="/assetsList"
                         className="bg-success text-white btn btn-primary"
                       >
                         Assets
@@ -220,7 +227,7 @@ const Home = () => {
                       <div className="d-flex flex-row justify-content-between">
                         <h5 className="fw-bold">Projects</h5>
                         <h5 className="fw-bold">{`Total :${
-                          data.projects && data.projects.totalCount
+                          projectList.length > 0 && projectList.length
                         }`}</h5>
                       </div>
                       <p className="text-start">
@@ -230,12 +237,12 @@ const Home = () => {
                       <div>
                         <table className="table table-sm">
                           <tbody>
-                            {data.projects &&
-                              data.projects.names.map((name, index) => {
+                            {projectList.length > 0 &&
+                              projectList.map((project, index) => {
                                 return (
-                                  <tr key={`${name} + ${index}`}>
+                                  <tr key={index}>
                                     <td className="text-start fw-bold">
-                                      {name}
+                                      {project?.projectName}
                                     </td>
                                   </tr>
                                 );
@@ -245,7 +252,7 @@ const Home = () => {
                       </div>
 
                       <NavLink
-                        to="/app/project"
+                        to="/projectList"
                         className="bg-success text-white btn btn-primary"
                       >
                         Projects

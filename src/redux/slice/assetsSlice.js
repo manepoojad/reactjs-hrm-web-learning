@@ -1,13 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
-    getAssetsBySpecificEmployeeIdAction,
-    getAssetsListAction,
+  assignAssetsToEmployeeAction,
+  getAssetsBySpecificEmployeeIdAction,
+  getAssetsListAction,
 } from "../thunk/assetsThunk";
 
 const initialState = {
   isLoading: false,
   assetsList: [],
   getAssetsListById: [],
+  assignAssetsData: [],
 };
 
 const assetsSlice = createSlice({
@@ -43,7 +45,18 @@ const assetsSlice = createSlice({
         (state, action) => {
           state.isLoading = false;
         }
-      );
+      )
+
+      .addCase(assignAssetsToEmployeeAction.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(assignAssetsToEmployeeAction.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.assignAssetsData = action.payload;
+      })
+      .addCase(assignAssetsToEmployeeAction.rejected, (state, action) => {
+        state.isLoading = false;
+      });
   },
 });
 

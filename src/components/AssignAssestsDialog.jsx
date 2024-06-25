@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { useDispatch, useSelector } from "react-redux";
+import { assignAssetsToEmployeeAction } from "src/redux/thunk/assetsThunk";
 import { getEmployeeListAction } from "src/redux/thunk/employeeThunk";
-import fetchInterceptor from "../helper/fetchInterceptor";
 import "./status.css";
 
 const AssignAssetsDialog = ({
@@ -78,15 +78,13 @@ const AssignAssetsDialog = ({
   const confirmStatusChange = async () => {
     try {
       const payload = {
-        assignedComment: assetsData.assignedComment,
+        assignedComment: assetsData?.assignedComment,
+        assetId: selectedAssets?.assetsId,
+        employeeId: assetsData?.employeeId,
       };
-      const responseData = await fetchInterceptor(
-        `/employee/${assetsData.employeeId}/asset/${assetsData.assetId}`,
-        {
-          method: "POST",
-          body: payload,
-        }
-      );
+      const responseData = await dispatch(
+        assignAssetsToEmployeeAction(payload)
+      ).unwrap();
       getAssetsList();
       handleClose();
       setConfirmModalOpen(false);
