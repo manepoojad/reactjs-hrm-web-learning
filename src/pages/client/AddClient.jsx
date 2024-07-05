@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { API_ROUTES_PATH } from "../../helper/Constants";
-import fetchInterceptor from "../../helper/fetchInterceptor";
+import { addClientAction } from "src/redux/thunk/clientThunk";
 
 const AddClient = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isError, setIsError] = useState(false);
   const [clientDataValidationError, setClientDataValidationError] = useState({
@@ -26,13 +27,7 @@ const AddClient = () => {
     let isValid;
     isValid = validateForm();
     if (isValid) {
-      const responseData = await fetchInterceptor(
-        API_ROUTES_PATH.CREATE_CLIENT,
-        {
-          method: "POST",
-          body: clientData,
-        }
-      );
+      const responseData = await dispatch(addClientAction(clientData)).unwrap();
       navigate("/clientList");
       return responseData;
     }

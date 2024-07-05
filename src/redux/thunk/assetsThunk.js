@@ -53,3 +53,41 @@ export const assignAssetsToEmployeeAction = createAsyncThunk(
     }
   }
 );
+
+export const addAssetsAction = createAsyncThunk(
+  "asset/addAssetsAction",
+  async (arg, thunkAPI) => {
+    try {
+      const responseData = await fetchInterceptor(
+        `${API_ROUTES_PATH.CREATE_ASSETS}`,
+        {
+          method: "POST",
+          body: arg,
+        }
+      );
+      //   console.log("responseData", responseData);
+      return responseData;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const updateAssetsAction = createAsyncThunk(
+  "asset/updateAssetsAction",
+  async (arg, thunkAPI) => {
+    try {
+      const responseData = await fetchInterceptor(
+        `/asset/${arg?.id}`,
+        {
+          method: "PUT",
+          body: arg,
+        }
+      );
+      //   console.log("responseData", responseData);
+      return responseData?.asset;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data);
+    }
+  }
+);

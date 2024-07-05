@@ -57,3 +57,53 @@ export const updateEmployeeStatusAction = createAsyncThunk(
     }
   }
 );
+
+export const addEmployeePersonalDetailsAction = createAsyncThunk(
+  "employee/addEmployeePersonalDetailsAction",
+  async (arg, thunkAPI) => {
+    try {
+      const responseData = await fetchInterceptor(
+        `/employee/${arg?.employeeId}/personal`,
+        {
+          method: "POST",
+          body: arg,
+        }
+      );
+
+      return responseData;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const getEmployeeSpecificDetailsAction = createAsyncThunk(
+  "employee/getEmployeeSpecificDetailsAction",
+  async (arg, thunkAPI) => {
+    try {
+      const responseData = await fetchInterceptor(`/employee/${arg}`, {
+        method: "GET",
+      });
+
+      return responseData;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const updateEmployeePersonalDetailsAction = createAsyncThunk(
+  "employee/updateEmployeePersonalDetailsAction",
+  async (arg, thunkAPI) => {
+    try {
+      const responseData = await fetchInterceptor(`/employee/${arg?.id}`, {
+        method: "PUT",
+        body:arg
+      });
+
+      return responseData;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data);
+    }
+  }
+);

@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Button } from "react-bootstrap";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { API_ROUTES_PATH } from "../../helper/Constants";
-import fetchInterceptor from "../../helper/fetchInterceptor";
+import { addAssetsAction } from "src/redux/thunk/assetsThunk";
 
 const AddAssets = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const lookup = useSelector((state) => state?.lookup?.lookupData);
   const [isError, setIsError] = useState(false);
   // const [lookupData, setLookupData] = useState([]);
@@ -37,13 +37,7 @@ const AddAssets = () => {
     let isValid;
     isValid = validateForm();
     if (isValid) {
-      const responseData = await fetchInterceptor(
-        API_ROUTES_PATH.CREATE_ASSETS,
-        {
-          method: "POST",
-          body: assetsData,
-        }
-      );
+      const responseData = await dispatch(addAssetsAction(assetsData)).unwrap();
       navigate("/assetsList");
       return responseData;
     }

@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import fetchInterceptor from "../../helper/fetchInterceptor";
+import { updateAssetsAction } from "src/redux/thunk/assetsThunk";
 
 const EditAssets = () => {
   const params = useParams();
+  const dispatch = useDispatch();
   const lookup = useSelector((state) => state?.lookup?.lookupData);
   const location = useLocation();
   const assetObject = location?.state?.asset;
@@ -66,13 +67,21 @@ const EditAssets = () => {
 
   const assetStatusLookupIntegerValue = assetsStatus ? assetsStatus?.label : "";
   const handleConfirmUpdateAsset = async () => {
-    
-    const responseData = await fetchInterceptor(`/asset/${params?.id}`, {
-      method: "PUT",
-      body: editAssetsData,
-    });
+    const payload = {
+      id: params?.id,
+      assetTypeLookupId: editAssetsData?.assetTypeLookupId,
+      assetStatusLookupId: editAssetsData.assetStatusLookupId,
+      companyName: editAssetsData?.companyName,
+      modelName: editAssetsData?.modelName,
+      serialNumber: editAssetsData?.serialNumber,
+      purchaseDate: editAssetsData?.purchaseDate,
+      notes: editAssetsData?.notes,
+    };
+    const responseData = await dispatch(updateAssetsAction(payload)).unwrap();
+
+    console.log(responseData);
     navigate("/assetsList");
-    return responseData;
+    return responseData?.asset;
   };
 
   const handleInputChange = (e) => {

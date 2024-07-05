@@ -94,6 +94,11 @@ const Home = () => {
 
   // console.log(roles);
 
+  const countAssetsByType = (typeId) => {
+    return assetsList.filter((asset) => asset.assetTypeLookupId === typeId)
+      .length;
+  };
+
   return (
     <>
       <>
@@ -197,7 +202,9 @@ const Home = () => {
                                     <td className="text-start fw-bold">
                                       {asset.label}
                                     </td>
-                                    <td className=" fw-bold">{0}</td>
+                                    <td className="fw-bold">
+                                      {countAssetsByType(asset.id) || 0}
+                                    </td>
                                   </tr>
                                 );
                               })}

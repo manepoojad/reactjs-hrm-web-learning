@@ -7,6 +7,8 @@ import EmployeePersonalDetails from "./components/EmployeePersonalDetails";
 import JobDetails from "./components/JobDetails";
 import SkillInfo from "./components/SkillInfo";
 
+import { useDispatch } from "react-redux";
+import { addEmployeePersonalDetailsAction } from "src/redux/thunk/employeeThunk";
 import fetchInterceptor from "../../helper/fetchInterceptor";
 
 const wizardData = [
@@ -38,6 +40,7 @@ const wizardData = [
 ];
 
 const AddEmployee = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [wizardIndex, setWizardIndex] = useState(0);
   const [isError, setIsError] = useState(false);
@@ -227,13 +230,20 @@ const AddEmployee = () => {
   };
 
   const handleAddEmployeePersonalDetails = async () => {
-    const responseData = await fetchInterceptor(
-      `/employee/${employeeData?.employeeId}/personal`,
-      {
-        method: "POST",
-        body: employeeData?.personalDetails,
-      }
-    );
+    const payload = {
+      employeeId: employeeData?.employeeId,
+      personalDetails: employeeData?.personalDetails,
+    };
+    const responseData = await dispatch(
+      addEmployeePersonalDetailsAction(payload)
+    ).unwrap();
+    // const responseData = await fetchInterceptor(
+    //   `/employee/${employeeData?.employeeId}/personal`,
+    //   {
+    //     method: "POST",
+    //     body:
+    //   }
+    // );
 
     return responseData;
     // const response = await fetch(API_ROUTES_PATH?.EMPLOYEE_PERSONAL_DETAILS, {

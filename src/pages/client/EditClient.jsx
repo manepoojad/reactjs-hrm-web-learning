@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import fetchInterceptor from "../../helper/fetchInterceptor";
+import { updateClientAction } from "src/redux/thunk/clientThunk";
 
 const UpdateClient = () => {
   const location = useLocation();
   const clientObject = location?.state?.client;
+
   const params = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isError, setIsError] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [UpdateClientData, setUpdateClientData] = useState({
@@ -35,13 +38,15 @@ const UpdateClient = () => {
   };
 
   const handleConfirmUpdateClient = async () => {
-    const responseData = await fetchInterceptor(
-      `/client/${params?.id}`,
-      {
-        method: "PUT",
-        body: UpdateClientData,
-      }
-    );
+    const payload = {
+      id: params?.id,
+      companyName: UpdateClientData?.companyName,
+      country: UpdateClientData?.country,
+      phoneNumber: UpdateClientData?.phoneNumber,
+      email: UpdateClientData?.email,
+      primaryContact: UpdateClientData?.primaryContact,
+    };
+    const responseData = await dispatch(updateClientAction(payload)).unwrap();
     navigate("/clientList");
     return responseData;
   };
@@ -259,7 +264,7 @@ const UpdateClient = () => {
         </Modal.Header>
         <Modal.Body>
           Are you sure you want to update the client of{" "}
-          {UpdateClientData?.companyName}?
+          {clientObject?.companyName}?
         </Modal.Body>
         <Modal.Footer>
           <Button

@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
-import fetchInterceptor from "src/helper/fetchInterceptor";
-import { API_ROUTES_PATH } from "../../../helper/Constants";
+import { useSelector } from "react-redux";
 
 const EditJobDetails = (props) => {
-  const [lookupData, setLookupData] = useState([]);
+  const lookup = useSelector((state) => state?.lookup?.lookupData);
+
+  // const [lookupData, setLookupData] = useState([]);
   const {
     formData = {},
     formValidationError = {},
@@ -13,37 +13,37 @@ const EditJobDetails = (props) => {
     isEditableFields = false,
   } = props;
 
-  useEffect(() => {
-    getAllLookupList();
-  }, []);
+  // useEffect(() => {
+  //   getAllLookupList();
+  // }, []);
 
-  const getAllLookupList = async () => {
-    try {
-      const responseData = await fetchInterceptor(
-        API_ROUTES_PATH.GET_ALL_LOOKUP_LIST,
-        {
-          method: "GET",
-        }
-      );
-      const lookupData = responseData.lookupData;
-      setLookupData(lookupData);
-    } catch (error) {}
-  };
+  // const getAllLookupList = async () => {
+  //   try {
+  //     const responseData = await fetchInterceptor(
+  //       API_ROUTES_PATH.GET_ALL_LOOKUP_LIST,
+  //       {
+  //         method: "GET",
+  //       }
+  //     );
+  //     const lookupData = responseData.lookupData;
+  //     setLookupData(lookupData);
+  //   } catch (error) {}
+  // };
 
   const currentJobDetails = formData?.jobDetails;
   const currentJobDetailsError = formValidationError?.jobDetails || {};
 
-  const workModeLookup = lookupData?.find(
+  const workModeLookup = lookup?.find(
     (lookup) => lookup.lookupType === "modeOfWork"
   );
   const workModeLookupList = workModeLookup?.lookups;
 
-  const designationLookup = lookupData?.find(
+  const designationLookup = lookup?.find(
     (lookup) => lookup.lookupType === "designation"
   );
   const designationLookupList = designationLookup?.lookups;
 
-  const employeeRoleLookup = lookupData?.find(
+  const employeeRoleLookup = lookup?.find(
     (lookup) => lookup.lookupType === "userRole"
   );
   const employeeRoleLookupList = employeeRoleLookup?.lookups;

@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import {
+  getEmployeeSpecificDetailsAction,
+  updateEmployeePersonalDetailsAction,
+} from "src/redux/thunk/employeeThunk";
 import fetchInterceptor from "../../helper/fetchInterceptor";
 import EditBankDetailsAndDocuments from "../edit/components/EditBankDetailsAndDocuments";
 import EditContactInfo from "../edit/components/EditContactInfo";
@@ -37,6 +42,7 @@ const wizardData = [
 ];
 
 const EditEmployee = () => {
+  const dispatch = useDispatch();
   const params = useParams();
   const navigate = useNavigate();
   const [wizardIndex, setWizardIndex] = useState(0);
@@ -252,12 +258,15 @@ const EditEmployee = () => {
 
   const getSpecificEmployeeDetails = async () => {
     try {
-      const responseData = await fetchInterceptor(
-        `/employee/${params?.id}`,
-        {
-          method: "GET",
-        }
-      );
+      const responseData = await dispatch(
+        getEmployeeSpecificDetailsAction(params?.id)
+      ).unwrap();
+      // const responseData = await fetchInterceptor(
+      //   `/employee/${params?.id}`,
+      //   {
+      //     method: "GET",
+      //   }
+      // );
 
       handleDataMapping(responseData);
     } catch (error) {}
@@ -867,13 +876,20 @@ const EditEmployee = () => {
 
   const handleUpdateEmployeePersonalDetails = async () => {
     // const token = Cookies.get("jwtToken");
-    const responseData = await fetchInterceptor(
-      `/employee/${editEmployeeData?.employeeId}/personal`,
-      {
-        method: "PUT",
-        body: editEmployeeData?.personalDetails,
-      }
-    );
+    const payload = {
+      id: editEmployeeData?.employeeId,
+      personalDetails: editEmployeeData?.personalDetails,
+    };
+    const responseData = await dispatch(
+      updateEmployeePersonalDetailsAction(payload)
+    ).unwrap();
+    // const responseData = await fetchInterceptor(
+    //   `/employee/${editEmployeeData?.employeeId}/personal`,
+    //   {
+    //     method: "PUT",
+    //     body: editEmployeeData?.personalDetails,
+    //   }
+    // );
 
     return responseData;
     // const response = await fetch(

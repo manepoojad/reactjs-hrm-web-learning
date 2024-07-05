@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
-import fetchInterceptor from "src/helper/fetchInterceptor";
-import { API_ROUTES_PATH } from "../../../helper/Constants";
+import { useSelector } from "react-redux";
 
 const EditSkillInfo = (props) => {
-  const [lookupData, setLookupData] = useState([]);
+  const lookup = useSelector((state) => state?.lookup?.lookupData);
+  // const [lookupData, setLookupData] = useState([]);
 
   const {
     formData = {},
@@ -12,49 +11,49 @@ const EditSkillInfo = (props) => {
     isEditableFields = false,
   } = props;
 
-  const skillTypeLookup = lookupData?.find(
+  const skillTypeLookup = lookup?.find(
     (lookup) => lookup.lookupType === "skillType"
   );
   const skillTypeLookupList = skillTypeLookup?.lookups;
 
   const hobbies = formData?.hobbiesRecord?.[0];
 
-  const skillNameLookup = lookupData?.find(
+  const skillNameLookup = lookup?.find(
     (lookup) => lookup.lookupType === "nonTechnicalSkill"
   );
   const skillNameLookupList = skillNameLookup?.lookups;
 
-  const skillNameLookup1 = lookupData?.find(
+  const skillNameLookup1 = lookup?.find(
     (lookup) => lookup.lookupType === "technicalSkill"
   );
   const skillNameLookupList1 = skillNameLookup1?.lookups;
 
-  const skillLevelLookup = lookupData?.find(
+  const skillLevelLookup = lookup?.find(
     (lookup) => lookup.lookupType === "skillLevel"
   );
   const skillLevelLookupList = skillLevelLookup?.lookups;
 
-  const hobbiesLookup = lookupData?.find(
+  const hobbiesLookup = lookup?.find(
     (lookup) => lookup.lookupType === "hobbies"
   );
   const hobbiesLookupList = hobbiesLookup?.lookups;
 
-  useEffect(() => {
-    getAllLookupList();
-  }, []);
+  // useEffect(() => {
+  //   getAllLookupList();
+  // }, []);
 
-  const getAllLookupList = async () => {
-    try {
-      const responseData = await fetchInterceptor(
-        API_ROUTES_PATH.GET_ALL_LOOKUP_LIST,
-        {
-          method: "GET",
-        }
-      );
-      const lookupData = responseData.lookupData;
-      setLookupData(lookupData);
-    } catch (error) {}
-  };
+  // const getAllLookupList = async () => {
+  //   try {
+  //     const responseData = await fetchInterceptor(
+  //       API_ROUTES_PATH.GET_ALL_LOOKUP_LIST,
+  //       {
+  //         method: "GET",
+  //       }
+  //     );
+  //     const lookupData = responseData.lookupData;
+  //     setLookupData(lookupData);
+  //   } catch (error) {}
+  // };
 
   const handleInputChange = (e, index) => {
     const { name, value } = e.target;

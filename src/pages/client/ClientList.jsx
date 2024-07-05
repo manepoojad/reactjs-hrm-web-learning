@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { API_ROUTES_PATH } from "../../helper/Constants";
-import fetchInterceptor from "../../helper/fetchInterceptor";
+import { getClientListAction } from "src/redux/thunk/clientThunk";
 
 const ClientList = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [clientList, setClientList] = useState([]);
   const [filteredClientList, setFilteredClientList] = useState([]);
@@ -16,15 +17,11 @@ const ClientList = () => {
 
   const getClientList = async () => {
     try {
-      const responseData = await fetchInterceptor(
-        API_ROUTES_PATH.GET_CLIENT_LIST,
-        {
-          method: "GET",
-        }
-      );
-
-      setClientList(responseData?.clients);
-      setFilteredClientList(responseData?.clients);
+      const responseData = await dispatch(
+        getClientListAction()
+      ).unwrap();
+      setClientList(responseData);
+      setFilteredClientList(responseData);
     } catch (error) {}
   };
 

@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 
 const EditEmployeePersonalDetails = (props) => {
-  const lookup = useSelector((state) => state?.lookup?.lookupData);
+  const lookupData = useSelector((state) => state?.lookup?.lookupData);
 
   // const [lookupData, setLookupData] = useState([]);
   const {
@@ -14,18 +14,18 @@ const EditEmployeePersonalDetails = (props) => {
   const personalDetails = formData?.personalDetails || {};
   const personalDetailsError = formValidationError?.personalDetails || {};
 
-  const titleLookup = lookup?.find((lookup) => lookup.lookupType === "title");
+  const titleLookup = lookupData?.find((lookup) => lookup.lookupType === "title");
   const titleLookupList = titleLookup?.lookups;
 
-  const genderLookup = lookup?.find((lookup) => lookup.lookupType === "gender");
+  const genderLookup = lookupData?.find((lookup) => lookup.lookupType === "gender");
   const genderLookupList = genderLookup?.lookups;
 
-  const bloodGroupLookup = lookup?.find(
+  const bloodGroupLookup = lookupData?.find(
     (lookup) => lookup.lookupType === "bloodGroup"
   );
   const bloodGroupLookupList = bloodGroupLookup?.lookups;
 
-  const marriedStatusLookup = lookup?.find(
+  const marriedStatusLookup = lookupData?.find(
     (lookup) => lookup?.lookupType === "marriedStatus"
   );
   const marriedStatusLookupList = marriedStatusLookup?.lookups;
